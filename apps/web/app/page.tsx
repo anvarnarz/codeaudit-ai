@@ -1,6 +1,15 @@
+import { auth } from "@/auth";
+import { redirect } from "next/navigation";
 import Link from "next/link";
 
-export default function LandingPage() {
+export default async function LandingPage() {
+  const session = await auth();
+
+  // Redirect authenticated users to the dashboard
+  if (session?.user) {
+    redirect("/dashboard");
+  }
+
   return (
     <main className="min-h-screen flex flex-col items-center justify-center px-4">
       <div className="max-w-lg w-full space-y-8 text-center">
@@ -24,14 +33,15 @@ export default function LandingPage() {
           <p className="text-muted-foreground text-lg leading-relaxed">
             Connect GitHub, pick a repo, bring your own API key.
             <br />
-            Get a thorough structured audit in minutes — not hours of CLI config.
+            Get a thorough structured audit in minutes — not hours of CLI
+            config.
           </p>
         </div>
 
         {/* CTA */}
         <div className="flex flex-col gap-3 items-center">
           <Link
-            href="/api/auth/signin/github"
+            href="/sign-in"
             className="inline-flex items-center gap-3 bg-white text-black font-medium px-6 py-3 rounded-lg hover:bg-white/90 transition-colors w-full max-w-xs justify-center"
           >
             <GitHubIcon />
