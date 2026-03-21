@@ -30,12 +30,12 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. User can connect their GitHub account via OAuth to authorize repo access (GitHub App with Contents: read per-repo scope)
   4. User can add, update, and delete stored API keys for Anthropic, OpenAI, and Gemini (stored AES-256-GCM encrypted)
   5. User can sign out from any page and session is terminated
-**Plans**: TBD
+**Plans**: Planned (3 plans)
 
 Plans:
-- [ ] 01-01: Project scaffolding — monorepo setup (apps/web, packages/db, packages/audit-engine, packages/llm-adapter, packages/repo-sandbox, worker/), Next.js 16, Drizzle + Neon, Docker Compose dev environment
-- [ ] 01-02: Auth flows — Auth.js v5 email/password + GitHub SSO, database session strategy, session middleware
-- [ ] 01-03: GitHub OAuth + API key management — GitHub App installation flow, encrypted BYOK key storage, key CRUD UI
+- [x] 01-01: Project scaffolding — monorepo setup (apps/web, packages/db, packages/audit-engine, packages/llm-adapter, packages/repo-sandbox, worker/), Next.js 16, Drizzle + Neon, Docker Compose dev environment → `01-01-PLAN.md`
+- [ ] 01-02: Auth flows — Auth.js v5 GitHub SSO only, database session strategy, session middleware, guided onboarding flow → `01-02-PLAN.md`
+- [ ] 01-03: GitHub App + API key management — GitHub App installation flow, encrypted BYOK key storage (AES-256-GCM), key CRUD UI, validation on entry → `01-03-PLAN.md`
 
 ### Phase 2: Audit Setup
 **Goal**: Users can browse their GitHub repos, configure an audit, review a cost estimate, and submit it for execution
@@ -110,7 +110,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation | 0/3 | Not started | - |
+| 1. Foundation | 1/3 | In Progress|  |
 | 2. Audit Setup | 0/2 | Not started | - |
 | 3. Audit Engine | 0/3 | Not started | - |
 | 4. Results Dashboard | 0/2 | Not started | - |
