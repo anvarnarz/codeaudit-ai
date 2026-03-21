@@ -34,7 +34,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 Plans:
 - [x] 01-01: Project scaffolding — monorepo setup (apps/web, packages/db, packages/audit-engine, packages/llm-adapter, packages/repo-sandbox, worker/), Next.js 16, Drizzle + Neon, Docker Compose dev environment → `01-01-PLAN.md`
-- [ ] 01-02: Auth flows — Auth.js v5 GitHub SSO only, database session strategy, session middleware, guided onboarding flow → `01-02-PLAN.md`
+- [x] 01-02: Auth flows — Auth.js v5 GitHub SSO only, database session strategy, session middleware, guided onboarding flow → `01-02-PLAN.md`
 - [ ] 01-03: GitHub App + API key management — GitHub App installation flow, encrypted BYOK key storage (AES-256-GCM), key CRUD UI, validation on entry → `01-03-PLAN.md`
 
 ### Phase 2: Audit Setup
@@ -110,7 +110,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation | 1/3 | In Progress|  |
+| 1. Foundation | 2/3 | In Progress|  |
 | 2. Audit Setup | 0/2 | Not started | - |
 | 3. Audit Engine | 0/3 | Not started | - |
 | 4. Results Dashboard | 0/2 | Not started | - |

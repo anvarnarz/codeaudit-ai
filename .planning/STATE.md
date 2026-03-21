@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-stopped_at: Completed 01-foundation-01-01-PLAN.md
-last_updated: "2026-03-21T19:03:31.100Z"
+stopped_at: Completed 01-foundation-01-02-PLAN.md
+last_updated: "2026-03-21T19:12:47.573Z"
 progress:
   total_phases: 5
   completed_phases: 0
   total_plans: 3
-  completed_plans: 1
+  completed_plans: 2
 ---
 
 # Project State
@@ -24,7 +24,7 @@ See: .planning/PROJECT.md (updated 2026-03-21)
 ## Current Position
 
 Phase: 01 (foundation) — EXECUTING
-Plan: 2 of 3
+Plan: 3 of 3
 
 ## Performance Metrics
 
@@ -47,6 +47,7 @@ Plan: 2 of 3
 
 *Updated after each plan completion*
 | Phase 01-foundation P01 | 8 | 7 tasks | 32 files |
+| Phase 01-foundation P02 | 6 | 7 tasks | 20 files |
 
 ## Accumulated Context
 
@@ -62,6 +63,9 @@ Recent decisions affecting current work:
 - [Phase 01-foundation]: AuditFindings JSONB schema locked in Phase 1 schema.ts for stable Phase 5 comparison diff target
 - [Phase 01-foundation]: Costs stored as microdollar integers (not floats) to avoid floating-point precision issues in token accounting
 - [Phase 01-foundation]: apps/web excluded from root tsconfig project references — Next.js uses bundler moduleResolution incompatible with composite mode
+- [Phase 01-foundation]: Database session strategy confirmed — GitHub access_token stays in accounts table server-side only, never in JWT or client cookie
+- [Phase 01-foundation]: Server actions for auth sign-in/sign-out to avoid client-side token exposure
+- [Phase 01-foundation]: Onboarding steps 2-3 are intentional placeholder UI — wired to real functionality in Plan 01-03
 
 ### Pending Todos
 
@@ -74,6 +78,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-21T19:03:31.098Z
-Stopped at: Completed 01-foundation-01-01-PLAN.md
+Last session: 2026-03-21T19:12:47.571Z
+Stopped at: Completed 01-foundation-01-02-PLAN.md
 Resume file: None

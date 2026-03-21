@@ -10,13 +10,13 @@ Requirements for initial release. Each maps to roadmap phases.
 ### Authentication & Access
 
 - [ ] **AUTH-01**: User can sign up with email and password
-- [ ] **AUTH-02**: User can sign in and maintain a session across browser refresh
-- [ ] **AUTH-03**: User can sign in with GitHub SSO as an alternative to email/password
+- [x] **AUTH-02**: User can sign in and maintain a session across browser refresh
+- [x] **AUTH-03**: User can sign in with GitHub SSO as an alternative to email/password
 - [ ] **AUTH-04**: User can connect their GitHub account via OAuth to grant repo access
 - [ ] **AUTH-05**: User can browse and select repositories from their connected GitHub account (personal and org repos)
 - [ ] **AUTH-06**: User can store encrypted LLM API keys for Anthropic, OpenAI, and Gemini
 - [ ] **AUTH-07**: User can update or delete their stored API keys
-- [ ] **AUTH-08**: User can sign out from any page
+- [x] **AUTH-08**: User can sign out from any page
 
 ### Audit Configuration
 
@@ -107,13 +107,13 @@ Which phases cover which requirements. Updated during roadmap creation.
 | Requirement | Phase | Status |
 |-------------|-------|--------|
 | AUTH-01 | Phase 1 | Pending |
-| AUTH-02 | Phase 1 | Pending |
-| AUTH-03 | Phase 1 | Pending |
+| AUTH-02 | Phase 1 | Complete |
+| AUTH-03 | Phase 1 | Complete |
 | AUTH-04 | Phase 1 | Pending |
 | AUTH-05 | Phase 2 | Pending |
 | AUTH-06 | Phase 1 | Pending |
 | AUTH-07 | Phase 1 | Pending |
-| AUTH-08 | Phase 1 | Pending |
+| AUTH-08 | Phase 1 | Complete |
 | CONF-01 | Phase 2 | Pending |
 | CONF-02 | Phase 2 | Pending |
 | CONF-03 | Phase 2 | Pending |
