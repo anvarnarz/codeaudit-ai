@@ -3,7 +3,9 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { OnboardingProgress } from "@/components/onboarding-progress";
 import { skipOnboardingAction } from "@/app/actions/onboarding";
+import { listApiKeys } from "@/actions/api-keys";
 import { KeyRound } from "lucide-react";
+import { OnboardingApiKeyClient } from "./onboarding-api-key-client";
 
 export default async function OnboardingApiKeyPage() {
   const user = await getRequiredUser();
@@ -12,6 +14,11 @@ export default async function OnboardingApiKeyPage() {
   if (user.hasCompletedOnboarding) {
     redirect("/dashboard");
   }
+
+  // Load existing keys to show if user already added one
+  const keysResult = await listApiKeys();
+  const existingKeys = keysResult.success ? keysResult.data : [];
+  const hasKey = existingKeys.length > 0;
 
   return (
     <main className="min-h-screen flex flex-col items-center justify-center px-4">
@@ -26,20 +33,13 @@ export default async function OnboardingApiKeyPage() {
             Add your API key
           </h1>
           <p className="text-muted-foreground leading-relaxed">
-            CodeAudit is BYOK — bring your own key. We never store it
-            unencrypted and it&apos;s only used to run your audits.
+            CodeAudit is BYOK — bring your own key. We validate it, encrypt it
+            with AES-256-GCM, and it&apos;s never returned to your browser.
           </p>
         </div>
 
-        {/* Placeholder — wired in Plan 01-03 */}
-        <div className="rounded-lg border border-dashed border-border bg-card/50 p-8 text-center space-y-3">
-          <p className="text-sm text-muted-foreground">
-            API key management UI is coming in the next step of setup.
-          </p>
-          <p className="text-xs text-muted-foreground/60">
-            You can skip this now and add keys from Settings later.
-          </p>
-        </div>
+        {/* Wired API key form (replaces placeholder from 01-02) */}
+        <OnboardingApiKeyClient initialHasKey={hasKey} existingKeys={existingKeys} />
 
         <div className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-4">
@@ -59,13 +59,23 @@ export default async function OnboardingApiKeyPage() {
             </form>
           </div>
 
-          <Link
-            href="/onboarding/repo"
-            className="inline-flex items-center gap-2 rounded-lg bg-white px-5 py-2.5 text-sm font-medium text-black transition-colors hover:bg-white/90"
-          >
-            Continue
-            <span aria-hidden="true">&#8594;</span>
-          </Link>
+          {hasKey ? (
+            <Link
+              href="/onboarding/repo"
+              className="inline-flex items-center gap-2 rounded-lg bg-white px-5 py-2.5 text-sm font-medium text-black transition-colors hover:bg-white/90"
+            >
+              Continue
+              <span aria-hidden="true">&#8594;</span>
+            </Link>
+          ) : (
+            <Link
+              href="/onboarding/repo"
+              className="inline-flex items-center gap-2 rounded-lg border border-border px-5 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted/40"
+            >
+              Skip for now
+              <span aria-hidden="true">&#8594;</span>
+            </Link>
+          )}
         </div>
       </div>
     </main>
