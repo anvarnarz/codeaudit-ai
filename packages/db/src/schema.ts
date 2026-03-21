@@ -96,6 +96,9 @@ export const apiKeys = pgTable(
     encryptedKey: text("encrypted_key").notNull(),
     // Initialization vector for AES-256-GCM — unique per key
     iv: text("iv").notNull(),
+    // Masked version of the key for display (e.g. "••••3f7a") — derived from plaintext at creation
+    // Allows showing last-4 chars without ever decrypting the stored key
+    maskedKey: text("masked_key").notNull().default("••••"),
     createdAt: timestamp("created_at", { mode: "date" }).notNull().defaultNow(),
     updatedAt: timestamp("updated_at", { mode: "date" }).notNull().defaultNow(),
   },
