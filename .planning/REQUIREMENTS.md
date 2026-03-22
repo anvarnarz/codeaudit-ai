@@ -18,14 +18,14 @@ Complete UI redesign — delete all existing page/component/layout code and rebu
 
 ### Shared Components (COMP)
 
-- [ ] **COMP-01**: Badge component with color prop, pill shape, 11px text, colored border+bg
-- [ ] **COMP-02**: Button component with variants (primary/outline/destructive/ghost), sizes (sm/md/lg), icon support; primary uses dark text on yellow bg
-- [ ] **COMP-03**: Card component with 14px radius, surface bg, optional hover lift with accent shadow
-- [ ] **COMP-04**: SelectCard component with 2px border, selected state shows accent border + subtle bg + box-shadow
-- [ ] **COMP-05**: Input component with 10px radius, elevated bg, accent border on focus, mono option
-- [ ] **COMP-06**: HealthScore component (SVG ring, score number, letter grade, colored by threshold)
-- [ ] **COMP-07**: SeverityBar component (5 colored bars using sacred severity colors, proportional height)
-- [ ] **COMP-08**: Modal component (fixed overlay, backdrop blur, 18px radius, fade-in animation)
+- [x] **COMP-01**: Badge component with color prop, pill shape, 11px text, colored border+bg
+- [x] **COMP-02**: Button component with variants (primary/outline/destructive/ghost), sizes (sm/md/lg), icon support; primary uses dark text on yellow bg
+- [x] **COMP-03**: Card component with 14px radius, surface bg, optional hover lift with accent shadow
+- [x] **COMP-04**: SelectCard component with 2px border, selected state shows accent border + subtle bg + box-shadow
+- [x] **COMP-05**: Input component with 10px radius, elevated bg, accent border on focus, mono option
+- [x] **COMP-06**: HealthScore component (SVG ring, score number, letter grade, colored by threshold)
+- [x] **COMP-07**: SeverityBar component (5 colored bars using sacred severity colors, proportional height)
+- [x] **COMP-08**: Modal component (fixed overlay, backdrop blur, 18px radius, fade-in animation)
 
 ### Setup Wizard (SETUP)
 
@@ -129,14 +129,14 @@ Complete UI redesign — delete all existing page/component/layout code and rebu
 | DSYS-04 | Phase 5 | Complete |
 | DSYS-05 | Phase 5 | Complete |
 | DSYS-06 | Phase 5 | Complete |
-| COMP-01 | Phase 5 | Pending |
-| COMP-02 | Phase 5 | Pending |
-| COMP-03 | Phase 5 | Pending |
-| COMP-04 | Phase 5 | Pending |
-| COMP-05 | Phase 5 | Pending |
-| COMP-06 | Phase 5 | Pending |
-| COMP-07 | Phase 5 | Pending |
-| COMP-08 | Phase 5 | Pending |
+| COMP-01 | Phase 5 | Complete |
+| COMP-02 | Phase 5 | Complete |
+| COMP-03 | Phase 5 | Complete |
+| COMP-04 | Phase 5 | Complete |
+| COMP-05 | Phase 5 | Complete |
+| COMP-06 | Phase 5 | Complete |
+| COMP-07 | Phase 5 | Complete |
+| COMP-08 | Phase 5 | Complete |
 | SETUP-01 | Phase 6 | Pending |
 | SETUP-02 | Phase 6 | Pending |
 | SETUP-03 | Phase 6 | Pending |
