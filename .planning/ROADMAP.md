@@ -58,14 +58,14 @@ Plans:
 ### Phase 6: Shell & Onboarding
 **Goal**: Every user session starts correctly — first-time users land on the setup wizard, returning users land on the dashboard inside the persistent sidebar layout
 **Depends on**: Phase 5
-**Requirements**: SETUP-01, SETUP-02, SETUP-03, SETUP-04, SIDE-01, SIDE-02, SIDE-03, DASH-01, DASH-02, DASH-03
+**Requirements**: SETUP-01, SETUP-02, SETUP-03, SETUP-04, SIDE-01, SIDE-02, SIDE-03, DASH-01, DASH-02, DASH-03, DSYS-03
 **Success Criteria** (what must be TRUE):
   1. A first-time user (no API key) sees the setup wizard with the welcome step and API key step; the floating theme toggle is present on both steps
   2. After setup, the user sees the dashboard inside the sidebar layout with no setup wizard reappearing
   3. The sidebar (252px) shows logo, all 4 nav items, and highlights the active page with accent styling
   4. The theme toggle at the sidebar bottom switches themes and the segmented control reflects the current state
   5. The dashboard shows 3 quick-action cards and a recent audits table with health score rings; "View all" navigates to History
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
 - [ ] 06-01: Build setup wizard (welcome + API key steps, floating theme toggle, first-run guard)
