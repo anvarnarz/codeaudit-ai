@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Plus, History, Settings } from "lucide-react";
+import { useState, useEffect } from "react";
+import { LayoutDashboard, Plus, History, Settings, Sun, Moon } from "lucide-react";
 
 const navItems = [
   {
@@ -27,6 +28,41 @@ const navItems = [
   },
 ];
 
+function ThemeToggle() {
+  const [isDark, setIsDark] = useState(true);
+
+  useEffect(() => {
+    setIsDark(document.documentElement.classList.contains("dark"));
+  }, []);
+
+  function toggle() {
+    const next = !isDark;
+    setIsDark(next);
+    if (next) {
+      document.documentElement.classList.add("dark");
+      localStorage.setItem("theme", "dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+      localStorage.setItem("theme", "light");
+    }
+  }
+
+  return (
+    <button
+      onClick={toggle}
+      className="flex items-center gap-3 rounded-md px-3 py-2 text-sm text-muted-foreground hover:bg-accent hover:text-foreground transition-colors"
+      title={isDark ? "Switch to light mode" : "Switch to dark mode"}
+    >
+      {isDark ? (
+        <Sun className="h-4 w-4 flex-shrink-0" aria-hidden="true" />
+      ) : (
+        <Moon className="h-4 w-4 flex-shrink-0" aria-hidden="true" />
+      )}
+      {isDark ? "Light Mode" : "Dark Mode"}
+    </button>
+  );
+}
+
 export function Sidebar() {
   const pathname = usePathname();
 
@@ -34,11 +70,11 @@ export function Sidebar() {
     <aside className="flex h-full w-60 flex-col border-r border-border bg-background">
       {/* Logo */}
       <div className="flex h-14 items-center gap-2 border-b border-border px-4">
-        <div className="flex h-6 w-6 items-center justify-center rounded bg-white/10 border border-white/20">
-          <span className="text-xs font-bold text-white">CA</span>
+        <div className="flex h-6 w-6 items-center justify-center rounded bg-primary/10 border border-border">
+          <span className="text-xs font-bold text-foreground">CA</span>
         </div>
         <span className="text-sm font-semibold text-foreground tracking-wide">
-          CodeAudit
+          CodeAudit AI
         </span>
       </div>
 
@@ -56,8 +92,8 @@ export function Sidebar() {
               href={item.href}
               className={`flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors ${
                 isActive
-                  ? "bg-white/10 text-foreground font-medium"
-                  : "text-muted-foreground hover:bg-white/5 hover:text-foreground"
+                  ? "bg-accent text-foreground font-medium border border-border"
+                  : "text-muted-foreground hover:bg-accent hover:text-foreground"
               }`}
               aria-current={isActive ? "page" : undefined}
             >
@@ -67,6 +103,11 @@ export function Sidebar() {
           );
         })}
       </nav>
+
+      {/* Theme toggle */}
+      <div className="border-t border-border px-2 py-3">
+        <ThemeToggle />
+      </div>
     </aside>
   );
 }

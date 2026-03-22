@@ -30,14 +30,14 @@ export function AuditTypeCards({ value, onChange }: AuditTypeCardsProps) {
               "flex flex-col items-start gap-2 rounded-lg border p-4 text-left transition-colors",
               "hover:border-muted-foreground/50 hover:bg-accent/50",
               value === id
-                ? "border-primary bg-primary/5 ring-1 ring-primary"
-                : "border-border bg-card"
+                ? "border-primary bg-white text-black ring-2 ring-primary dark:bg-white dark:text-black"
+                : "border-zinc-300 dark:border-zinc-700 bg-card shadow-sm"
             )}
           >
-            <Icon className={cn("h-5 w-5", value === id ? "text-primary" : "text-muted-foreground")} />
+            <Icon className={cn("h-5 w-5", value === id ? "text-black dark:text-black" : "text-muted-foreground")} />
             <div>
-              <p className="text-sm font-medium leading-none">{title}</p>
-              <p className="mt-1 text-xs text-muted-foreground leading-relaxed">{description}</p>
+              <p className={cn("text-sm font-medium leading-none", value === id && "text-black dark:text-black")}>{title}</p>
+              <p className={cn("mt-1 text-xs leading-relaxed", value === id ? "text-black/70 dark:text-black/70" : "text-muted-foreground")}>{description}</p>
             </div>
           </button>
         ))}

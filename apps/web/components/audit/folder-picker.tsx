@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { FolderOpen, CheckCircle2, AlertTriangle, XCircle, Plus, Trash2 } from "lucide-react";
+import { CheckCircle2, AlertTriangle, XCircle, Plus, Trash2 } from "lucide-react";
 import { validateFolder, type FolderValidationResult } from "@/actions/folders";
 
 interface FolderPickerProps {
@@ -55,24 +55,6 @@ export function FolderPicker({ value, onChange }: FolderPickerProps) {
     onChange(newPaths, newValidations);
   }
 
-  // Browse: native folder picker (path hint only — see Pitfall 5 in RESEARCH.md)
-  function handleBrowse(index: number) {
-    const input = document.createElement("input");
-    input.type = "file";
-    // @ts-ignore — webkitdirectory is non-standard but widely supported on Chromium
-    input.webkitdirectory = true;
-    input.onchange = () => {
-      const file = input.files?.[0];
-      if (file?.webkitRelativePath) {
-        const topDir = file.webkitRelativePath.split("/")[0];
-        alert(
-          `Folder "${topDir}" selected.\n\nPlease type the full absolute path (e.g., /Users/you/Projects/${topDir}) in the input field for accurate validation.`
-        );
-      }
-    };
-    input.click();
-  }
-
   return (
     <div className="space-y-3">
       <Label className="text-sm font-medium">Target Folder{value.length > 1 ? "s" : ""}</Label>
@@ -101,15 +83,6 @@ export function FolderPicker({ value, onChange }: FolderPickerProps) {
                   </span>
                 )}
               </div>
-              <Button
-                type="button"
-                variant="outline"
-                size="icon"
-                onClick={() => handleBrowse(index)}
-                title="Browse"
-              >
-                <FolderOpen className="h-4 w-4" />
-              </Button>
               {value.length > 1 && (
                 <Button
                   type="button"

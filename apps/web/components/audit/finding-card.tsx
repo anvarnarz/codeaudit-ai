@@ -24,7 +24,7 @@ export function FindingCard({ finding }: FindingCardProps) {
     : null;
 
   return (
-    <div className="rounded-lg border bg-card p-4 flex flex-col gap-2">
+    <div className="rounded-lg border border-zinc-300 dark:border-zinc-700 bg-card p-4 flex flex-col gap-2 shadow-sm">
       {/* Header row: badge + title */}
       <div className="flex items-center gap-2 flex-wrap">
         <SeverityBadge severity={finding.severity} />

@@ -87,10 +87,10 @@ export default async function DashboardPage() {
           <Link
             key={action.href}
             href={action.href}
-            className="group rounded-lg border border-border bg-card p-5 hover:border-white/30 transition-colors"
+            className="group rounded-lg border border-zinc-300 dark:border-zinc-700 bg-card p-5 shadow-sm hover:border-zinc-400 dark:hover:border-zinc-500 hover:shadow-md transition-all"
           >
             <div className="flex items-start justify-between mb-3">
-              <div className="flex h-9 w-9 items-center justify-center rounded-lg border border-border bg-background">
+              <div className="flex h-9 w-9 items-center justify-center rounded-lg border border-zinc-300 dark:border-zinc-700 bg-background">
                 <action.icon className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
               </div>
             </div>
@@ -100,7 +100,7 @@ export default async function DashboardPage() {
         ))}
       </div>
 
-      <div className="rounded-lg border border-border">
+      <div className="rounded-lg border border-zinc-300 dark:border-zinc-700 shadow-sm">
         <div className="flex items-center justify-between px-5 py-4 border-b border-border">
           <h2 className="text-sm font-medium text-foreground">Recent audits</h2>
           <Link
@@ -120,7 +120,7 @@ export default async function DashboardPage() {
             </p>
             <Link
               href="/audit/new"
-              className="mt-4 inline-flex items-center gap-1.5 rounded-md bg-white/10 px-3 py-1.5 text-xs font-medium text-foreground hover:bg-white/15 transition-colors"
+              className="mt-4 inline-flex items-center gap-1.5 rounded-md bg-primary text-primary-foreground px-3 py-1.5 text-xs font-medium hover:bg-primary/90 transition-colors shadow-sm"
             >
               Start an audit
             </Link>
@@ -137,7 +137,7 @@ export default async function DashboardPage() {
                 <Link
                   key={audit.id}
                   href={`/audit/${audit.id}/queued`}
-                  className="flex items-center justify-between px-5 py-3.5 hover:bg-muted/30 transition-colors"
+                  className="flex items-center justify-between px-5 py-3.5 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
                 >
                   <div className="min-w-0">
                     <p className="text-sm font-medium text-foreground truncate">{audit.folderName}</p>

@@ -124,10 +124,10 @@ export function ResultsView({ auditId, audit, phases }: ResultsViewProps) {
               key={sev}
               type="button"
               onClick={() => setFilter(sev)}
-              className={`px-3 py-1 rounded text-xs font-medium transition-colors ${
+              className={`px-3 py-1 rounded text-xs font-medium transition-colors border ${
                 filter === sev
-                  ? "bg-secondary text-foreground"
-                  : "text-muted-foreground hover:text-foreground"
+                  ? "bg-white text-black border-primary ring-1 ring-primary dark:bg-white dark:text-black"
+                  : "text-muted-foreground border-transparent hover:text-foreground hover:bg-accent"
               }`}
             >
               {sev === "all" ? "All" : sev}
@@ -141,7 +141,7 @@ export function ResultsView({ auditId, audit, phases }: ResultsViewProps) {
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value as "severity" | "phase")}
-            className="ml-auto text-xs bg-background border rounded px-2 py-1"
+            className="ml-auto text-xs bg-background border border-zinc-300 dark:border-zinc-700 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-ring"
           >
             <option value="severity">Sort by severity</option>
             <option value="phase">Sort by phase</option>
@@ -170,19 +170,19 @@ export function ResultsView({ auditId, audit, phases }: ResultsViewProps) {
       <div className="flex gap-2 pt-2">
         <a
           href={`/api/audit/${auditId}/download`}
-          className="inline-flex items-center gap-1.5 rounded-md bg-secondary px-3 py-1.5 text-xs font-medium hover:bg-secondary/80 transition-colors"
+          className="inline-flex items-center gap-1.5 rounded-md bg-secondary border border-zinc-300 dark:border-zinc-700 px-3 py-1.5 text-xs font-medium hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors shadow-sm"
         >
           Download Zip
         </a>
         <a
           href={`/audit/${auditId}/executive`}
-          className="inline-flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-xs font-medium hover:bg-secondary/50 transition-colors"
+          className="inline-flex items-center gap-1.5 rounded-md border border-zinc-300 dark:border-zinc-700 px-3 py-1.5 text-xs font-medium hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
         >
           Executive Report
         </a>
         <a
           href={`/audit/${auditId}/technical`}
-          className="inline-flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-xs font-medium hover:bg-secondary/50 transition-colors"
+          className="inline-flex items-center gap-1.5 rounded-md border border-zinc-300 dark:border-zinc-700 px-3 py-1.5 text-xs font-medium hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
         >
           Technical Report
         </a>

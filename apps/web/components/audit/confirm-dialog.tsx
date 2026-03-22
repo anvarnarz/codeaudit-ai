@@ -68,7 +68,7 @@ export function ConfirmAuditDialog({
                   </>
                 )}
               </div>
-              <p className="text-xs text-muted-foreground/70 pt-2 border-t border-border">
+              <p className="text-xs text-muted-foreground/70 pt-2 border-t border-zinc-300 dark:border-zinc-700">
                 The target folder will be locked read-only during the audit and unlocked when complete.
               </p>
             </div>

@@ -74,14 +74,14 @@ export default async function HistoryPage() {
       </div>
 
       {rows.length === 0 ? (
-        <div className="flex flex-col items-center justify-center rounded-lg border border-border py-16 text-center">
+        <div className="flex flex-col items-center justify-center rounded-lg border border-zinc-300 dark:border-zinc-700 py-16 text-center shadow-sm">
           <p className="text-sm text-muted-foreground">No audits yet.</p>
           <p className="text-xs text-muted-foreground/60 mt-1">
             Run your first audit to see results here.
           </p>
           <Link
             href="/audit/new"
-            className="mt-4 inline-flex items-center gap-1.5 rounded-md bg-white/10 px-3 py-1.5 text-xs font-medium text-foreground hover:bg-white/15 transition-colors"
+            className="mt-4 inline-flex items-center gap-1.5 rounded-md bg-primary text-primary-foreground px-3 py-1.5 text-xs font-medium hover:bg-primary/90 transition-colors shadow-sm"
           >
             Start an audit
           </Link>
@@ -96,7 +96,7 @@ export default async function HistoryPage() {
             return (
               <div
                 key={folderPath}
-                className="rounded-lg border border-border divide-y divide-border/50 mb-4"
+                className="rounded-lg border border-zinc-300 dark:border-zinc-700 divide-y divide-border/50 mb-4 shadow-sm"
               >
                 {/* Folder header */}
                 <div className="px-5 py-3 bg-muted/20 flex items-center justify-between">
@@ -124,7 +124,7 @@ export default async function HistoryPage() {
                     <Link
                       key={audit.id}
                       href={`/audit/${audit.id}/results`}
-                      className="flex items-center justify-between px-5 py-3.5 hover:bg-muted/30 transition-colors"
+                      className="flex items-center justify-between px-5 py-3.5 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
                     >
                       <div className="min-w-0">
                         <p className="text-xs text-muted-foreground">
@@ -155,7 +155,7 @@ export default async function HistoryPage() {
                   <div className="px-5 py-3 flex justify-end">
                     <Link
                       href={`/audit/compare?a=${latest.id}&b=${previous!.id}`}
-                      className="inline-flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-xs font-medium hover:bg-secondary/50 transition-colors"
+                      className="inline-flex items-center gap-1.5 rounded-md border border-zinc-300 dark:border-zinc-700 px-3 py-1.5 text-xs font-medium hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
                     >
                       Compare latest two
                     </Link>

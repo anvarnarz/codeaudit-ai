@@ -45,7 +45,7 @@ function DeleteConfirmDialog({
 }) {
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div className="bg-card border border-border rounded-lg p-6 max-w-sm w-full mx-4 shadow-xl">
+      <div className="bg-card border border-zinc-300 dark:border-zinc-700 rounded-lg p-6 max-w-sm w-full mx-4 shadow-xl">
         <h3 className="text-base font-semibold text-foreground">Delete API Key</h3>
         <p className="mt-2 text-sm text-muted-foreground">
           Are you sure you want to delete{" "}
@@ -56,7 +56,7 @@ function DeleteConfirmDialog({
           <button
             onClick={onCancel}
             disabled={isPending}
-            className="px-3 py-1.5 text-sm rounded border border-border hover:bg-accent transition-colors disabled:opacity-50"
+            className="px-3 py-1.5 text-sm rounded border border-zinc-300 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors disabled:opacity-50"
           >
             Cancel
           </button>
@@ -109,7 +109,7 @@ function AddKeyForm({
   }
 
   return (
-    <form onSubmit={handleSubmit} className="mt-3 space-y-3 p-4 border border-border rounded-lg bg-muted/30">
+    <form onSubmit={handleSubmit} className="mt-3 space-y-3 p-4 border border-zinc-300 dark:border-zinc-700 rounded-lg bg-muted/30">
       <div>
         <label className="block text-xs font-medium text-muted-foreground mb-1">
           Label
@@ -121,7 +121,7 @@ function AddKeyForm({
           placeholder="e.g. Personal, Work"
           maxLength={64}
           required
-          className="w-full px-3 py-1.5 text-sm rounded border border-border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring"
+          className="w-full px-3 py-1.5 text-sm rounded border border-zinc-300 dark:border-zinc-700 bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
         />
       </div>
 
@@ -153,7 +153,7 @@ function AddKeyForm({
           type="button"
           onClick={onCancel}
           disabled={isPending}
-          className="px-3 py-1.5 text-sm rounded border border-border hover:bg-accent transition-colors disabled:opacity-50"
+          className="px-3 py-1.5 text-sm rounded border border-zinc-300 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors disabled:opacity-50"
         >
           Cancel
         </button>
@@ -216,7 +216,7 @@ function EditLabelForm({
         maxLength={64}
         required
         autoFocus
-        className="px-2 py-1 text-sm rounded border border-border bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-ring w-40"
+        className="px-2 py-1 text-sm rounded border border-zinc-300 dark:border-zinc-700 bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-ring w-40"
       />
       <button
         type="submit"
@@ -343,9 +343,9 @@ function ProviderSection({
   const [showAddForm, setShowAddForm] = useState(false);
 
   return (
-    <div className="border border-border rounded-lg overflow-hidden">
+    <div className="border border-zinc-300 dark:border-zinc-700 rounded-lg overflow-hidden shadow-sm">
       {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3 bg-muted/30 border-b border-border">
+      <div className="flex items-center justify-between px-4 py-3 bg-muted/30 border-b border-zinc-300 dark:border-zinc-700">
         <div>
           <h3 className="text-sm font-semibold text-foreground">{provider.label}</h3>
           <p className="text-xs text-muted-foreground mt-0.5">
@@ -356,7 +356,7 @@ function ProviderSection({
         </div>
         <button
           onClick={() => setShowAddForm(true)}
-          className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs rounded border border-border bg-background hover:bg-accent transition-colors"
+          className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs rounded border border-zinc-300 dark:border-zinc-700 bg-background hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
         >
           <Plus className="h-3.5 w-3.5" />
           Add key

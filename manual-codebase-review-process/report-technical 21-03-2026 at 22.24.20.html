@@ -1,0 +1,1342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Technical Audit Report — mohirdev-landing</title>
+<style>
+  :root {
+    --bg: #0d1117;
+    --card: #161b22;
+    --border: #21262d;
+    --critical: #f85149;
+    --high: #ff7b72;
+    --warning: #d29922;
+    --good: #3fb950;
+    --info: #58a6ff;
+    --muted: #8b949e;
+    --text: #e6edf3;
+    --text-secondary: #c9d1d9;
+    --sidebar-w: 260px;
+    --mono: 'SFMono-Regular', 'Consolas', 'Liberation Mono', 'Menlo', monospace;
+  }
+  /* Light theme overrides */
+  [data-theme="light"] {
+    --bg: #f6f8fa;
+    --card: #ffffff;
+    --border: #d0d7de;
+    --text: #1f2328;
+    --text-secondary: #656d76;
+    --muted: #656d76;
+    --critical: #cf222e;
+    --high: #bc4c00;
+    --warning: #9a6700;
+    --good: #1a7f37;
+    --info: #0969da;
+  }
+  [data-theme="light"] .nav-item:hover { background: rgba(0,0,0,.04); }
+  [data-theme="light"] .finding-header:hover { background: rgba(0,0,0,.03); }
+  [data-theme="light"] tr:hover td { background: rgba(0,0,0,.02); }
+  [data-theme="light"] .nav-item.active { background: rgba(9,105,218,.06); }
+  [data-theme="light"] code { background: rgba(9,105,218,.08); }
+  [data-theme="light"] .filepath { background: rgba(9,105,218,.06); }
+  [data-theme="light"] .sev-critical { background: rgba(207,34,46,.08); border-color: rgba(207,34,46,.25); }
+  [data-theme="light"] .sev-high { background: rgba(188,76,0,.08); border-color: rgba(188,76,0,.2); }
+  [data-theme="light"] .sev-medium { background: rgba(154,103,0,.08); border-color: rgba(154,103,0,.2); }
+  [data-theme="light"] .sev-low { background: rgba(26,127,55,.06); border-color: rgba(26,127,55,.15); }
+  [data-theme="light"] .sev-info { background: rgba(9,105,218,.06); border-color: rgba(9,105,218,.15); }
+  [data-theme="light"] .alert-critical { background: rgba(207,34,46,.05); border-color: rgba(207,34,46,.2); }
+  [data-theme="light"] .alert-high { background: rgba(188,76,0,.05); border-color: rgba(188,76,0,.15); }
+  [data-theme="light"] .alert-warning { background: rgba(154,103,0,.05); border-color: rgba(154,103,0,.15); }
+  [data-theme="light"] .alert-good { background: rgba(26,127,55,.05); border-color: rgba(26,127,55,.15); }
+  [data-theme="light"] .effort-low { background: rgba(26,127,55,.08); }
+  [data-theme="light"] .effort-medium { background: rgba(154,103,0,.08); }
+  [data-theme="light"] .effort-high { background: rgba(9,105,218,.08); }
+  [data-theme="light"] .report-header .badge { background: rgba(207,34,46,.06); border-color: rgba(207,34,46,.25); }
+  [data-theme="light"] .finding-body .field-value.mono { background: #f6f8fa; border-color: #d0d7de; }
+  [data-theme="light"] .finding-category { background: #f6f8fa; }
+  [data-theme="light"] .remediation li::before { color: #ffffff; }
+  [data-theme="light"] #sidebar { box-shadow: 1px 0 3px rgba(0,0,0,.06); }
+  [data-theme="light"] ::-webkit-scrollbar-thumb { background: #c0c8d0; }
+  [data-theme="light"] ::-webkit-scrollbar-thumb:hover { background: #8b949e; }
+
+  /* Theme toggle switch */
+  .theme-toggle {
+    display: flex; align-items: center; gap: 8px;
+    margin-left: auto; flex-shrink: 0;
+  }
+  .theme-switch {
+    position: relative; width: 40px; height: 22px;
+    background: var(--border); border-radius: 11px;
+    cursor: pointer; border: none; padding: 0;
+    transition: background .25s ease;
+  }
+  .theme-switch::after {
+    content: ''; position: absolute; top: 2px; left: 2px;
+    width: 18px; height: 18px; border-radius: 50%;
+    background: var(--text); transition: transform .25s ease;
+  }
+  .theme-switch[aria-checked="true"] { background: var(--info); }
+  .theme-switch[aria-checked="true"]::after { transform: translateX(18px); background: #ffffff; }
+  .theme-icon { font-size: 14px; line-height: 1; user-select: none; }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 14px; line-height: 1.6; }
+
+  /* Sidebar */
+  #sidebar {
+    position: fixed; top: 0; left: 0; width: var(--sidebar-w);
+    height: 100vh; background: var(--card); border-right: 1px solid var(--border);
+    overflow-y: auto; z-index: 100; transition: transform .25s ease;
+    display: flex; flex-direction: column;
+  }
+  #sidebar.collapsed { transform: translateX(calc(-1 * var(--sidebar-w))); }
+  .sidebar-header {
+    padding: 16px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 10px; position: sticky; top: 0;
+    background: var(--card); z-index: 1;
+  }
+  .sidebar-header .logo { width: 28px; height: 28px; background: var(--info); border-radius: 6px;
+    display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 12px; color: var(--bg); flex-shrink: 0; }
+  .sidebar-header .title { font-size: 12px; font-weight: 600; color: var(--text); }
+  .sidebar-header .subtitle { font-size: 11px; color: var(--muted); }
+  nav { padding: 8px 0; flex: 1; }
+  .nav-section { padding: 8px 16px 4px; font-size: 10px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; }
+  .nav-item {
+    display: flex; align-items: center; gap: 8px; padding: 6px 16px;
+    color: var(--muted); text-decoration: none; font-size: 13px; cursor: pointer;
+    border-left: 2px solid transparent; transition: all .15s;
+  }
+  .nav-item:hover { color: var(--text); background: rgba(255,255,255,.04); }
+  .nav-item.active { color: var(--info); border-left-color: var(--info); background: rgba(88,166,255,.06); }
+  .nav-item .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .dot-critical { background: var(--critical); }
+  .dot-high { background: var(--high); }
+  .dot-warning { background: var(--warning); }
+  .dot-good { background: var(--good); }
+  .dot-info { background: var(--info); }
+  .dot-muted { background: var(--muted); }
+
+  /* Toggle button */
+  #toggle-sidebar {
+    position: fixed; top: 14px; left: 14px; z-index: 200;
+    width: 32px; height: 32px; background: var(--card); border: 1px solid var(--border);
+    border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center;
+    color: var(--muted); transition: all .15s; display: none;
+  }
+  #toggle-sidebar:hover { color: var(--text); border-color: var(--info); }
+
+  /* Main content */
+  #main {
+    margin-left: var(--sidebar-w); padding: 32px 40px;
+    transition: margin-left .25s ease; max-width: 1100px;
+  }
+  #main.expanded { margin-left: 0; }
+
+  /* Header */
+  .report-header { margin-bottom: 40px; padding-bottom: 24px; border-bottom: 1px solid var(--border); }
+  .report-header .badge { display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px;
+    background: rgba(248,81,73,.12); border: 1px solid rgba(248,81,73,.3); border-radius: 12px;
+    font-size: 11px; color: var(--critical); font-weight: 600; margin-bottom: 12px; }
+  .report-header h1 { font-size: 28px; font-weight: 700; margin-bottom: 6px; }
+  .report-header .meta { color: var(--muted); font-size: 13px; display: flex; flex-wrap: wrap; gap: 16px; }
+  .report-header .meta span { display: flex; align-items: center; gap: 5px; }
+
+  /* Score bar */
+  .score-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 20px; margin-bottom: 32px; }
+  .score-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; margin-top: 16px; }
+  .score-item { background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 12px; }
+  .score-item .label { font-size: 11px; color: var(--muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: .05em; }
+  .score-item .value { font-size: 20px; font-weight: 700; }
+  .score-item .bar { height: 3px; background: var(--border); border-radius: 2px; margin-top: 6px; }
+  .score-item .bar-fill { height: 100%; border-radius: 2px; transition: width .6s ease; }
+  .color-critical { color: var(--critical); }
+  .color-high { color: var(--high); }
+  .color-warning { color: var(--warning); }
+  .color-good { color: var(--good); }
+  .color-info { color: var(--info); }
+  .color-muted { color: var(--muted); }
+  .fill-critical { background: var(--critical); }
+  .fill-high { background: var(--high); }
+  .fill-warning { background: var(--warning); }
+  .fill-good { background: var(--good); }
+
+  /* Sections */
+  section { margin-bottom: 48px; scroll-margin-top: 24px; }
+  .section-title {
+    font-size: 18px; font-weight: 700; margin-bottom: 16px;
+    padding-bottom: 10px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .section-title .icon { font-size: 16px; }
+  h3 { font-size: 15px; font-weight: 600; margin-bottom: 12px; color: var(--text-secondary); }
+
+  /* Cards */
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 20px; margin-bottom: 16px; }
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; margin-bottom: 20px; }
+  .stat-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 16px; }
+  .stat-card .stat-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; margin-bottom: 4px; }
+  .stat-card .stat-value { font-size: 24px; font-weight: 700; }
+  .stat-card .stat-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+  /* Severity badges */
+  .badge-sev {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: .04em; flex-shrink: 0;
+  }
+  .sev-critical { background: rgba(248,81,73,.15); color: var(--critical); border: 1px solid rgba(248,81,73,.3); }
+  .sev-high     { background: rgba(255,123,114,.12); color: var(--high); border: 1px solid rgba(255,123,114,.25); }
+  .sev-medium   { background: rgba(210,153,34,.12); color: var(--warning); border: 1px solid rgba(210,153,34,.25); }
+  .sev-low      { background: rgba(63,185,80,.1); color: var(--good); border: 1px solid rgba(63,185,80,.2); }
+  .sev-info     { background: rgba(88,166,255,.1); color: var(--info); border: 1px solid rgba(88,166,255,.2); }
+
+  /* Finding cards */
+  .finding {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    margin-bottom: 12px; overflow: hidden;
+  }
+  .finding.sev-critical-border { border-left: 3px solid var(--critical); }
+  .finding.sev-high-border { border-left: 3px solid var(--high); }
+  .finding.sev-medium-border { border-left: 3px solid var(--warning); }
+  .finding.sev-low-border { border-left: 3px solid var(--good); }
+  .finding-header {
+    display: flex; align-items: center; gap: 10px; padding: 14px 16px;
+    cursor: pointer; user-select: none; transition: background .15s;
+  }
+  .finding-header:hover { background: rgba(255,255,255,.03); }
+  .finding-title { flex: 1; font-size: 13px; font-weight: 600; color: var(--text); }
+  .finding-category { font-size: 11px; color: var(--muted); padding: 2px 7px; background: var(--bg); border-radius: 4px; border: 1px solid var(--border); }
+  .finding-chevron { color: var(--muted); transition: transform .2s; font-size: 12px; flex-shrink: 0; }
+  .finding-chevron.open { transform: rotate(90deg); }
+  .finding-body { padding: 0 16px 16px; border-top: 1px solid var(--border); display: none; }
+  .finding-body.open { display: block; }
+  .finding-body .field { margin-top: 12px; }
+  .finding-body .field-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; margin-bottom: 4px; }
+  .finding-body .field-value { font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
+  .finding-body .field-value.mono { font-family: var(--mono); font-size: 12px; background: var(--bg); padding: 8px 10px; border-radius: 4px; border: 1px solid var(--border); overflow-x: auto; }
+
+  /* Code ref */
+  code { font-family: var(--mono); font-size: 12px; background: rgba(88,166,255,.1); padding: 1px 5px; border-radius: 3px; color: var(--info); }
+  .filepath { font-family: var(--mono); font-size: 12px; color: var(--info); background: rgba(88,166,255,.08); padding: 2px 6px; border-radius: 3px; display: inline-flex; align-items: center; gap: 4px; }
+
+  /* Table */
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th { text-align: left; padding: 8px 12px; background: var(--bg); border-bottom: 1px solid var(--border); color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: .05em; font-weight: 600; }
+  td { padding: 10px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(255,255,255,.02); }
+
+  /* Progress bar */
+  .prog { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
+  .prog-fill { height: 100%; border-radius: 3px; }
+
+  /* Alert box */
+  .alert { border-radius: 6px; padding: 12px 14px; margin-bottom: 12px; font-size: 13px; display: flex; gap: 10px; align-items: flex-start; }
+  .alert-critical { background: rgba(248,81,73,.08); border: 1px solid rgba(248,81,73,.25); }
+  .alert-high     { background: rgba(255,123,114,.07); border: 1px solid rgba(255,123,114,.2); }
+  .alert-warning  { background: rgba(210,153,34,.07); border: 1px solid rgba(210,153,34,.2); }
+  .alert-good     { background: rgba(63,185,80,.07); border: 1px solid rgba(63,185,80,.2); }
+  .alert .alert-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+
+  /* Remediation list */
+  .remediation { counter-reset: step; }
+  .remediation li { counter-increment: step; list-style: none; display: flex; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 13px; align-items: flex-start; }
+  .remediation li:last-child { border-bottom: none; }
+  .remediation li::before { content: counter(step); min-width: 22px; height: 22px; background: var(--info); color: var(--bg); border-radius: 50%; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+  .effort { display: inline-flex; align-items: center; padding: 1px 7px; border-radius: 10px; font-size: 11px; font-weight: 600; flex-shrink: 0; }
+  .effort-low    { background: rgba(63,185,80,.12); color: var(--good); }
+  .effort-medium { background: rgba(210,153,34,.12); color: var(--warning); }
+  .effort-high   { background: rgba(88,166,255,.12); color: var(--info); }
+
+  /* DORA */
+  .dora-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  .dora-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 16px; text-align: center; }
+  .dora-card .dora-metric { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; margin-bottom: 8px; }
+  .dora-card .dora-value { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+  .dora-card .dora-tier { font-size: 11px; font-weight: 600; }
+
+  /* Collapsible group */
+  .group-toggle { cursor: pointer; user-select: none; display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+  .group-toggle:hover .group-chevron { color: var(--text); }
+  .group-chevron { color: var(--muted); transition: transform .2s; font-size: 12px; }
+  .group-chevron.open { transform: rotate(90deg); }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    #sidebar { transform: translateX(calc(-1 * var(--sidebar-w))); }
+    #sidebar.mobile-open { transform: translateX(0); }
+    #main { margin-left: 0; padding: 20px 16px; }
+    #toggle-sidebar { display: flex; }
+    .dora-grid { grid-template-columns: repeat(2, 1fr); }
+    .card-grid { grid-template-columns: 1fr 1fr; }
+    .score-grid { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 480px) {
+    .dora-grid { grid-template-columns: 1fr 1fr; }
+    .card-grid { grid-template-columns: 1fr; }
+  }
+
+  /* Tooltip */
+  [title] { cursor: help; }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+
+  /* Print */
+  @media print {
+    #sidebar, #toggle-sidebar { display: none !important; }
+    #main { margin-left: 0 !important; }
+    .finding-body { display: block !important; }
+  }
+</style>
+</head>
+<body>
+
+<button id="toggle-sidebar" onclick="toggleSidebar()" title="Toggle navigation">☰</button>
+
+<nav id="sidebar">
+  <div class="sidebar-header">
+    <div class="logo">MD</div>
+    <div>
+      <div class="title">mohirdev-landing</div>
+      <div class="subtitle">Technical Audit · 2026-03-21</div>
+    </div>
+    <div class="theme-toggle">
+      <span class="theme-icon" id="theme-icon">🌙</span>
+      <button class="theme-switch" id="theme-switch" role="switch" aria-checked="false" aria-label="Toggle light mode" onclick="toggleTheme()"></button>
+    </div>
+  </div>
+  <nav>
+    <div class="nav-section">Overview</div>
+    <a class="nav-item active" onclick="scrollTo('architecture')"><span class="dot dot-info"></span>Architecture</a>
+    <div class="nav-section">Security</div>
+    <a class="nav-item" onclick="scrollTo('sec-critical')"><span class="dot dot-critical"></span>Critical (4)</a>
+    <a class="nav-item" onclick="scrollTo('sec-high')"><span class="dot dot-high"></span>High (8)</a>
+    <a class="nav-item" onclick="scrollTo('sec-medium')"><span class="dot dot-warning"></span>Medium (15)</a>
+    <a class="nav-item" onclick="scrollTo('sec-low')"><span class="dot dot-good"></span>Low &amp; Info</a>
+    <div class="nav-section">Quality</div>
+    <a class="nav-item" onclick="scrollTo('tests')"><span class="dot dot-critical"></span>Test Coverage</a>
+    <a class="nav-item" onclick="scrollTo('quality')"><span class="dot dot-good"></span>Code Quality</a>
+    <div class="nav-section">Process</div>
+    <a class="nav-item" onclick="scrollTo('git')"><span class="dot dot-warning"></span>Git &amp; Team</a>
+    <a class="nav-item" onclick="scrollTo('deps')"><span class="dot dot-warning"></span>Dependencies</a>
+    <a class="nav-item" onclick="scrollTo('cicd')"><span class="dot dot-warning"></span>CI/CD</a>
+    <a class="nav-item" onclick="scrollTo('docs')"><span class="dot dot-critical"></span>Documentation</a>
+    <div class="nav-section">Actions</div>
+    <a class="nav-item" onclick="scrollTo('roadmap')"><span class="dot dot-info"></span>Remediation</a>
+  </nav>
+</nav>
+
+<main id="main">
+
+  <!-- Header -->
+  <div class="report-header">
+    <div class="badge">⚠ Critical Security Issues Found</div>
+    <h1>Technical Audit Report</h1>
+    <div class="meta">
+      <span>📦 mohirdev-landing</span>
+      <span>🔗 github.com/Mohirdevelopers/mohirdev-landing</span>
+      <span>📅 2026-03-21</span>
+      <span>🔖 HEAD: 83b6902</span>
+      <span>👤 Automated audit · Claude Code</span>
+    </div>
+  </div>
+
+  <!-- Health Score -->
+  <div class="score-card">
+    <h3 style="margin-bottom:4px;">Overall Health Score</h3>
+    <div style="font-size:11px;color:var(--muted);margin-bottom:16px;">Composite score across all audit dimensions</div>
+    <div style="display:flex;align-items:center;gap:20px;margin-bottom:20px;">
+      <div style="font-size:56px;font-weight:800;color:var(--warning);line-height:1;">4.5</div>
+      <div>
+        <div style="font-size:14px;color:var(--text-secondary);font-weight:600;">Needs Significant Work</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:4px;">Strong delivery velocity, but critical security issues<br>and zero test coverage require immediate attention.</div>
+      </div>
+    </div>
+    <div class="score-grid">
+      <div class="score-item"><div class="label">Security</div><div class="value color-critical">2/10</div><div class="bar"><div class="bar-fill fill-critical" style="width:20%"></div></div></div>
+      <div class="score-item"><div class="label">Test Coverage</div><div class="value color-critical">2/10</div><div class="bar"><div class="bar-fill fill-critical" style="width:20%"></div></div></div>
+      <div class="score-item"><div class="label">Documentation</div><div class="value color-critical">3/10</div><div class="bar"><div class="bar-fill fill-critical" style="width:30%"></div></div></div>
+      <div class="score-item"><div class="label">Dependency Health</div><div class="value color-warning">4/10</div><div class="bar"><div class="bar-fill fill-warning" style="width:40%"></div></div></div>
+      <div class="score-item"><div class="label">CI/CD</div><div class="value color-warning">5/10</div><div class="bar"><div class="bar-fill fill-warning" style="width:50%"></div></div></div>
+      <div class="score-item"><div class="label">Architecture</div><div class="value color-good">7/10</div><div class="bar"><div class="bar-fill fill-good" style="width:70%"></div></div></div>
+      <div class="score-item"><div class="label">Code Quality</div><div class="value color-good">7/10</div><div class="bar"><div class="bar-fill fill-good" style="width:70%"></div></div></div>
+      <div class="score-item"><div class="label">Team &amp; Process</div><div class="value color-good">7/10</div><div class="bar"><div class="bar-fill fill-good" style="width:70%"></div></div></div>
+      <div class="score-item"><div class="label">Delivery Velocity</div><div class="value color-good">9/10</div><div class="bar"><div class="bar-fill fill-good" style="width:90%"></div></div></div>
+    </div>
+  </div>
+
+  <!-- Finding summary -->
+  <div class="card" style="margin-bottom:32px;">
+    <h3 style="margin-bottom:16px;">Finding Summary</h3>
+    <table>
+      <thead><tr><th>Severity</th><th>Count</th><th>Distribution</th></tr></thead>
+      <tbody>
+        <tr><td><span class="badge-sev sev-critical">Critical</span></td><td style="font-weight:700;color:var(--critical);">4</td><td style="min-width:200px;"><div class="prog"><div class="prog-fill fill-critical" style="width:8.5%"></div></div></td></tr>
+        <tr><td><span class="badge-sev sev-high">High</span></td><td style="font-weight:700;color:var(--high);">8</td><td><div class="prog"><div class="prog-fill" style="width:17%;background:var(--high)"></div></div></td></tr>
+        <tr><td><span class="badge-sev sev-medium">Medium</span></td><td style="font-weight:700;color:var(--warning);">15</td><td><div class="prog"><div class="prog-fill fill-warning" style="width:32%"></div></div></td></tr>
+        <tr><td><span class="badge-sev sev-low">Low</span></td><td style="font-weight:700;color:var(--good);">6</td><td><div class="prog"><div class="prog-fill fill-good" style="width:12.7%"></div></div></td></tr>
+        <tr><td><span class="badge-sev sev-info">Info</span></td><td style="font-weight:700;color:var(--info);">14</td><td><div class="prog"><div class="prog-fill" style="width:29.8%;background:var(--info)"></div></div></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ==================== SECTION 1: ARCHITECTURE ==================== -->
+  <section id="architecture">
+    <div class="section-title"><span class="icon">🏗</span>1. Architecture Overview</div>
+
+    <div class="card-grid">
+      <div class="stat-card"><div class="stat-label">Total Files</div><div class="stat-value color-info">226</div><div class="stat-sub">127 .astro · 86 .ts · 8 .tsx · 5 .js</div></div>
+      <div class="stat-card"><div class="stat-label">Lines of Code</div><div class="stat-value">7,860</div><div class="stat-sub">19,622 incl. test/config</div></div>
+      <div class="stat-card"><div class="stat-label">Framework</div><div class="stat-value color-info">Astro 4.x</div><div class="stat-sub">Static output · Vercel deploy</div></div>
+      <div class="stat-card"><div class="stat-label">Repository Files</div><div class="stat-value">19</div><div class="stat-sub">API call abstraction layer</div></div>
+    </div>
+
+    <div class="card">
+      <h3>Stack</h3>
+      <table>
+        <thead><tr><th>Layer</th><th>Technology</th><th>Version</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td>Framework</td><td>Astro</td><td><code>^4.13.1</code></td><td>Static site generator, islands architecture</td></tr>
+          <tr><td>Language</td><td>TypeScript</td><td>ESNext target</td><td>Strict null checks enabled</td></tr>
+          <tr><td>UI Islands</td><td>React</td><td><code>18.3.1</code></td><td>Interactive components only</td></tr>
+          <tr><td>Styling</td><td>Tailwind CSS</td><td>Latest</td><td>Via @astrojs/tailwind</td></tr>
+          <tr><td>State</td><td>nanostores</td><td><code>0.10.3</code></td><td>Lightweight cross-island state</td></tr>
+          <tr><td>HTTP client</td><td>wretch</td><td><code>2.9.0</code></td><td>Fetch wrapper with retry middleware</td></tr>
+          <tr><td>Deployment</td><td>Vercel</td><td>—</td><td>Auto-deploy on push to main</td></tr>
+          <tr><td>Node runtime</td><td>Node.js</td><td>v20.15.1</td><td>.nvmrc pinned, engines ≥18.12</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <h3>Directory Structure</h3>
+      <div style="font-family:var(--mono);font-size:12px;color:var(--text-secondary);background:var(--bg);padding:16px;border-radius:6px;border:1px solid var(--border);line-height:2;">
+        <span style="color:var(--info);">src/</span><br>
+        &nbsp;&nbsp;<span style="color:var(--text);">pages/</span> <span style="color:var(--muted);">— route pages (blog, courses, certificate, kasblar, kurslar, search)</span><br>
+        &nbsp;&nbsp;<span style="color:var(--text);">components/</span> <span style="color:var(--muted);">— organized by domain (blog, course, practicum, placement-quiz, widgets, common)</span><br>
+        &nbsp;&nbsp;<span style="color:var(--text);">repositories/</span> <span style="color:var(--muted);">— 19 files, API data fetching abstraction layer</span><br>
+        &nbsp;&nbsp;<span style="color:var(--text);">store/</span> <span style="color:var(--muted);">— nanostores for cross-island state (user, theme)</span><br>
+        &nbsp;&nbsp;<span style="color:var(--text);">scripts/</span> <span style="color:var(--muted);">— vanilla DOM interaction scripts (courses.ts, etc.)</span><br>
+        &nbsp;&nbsp;<span style="color:var(--text);">utils/</span> <span style="color:var(--muted);">— shared utilities (request.ts, cookie.ts, coupon.ts)</span><br>
+        &nbsp;&nbsp;<span style="color:var(--text);">layouts/</span> <span style="color:var(--muted);">— PageLayout.astro (base layout)</span><br>
+        &nbsp;&nbsp;<span style="color:var(--text);">types.ts</span> <span style="color:var(--muted);">— 735 lines, de-facto data model documentation</span><br>
+        &nbsp;&nbsp;<span style="color:var(--text);">data.js</span> <span style="color:var(--muted);">— 1,083 lines, monolithic static data (header, footer, FAQ)</span><br>
+        <span style="color:var(--info);">e2e-tests/</span> <span style="color:var(--muted);">— Playwright tests (6 specs, configured)</span><br>
+        <span style="color:var(--warning);">e2e-support/</span> <span style="color:var(--muted);">— 3 specs NOT in playwright.config.ts testDir</span><br>
+        <span style="color:var(--info);">cucumber-e2e-tests/</span> <span style="color:var(--muted);">— BDD tests (4 features, 1 step definition)</span><br>
+        <span style="color:var(--info);">.github/workflows/</span> <span style="color:var(--muted);">— 6 workflows (pr, release, e2e, enforce-labels, etc.)</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Architectural Patterns</h3>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <div>
+          <div style="font-size:12px;color:var(--good);font-weight:600;margin-bottom:8px;">✓ Strengths</div>
+          <ul style="list-style:none;font-size:13px;color:var(--text-secondary);">
+            <li style="padding:4px 0;border-bottom:1px solid var(--border);">Islands architecture keeps bundle lean</li>
+            <li style="padding:4px 0;border-bottom:1px solid var(--border);">Repository pattern abstracts all API calls</li>
+            <li style="padding:4px 0;border-bottom:1px solid var(--border);">TypeScript strict mode enabled</li>
+            <li style="padding:4px 0;border-bottom:1px solid var(--border);">Static output = minimal attack surface</li>
+            <li style="padding:4px 0;">Very low code duplication (0.79%)</li>
+          </ul>
+        </div>
+        <div>
+          <div style="font-size:12px;color:var(--warning);font-weight:600;margin-bottom:8px;">⚠ Concerns</div>
+          <ul style="list-style:none;font-size:13px;color:var(--text-secondary);">
+            <li style="padding:4px 0;border-bottom:1px solid var(--border);">Mixed paradigm: vanilla DOM + React islands</li>
+            <li style="padding:4px 0;border-bottom:1px solid var(--border);"><code>data.js</code> monolith (1,083 lines)</li>
+            <li style="padding:4px 0;border-bottom:1px solid var(--border);">8 components &gt; 250 LOC</li>
+            <li style="padding:4px 0;border-bottom:1px solid var(--border);">No server/client API client separation</li>
+            <li style="padding:4px 0;">No lock file — non-deterministic builds</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== SECTION 2: SECURITY ==================== -->
+  <section id="sec-critical">
+    <div class="section-title"><span class="icon">🔴</span>2a. Security — Critical Findings</div>
+
+    <div class="alert alert-critical">
+      <span class="alert-icon">🚨</span>
+      <div><strong>Immediate action required.</strong> These 4 findings represent active security risks. The production API token is publicly visible to every website visitor, and all production secrets have been committed to version control since February 2023.</div>
+    </div>
+
+    <!-- C1 -->
+    <div class="finding sev-critical-border">
+      <div class="finding-header" onclick="toggleFinding(this)">
+        <span class="badge-sev sev-critical">Critical</span>
+        <span class="finding-title">Production &amp; Development .env Files Committed to Git</span>
+        <span class="finding-category">Secrets</span>
+        <span class="finding-chevron">▶</span>
+      </div>
+      <div class="finding-body">
+        <div class="field"><div class="field-label">Files</div>
+          <div class="field-value mono">.env.production (line 15: ASTRO_TOKEN)<br>.env.development (line 19: ASTRO_TOKEN as JWT)<br>.env.production (line 14: PUBLIC_MIXPANEL_TOKEN)<br>.env.production (line 13: VITE_RECAPTCHA_V3_KEY)<br>.env.production (line 12: PUBLIC_GTM_ID)</div></div>
+        <div class="field"><div class="field-label">Finding</div>
+          <div class="field-value">Both <code>.env.production</code> and <code>.env.development</code> are committed to version control and have been since commit <code>99303393</code> in February 2023. The <code>.gitignore</code> only excludes <code>.env.local</code>, not the production or development env files. All production credentials — API tokens, reCAPTCHA keys, GTM IDs, Mixpanel tokens — are readable by anyone with repository access.</div></div>
+        <div class="field"><div class="field-label">Attack Vector</div>
+          <div class="field-value">Any team member, contractor, or third party with read access to the repository has all production credentials. If the repository is ever made public or leaked, all credentials are immediately compromised. Even after removal from the current HEAD, secrets persist in git history forever unless history is rewritten.</div></div>
+        <div class="field"><div class="field-label">Remediation</div>
+          <div class="field-value mono">1. Rotate ALL secrets immediately (ASTRO_TOKEN, Mixpanel, reCAPTCHA, GTM)<br>2. Add to .gitignore: .env.production, .env.development, .env.staging<br>3. Run: git filter-repo --invert-paths --path .env.production --path .env.development<br>   OR treat the repository as permanently compromised<br>4. Move secrets to GitHub Actions secrets or a secrets manager (Vault, AWS Secrets Manager)</div></div>
+      </div>
+    </div>
+
+    <!-- C2 -->
+    <div class="finding sev-critical-border">
+      <div class="finding-header" onclick="toggleFinding(this)">
+        <span class="badge-sev sev-critical">Critical</span>
+        <span class="finding-title">ASTRO_TOKEN Compiled Into Client-Side JavaScript Bundle</span>
+        <span class="finding-category">Secrets · Auth</span>
+        <span class="finding-chevron">▶</span>
+      </div>
+      <div class="finding-body">
+        <div class="field"><div class="field-label">File</div>
+          <div class="field-value mono">src/utils/request.ts line 8<br>src/components/practicum/PracticumPricing.astro lines 219–222 (client import)<br>src/components/course/CoursePricing.astro (client import)<br>src/components/blog/BlogCategories.astro (client import)</div></div>
+        <div class="field"><div class="field-label">Finding</div>
+          <div class="field-value"><code>request.ts</code> sets <code>'x-astro-token': String(import.meta.env.ASTRO_TOKEN)</code> as a header on every API request. This file is imported inside client-side <code>&lt;script&gt;</code> blocks in multiple components. In Astro/Vite, <code>import.meta.env.ASTRO_TOKEN</code> (without the <code>PUBLIC_</code> prefix) is intended for server-only use — but because the file is bundled into browser JavaScript, the token value is inlined into the client bundle and is visible to every visitor via browser DevTools → Sources or by inspecting the JS bundle.</div></div>
+        <div class="field"><div class="field-label">Attack Vector</div>
+          <div class="field-value">Any visitor opens DevTools → Network tab, copies the <code>x-astro-token</code> header value from any API request, and can then make arbitrary authenticated API calls to the backend as the landing application. This bypasses any API-level access controls that rely on this token, including access to internal endpoints not intended for public use.</div></div>
+        <div class="field"><div class="field-label">Remediation</div>
+          <div class="field-value mono">1. Create two separate API clients:<br>   - server-request.ts (used in .astro frontmatter, includes ASTRO_TOKEN)<br>   - client-request.ts (used in &lt;script&gt; blocks, no token — auth via cookie only)<br>2. Move any requests requiring ASTRO_TOKEN to Astro's server-side data fetching<br>3. Rotate ASTRO_TOKEN after fix</div></div>
+      </div>
+    </div>
+
+    <!-- C3 -->
+    <div class="finding sev-critical-border">
+      <div class="finding-header" onclick="toggleFinding(this)">
+        <span class="badge-sev sev-critical">Critical</span>
+        <span class="finding-title">Password Field Explicitly Requested in Frontend User Profile Fetch</span>
+        <span class="finding-category">Data Protection</span>
+        <span class="finding-chevron">▶</span>
+      </div>
+      <div class="finding-body">
+        <div class="field"><div class="field-label">File</div>
+          <div class="field-value mono">src/repositories/authRepository.ts line 13</div></div>
+        <div class="field"><div class="field-label">Finding</div>
+          <div class="field-value">The <code>userSelect</code> array includes <code>'password'</code> as a field to fetch from the <code>/users/{id}</code> endpoint. This runs on every authenticated page load via client-side JavaScript. If the backend honors this field selector, the password hash (or in a worst case, plaintext password) is transmitted to the browser and stored in JavaScript memory where it is accessible to any XSS payload, malicious browser extension, or network observer.</div></div>
+        <div class="field"><div class="field-label">Attack Vector</div>
+          <div class="field-value">An attacker with any XSS vector (e.g., via the <code>course.description innerHTML</code> vulnerability) can read the password value from the API response or from the nanostores user state and exfiltrate it. Even without XSS, the password is visible in the browser's Network tab to anyone with physical access to the machine.</div></div>
+        <div class="field"><div class="field-label">Remediation</div>
+          <div class="field-value mono">Remove from userSelect array in authRepository.ts:<br>  - 'password'<br>  - 'pinfl'  (Uzbek national ID — equivalent to SSN)<br>  - 'resetId' (password reset token — allows account takeover via XSS)<br>  - 'telegramChatId' (unnecessary PII)</div></div>
+      </div>
+    </div>
+
+    <!-- C4 -->
+    <div class="finding sev-critical-border">
+      <div class="finding-header" onclick="toggleFinding(this)">
+        <span class="badge-sev sev-critical">Critical</span>
+        <span class="finding-title">Public Coupon Endpoint Exposes User PII (userPhones, usersWhoUsed)</span>
+        <span class="finding-category">Data Protection · API Security</span>
+        <span class="finding-chevron">▶</span>
+      </div>
+      <div class="finding-body">
+        <div class="field"><div class="field-label">File</div>
+          <div class="field-value mono">src/repositories/couponRepository.ts lines 13–29 (publicCouponFields array)</div></div>
+        <div class="field"><div class="field-label">Finding</div>
+          <div class="field-value">The <code>/coupons/public</code> endpoint is called with a <code>select</code> field list that includes <code>userPhones</code>, <code>usersWhoUsed</code>, <code>userIds</code>, <code>creatorId</code>, <code>creator</code>, <code>comments</code>, <code>usageLimit</code>, <code>perUserUsageLimit</code>, and <code>affiliate</code>. This is far more data than a UI requires to display a coupon discount. The endpoint is unauthenticated — any visitor can fetch it.</div></div>
+        <div class="field"><div class="field-label">Attack Vector</div>
+          <div class="field-value">Any unauthenticated user opens the browser network tab and reads: (1) a list of phone numbers associated with restricted coupons — PII leak; (2) the number of users who have claimed a coupon — competitive intelligence about sales volume; (3) affiliate relationships — internal business metadata. A scripted attacker can enumerate all coupons and harvest this data in bulk.</div></div>
+        <div class="field"><div class="field-label">Remediation</div>
+          <div class="field-value mono">Remove from publicCouponFields: userPhones, usersWhoUsed, userIds,<br>creatorId, creator, comments, affiliate, comment<br><br>The UI only needs: code, amount, amountType, expiredAt, isActive, name<br><br>Enforce field restrictions server-side regardless of client request.</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="sec-high">
+    <div class="section-title"><span class="icon">🟠</span>2b. Security — High Severity</div>
+
+    <!-- H1 -->
+    <div class="finding sev-high-border">
+      <div class="finding-header" onclick="toggleFinding(this)">
+        <span class="badge-sev sev-high">High</span>
+        <span class="finding-title">innerHTML XSS — course.description from API Without Sanitization</span>
+        <span class="finding-category">Injection · XSS</span>
+        <span class="finding-chevron">▶</span>
+      </div>
+      <div class="finding-body">
+        <div class="field"><div class="field-label">File</div><div class="field-value mono">src/scripts/courses.ts line 193<br>cardDescription.innerHTML = course.description;</div></div>
+        <div class="field"><div class="field-label">Finding</div><div class="field-value">Course description from the API is inserted via <code>innerHTML</code> without any sanitization. If an attacker with write access to the backend CMS can inject HTML into course descriptions, arbitrary JavaScript executes on all page visitors. Combined with the <code>password</code> and <code>resetId</code> fields being fetched to the browser, an XSS attack here could harvest credentials from all logged-in users.</div></div>
+        <div class="field"><div class="field-label">Remediation</div><div class="field-value mono">Option A: Use textContent instead of innerHTML (strips all HTML)<br>Option B: npm install dompurify<br>  cardDescription.innerHTML = DOMPurify.sanitize(course.description);<br><br>Also audit: set:html directives in ommaviy-oferta/*.astro and Hero2.astro</div></div>
+      </div>
+    </div>
+
+    <!-- H2 -->
+    <div class="finding sev-high-border">
+      <div class="finding-header" onclick="toggleFinding(this)">
+        <span class="badge-sev sev-high">High</span>
+        <span class="finding-title">CSP Allows unsafe-inline and unsafe-eval — XSS Protection Negated</span>
+        <span class="finding-category">Infrastructure · CSP</span>
+        <span class="finding-chevron">▶</span>
+      </div>
+      <div class="finding-body">
+        <div class="field"><div class="field-label">File</div><div class="field-value mono">_headers — Content-Security-Policy header<br>script-src: ... 'unsafe-inline' 'unsafe-eval'</div></div>
+        <div class="field"><div class="field-label">Finding</div><div class="field-value">The CSP header is present but rendered ineffective. <code>'unsafe-inline'</code> allows all inline scripts and event handlers. <code>'unsafe-eval'</code> allows <code>eval()</code>, <code>new Function()</code>, and similar dynamic code execution. Together these negate XSS protection entirely — a CSP with both directives is equivalent to having no CSP.</div></div>
+        <div class="field"><div class="field-label">Remediation</div><div class="field-value mono">1. Remove 'unsafe-eval' entirely (identify and rewrite any eval usage)<br>2. Replace 'unsafe-inline' with nonces:<br>   script-src 'nonce-{random}' ...<br>   Astro supports nonce injection via middleware<br>3. Use strict-dynamic for third-party scripts<br>4. Test with: https://csp-evaluator.withgoogle.com/</div></div>
+      </div>
+    </div>
+
+    <!-- H3 -->
+    <div class="finding sev-high-border">
+      <div class="finding-header" onclick="toggleFinding(this)">
+        <span class="badge-sev sev-high">High</span>
+        <span class="finding-title">Client-Side JWT Decode Without Signature Verification</span>
+        <span class="finding-category">Auth</span>
+        <span class="finding-chevron">▶</span>
+      </div>
+      <div class="finding-body">
+        <div class="field"><div class="field-label">File</div><div class="field-value mono">src/components/common/AuthScript.astro lines 12–18<br>jwtDecode(m_at) → authRepository.getUser(decodedToken._id)</div></div>
+        <div class="field"><div class="field-label">Finding</div><div class="field-value">The <code>jwtDecode</code> library decodes the JWT payload without verifying the cryptographic signature. The decoded <code>_id</code> is used directly to fetch user data from the API. Security depends entirely on the backend API validating the cookie token — the frontend provides no defence-in-depth. An attacker who can set the <code>m_at</code> cookie can potentially load any user's data on the client.</div></div>
+        <div class="field"><div class="field-label">Remediation</div><div class="field-value mono">Use Astro server-side data fetching in .astro frontmatter (runs server-side).<br>The cookie is available server-side; user fetch + JWT validation should happen<br>there, passing only non-sensitive display data to client components.</div></div>
+      </div>
+    </div>
+
+    <!-- H4 -->
+    <div class="finding sev-high-border">
+      <div class="finding-header" onclick="toggleFinding(this)">
+        <span class="badge-sev sev-high">High</span>
+        <span class="finding-title">No Package Lock File — Non-Deterministic Builds + Broken Dockerfile</span>
+        <span class="finding-category">Infrastructure · Supply Chain</span>
+        <span class="finding-chevron">▶</span>
+      </div>
+      <div class="finding-body">
+        <div class="field"><div class="field-label">Evidence</div><div class="field-value mono">No package-lock.json, yarn.lock, or pnpm-lock.yaml in repo<br>.gitignore line: pnpm-lock.yaml<br>Dockerfile line 4: RUN npm ci  ← requires package-lock.json → FAILS</div></div>
+        <div class="field"><div class="field-label">Finding</div><div class="field-value">Without a lock file, every <code>npm install</code> or <code>pnpm install</code> resolves to the latest compatible version of every dependency, including transitive ones. CI builds may use different package versions than production or local developer machines. A supply chain attack via a compromised transitive dependency could be silently pulled in. The Dockerfile is completely broken as a result.</div></div>
+        <div class="field"><div class="field-label">Remediation</div><div class="field-value mono">1. Remove pnpm-lock.yaml from .gitignore<br>2. Run: pnpm install (generates pnpm-lock.yaml)<br>3. Commit pnpm-lock.yaml<br>4. Update CI: pnpm install --frozen-lockfile<br>5. Update Dockerfile: RUN pnpm install --frozen-lockfile (or use COPY pnpm-lock.yaml)</div></div>
+      </div>
+    </div>
+
+    <!-- H5 -->
+    <div class="finding sev-high-border">
+      <div class="finding-header" onclick="toggleFinding(this)">
+        <span class="badge-sev sev-high">High</span>
+        <span class="finding-title">No Tests in PR Pipeline — Code Ships Without Automated Verification</span>
+        <span class="finding-category">CI/CD · Quality</span>
+        <span class="finding-chevron">▶</span>
+      </div>
+      <div class="finding-body">
+        <div class="field"><div class="field-label">File</div><div class="field-value mono">.github/workflows/pr.yml — steps: build:dev + lint:eslint only<br>.github/workflows/e2e.yml — manual trigger only (schedule commented out)</div></div>
+        <div class="field"><div class="field-label">Finding</div><div class="field-value">The PR merge gate only builds and lints. E2E tests run on a separate daily schedule, not as a PR requirement. This means any code change — including security-sensitive areas like the payment flow, auth handling, or API layer — can be merged and deployed to production without any automated test verification.</div></div>
+        <div class="field"><div class="field-label">Remediation</div><div class="field-value mono">Add to pr.yml after the build step:<br>  - name: Run E2E tests<br>    run: pnpm exec playwright test --reporter=list<br>    env:<br>      BASE_URL: ${{ secrets.STAGING_URL }}<br><br>Set as required status check in branch protection rules.</div></div>
+      </div>
+    </div>
+
+    <!-- H6 -->
+    <div class="finding sev-high-border">
+      <div class="finding-header" onclick="toggleFinding(this)">
+        <span class="badge-sev sev-high">High</span>
+        <span class="finding-title">Errors Swallowed in Payment-Critical Code Path</span>
+        <span class="finding-category">Error Handling · Reliability</span>
+        <span class="finding-chevron">▶</span>
+      </div>
+      <div class="finding-body">
+        <div class="field"><div class="field-label">Files</div><div class="field-value mono">src/scripts/courses.ts lines 224–226 (displayCards catch → console.log)<br>src/scripts/courses.ts lines 258–260 (setupCouponUpdates catch → console.log)<br>src/repositories/practicumRepository.ts lines 16–18 (getPricesByCoupon → return null)</div></div>
+        <div class="field"><div class="field-label">Finding</div><div class="field-value">Three locations in the payment and coupon flow silently swallow exceptions with <code>console.log(error)</code>. A coupon fetch failure leaves prices displaying without the discount applied — users may believe they're getting a discount that isn't actually being processed. A course card rendering error silently empties the course list. No error is surfaced to the user or to any monitoring system.</div></div>
+        <div class="field"><div class="field-label">Remediation</div><div class="field-value mono">1. Show user-visible error states when coupon fetch fails<br>2. Add window.onerror and window.onunhandledrejection handlers<br>3. Integrate Sentry or similar for production error capture<br>4. Replace console.log with proper error boundary components</div></div>
+      </div>
+    </div>
+
+    <!-- H7 -->
+    <div class="finding sev-high-border">
+      <div class="finding-header" onclick="toggleFinding(this)">
+        <span class="badge-sev sev-high">High</span>
+        <span class="finding-title">Bitrix24 and GTM Scripts: Full Page Access Without SRI or Effective CSP</span>
+        <span class="finding-category">Third-Party · Supply Chain</span>
+        <span class="finding-chevron">▶</span>
+      </div>
+      <div class="finding-body">
+        <div class="field"><div class="field-label">Files</div><div class="field-value mono">src/components/common/BasicScripts.astro lines 169–176 (Bitrix24)<br>src/utils/tag-manager.ts lines 7–18 (GTM-KTZ7NCL)<br>src/components/widgets/LeadForm.astro line 162 (imask.js from cdnjs)</div></div>
+        <div class="field"><div class="field-label">Finding</div><div class="field-value">Three third-party scripts load with full DOM access and no Subresource Integrity (SRI) hash. GTM allows arbitrary JavaScript injection by anyone with write access to the GTM container. Bitrix24 is served from a Russian CDN (<code>cdn-ru.bitrix24.ru</code>). <code>imask.js</code> runs on the phone number input field — a compromised CDN delivery could intercept phone numbers as users type. Combined with the ineffective CSP (unsafe-inline + unsafe-eval), there is no defence against compromised third-party scripts.</div></div>
+        <div class="field"><div class="field-label">Remediation</div><div class="field-value mono">1. Add SRI hashes to all &lt;script&gt; tags loading from external CDNs<br>2. Self-host imask.js (add to package.json)<br>3. Implement GTM Security Policies (restrict tag types)<br>4. Enable CSP nonce-based policy (see CSP finding above)<br>5. Review GTM container access — limit who can publish tags</div></div>
+      </div>
+    </div>
+
+    <!-- H8 -->
+    <div class="finding sev-high-border">
+      <div class="finding-header" onclick="toggleFinding(this)">
+        <span class="badge-sev sev-high">High</span>
+        <span class="finding-title">PINFL (National ID Number) and resetId Requested in User Fetch</span>
+        <span class="finding-category">Data Protection · Privacy</span>
+        <span class="finding-chevron">▶</span>
+      </div>
+      <div class="finding-body">
+        <div class="field"><div class="field-label">File</div><div class="field-value mono">src/repositories/authRepository.ts line 23 (pinfl)<br>src/repositories/authRepository.ts line 26 (resetId)</div></div>
+        <div class="field"><div class="field-label">Finding</div><div class="field-value">Beyond the password field (see Critical findings), the user select array also fetches <code>pinfl</code> (Uzbek national personal ID number — equivalent to a Social Security Number) and <code>resetId</code> (likely a password reset token or nonce). The <code>resetId</code> is particularly dangerous: any XSS attack that captures this value can initiate a password reset flow without triggering any email verification, allowing silent account takeover.</div></div>
+        <div class="field"><div class="field-label">Remediation</div><div class="field-value mono">See Critical finding C3 — remove password, pinfl, resetId, telegramChatId<br>from authRepository.ts userSelect immediately.</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="sec-medium">
+    <div class="section-title"><span class="icon">🟡</span>2c. Security — Medium Severity</div>
+
+    <div class="card">
+      <table>
+        <thead><tr><th>Finding</th><th>Category</th><th>File</th><th>Remediation Summary</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><span class="badge-sev sev-medium">Medium</span> URL injection in search suggestions</td>
+            <td>API Security</td>
+            <td><span class="filepath">suggestionsRepository.ts:9</span></td>
+            <td>Use <code>URLSearchParams</code> to encode search text instead of string interpolation</td>
+          </tr>
+          <tr>
+            <td><span class="badge-sev sev-medium">Medium</span> UTM parameters raw-appended to API URL</td>
+            <td>Injection</td>
+            <td><span class="filepath">leadRepository.ts:17</span></td>
+            <td>Parse <code>window.location.search</code>, validate UTM params, rebuild URL safely</td>
+          </tr>
+          <tr>
+            <td><span class="badge-sev sev-medium">Medium</span> Self-hosted CI runners with persistent state</td>
+            <td>Infrastructure</td>
+            <td><span class="filepath">.github/workflows/*.yml</span></td>
+            <td>Use ephemeral runners or GitHub-hosted runners for PR workflows</td>
+          </tr>
+          <tr>
+            <td><span class="badge-sev sev-medium">Medium</span> pnpm install without lock file in CI</td>
+            <td>Infrastructure</td>
+            <td><span class="filepath">pr.yml, e2e.yml</span></td>
+            <td>Commit lock file; use <code>--frozen-lockfile</code> flag</td>
+          </tr>
+          <tr>
+            <td><span class="badge-sev sev-medium">Medium</span> Dockerfile runs as root</td>
+            <td>Infrastructure</td>
+            <td><span class="filepath">Dockerfile</span></td>
+            <td>Add <code>USER nginx</code> directive before EXPOSE</td>
+          </tr>
+          <tr>
+            <td><span class="badge-sev sev-medium">Medium</span> reCAPTCHA silent degradation — empty token submitted</td>
+            <td>Data Protection</td>
+            <td><span class="filepath">LeadForm.astro:218–252</span></td>
+            <td>Block form submission if captcha token is empty; fail closed, not open</td>
+          </tr>
+          <tr>
+            <td><span class="badge-sev sev-medium">Medium</span> Mixed package managers (npm vs pnpm)</td>
+            <td>Build</td>
+            <td><span class="filepath">Dockerfile, pr.yml, .npmrc</span></td>
+            <td>Standardize on pnpm; update Dockerfile to use pnpm</td>
+          </tr>
+          <tr>
+            <td><span class="badge-sev sev-medium">Medium</span> set:html directives with API data in multiple pages</td>
+            <td>XSS</td>
+            <td><span class="filepath">ommaviy-oferta/bnpl.astro:33, Hero2.astro:66–112</span></td>
+            <td>Sanitize API content server-side before rendering with set:html</td>
+          </tr>
+          <tr>
+            <td><span class="badge-sev sev-medium">Medium</span> Mixpanel token exposed — purchase events harvested by competitors</td>
+            <td>Data Protection</td>
+            <td><span class="filepath">.env.production:16, BasicScripts.astro</span></td>
+            <td>Restrict Mixpanel data export access; rotate token after env file fix</td>
+          </tr>
+          <tr>
+            <td><span class="badge-sev sev-medium">Medium</span> No global error handler for unhandled rejections</td>
+            <td>Reliability</td>
+            <td><span class="filepath">All client scripts</span></td>
+            <td>Add <code>window.onunhandledrejection</code>; integrate error monitoring (Sentry)</td>
+          </tr>
+          <tr>
+            <td><span class="badge-sev sev-medium">Medium</span> Privacy policy missing data subject rights (Uzbek PDPL)</td>
+            <td>Compliance</td>
+            <td><span class="filepath">maxfiylik-siyosati.astro</span></td>
+            <td>Add right to access, erasure, retention periods, DPO contact per Uzbek data law</td>
+          </tr>
+          <tr>
+            <td><span class="badge-sev sev-medium">Medium</span> Telegram/Google Chat tokens via CLI args — visible in CI logs</td>
+            <td>Secrets</td>
+            <td><span class="filepath">notifications/telegram.ts:6, google-chat.ts:52</span></td>
+            <td>Pass secrets via environment variables; ensure CI masks them in logs</td>
+          </tr>
+          <tr>
+            <td><span class="badge-sev sev-medium">Medium</span> Front-end-only purchase disable for course ID 11235</td>
+            <td>Business Logic</td>
+            <td><span class="filepath">CoursePricing.astro:18–19</span></td>
+            <td>Enforce purchase restriction server-side in the payment application</td>
+          </tr>
+          <tr>
+            <td><span class="badge-sev sev-medium">Medium</span> Cookie parsing without validation or error handling</td>
+            <td>Auth</td>
+            <td><span class="filepath">src/utils/cookie.ts</span></td>
+            <td>Add type annotations, error handling for malformed cookies; consider using <code>cookie</code> npm package</td>
+          </tr>
+          <tr>
+            <td><span class="badge-sev sev-medium">Medium</span> Over-fetching sensitive user fields (address, educations, activities)</td>
+            <td>Data Protection</td>
+            <td><span class="filepath">authRepository.ts lines 26–28</span></td>
+            <td>Apply data minimization — only fetch fields the UI actually renders</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="sec-low">
+    <div class="section-title"><span class="icon">🟢</span>2d. Security — Low Severity &amp; Info</div>
+    <div class="card">
+      <table>
+        <thead><tr><th>Finding</th><th>Severity</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td>Session storage used for lead state — can be bypassed</td><td><span class="badge-sev sev-low">Low</span></td><td>No integrity protection on duplicate lead detection</td></tr>
+          <tr><td>Percentage coupon allows &gt;100% discount display</td><td><span class="badge-sev sev-low">Low</span></td><td><code>coupon.ts:11</code> — no cap on coupon.amount; add <code>Math.min(amount, 100)</code></td></tr>
+          <tr><td>Decorative console.log in production PageLayout</td><td><span class="badge-sev sev-low">Low</span></td><td><code>PageLayout.astro:33</code> — remove ASCII art from production</td></tr>
+          <tr><td>Error message with stack trace logged in certificate verify</td><td><span class="badge-sev sev-low">Low</span></td><td><code>certificate/verify.astro:125</code> — log internally, show generic message to user</td></tr>
+          <tr><td>Release workflow input not using environment variable pattern</td><td><span class="badge-sev sev-low">Low</span></td><td><code>release.yml:28</code> — use <code>env:</code> block for GitHub Actions inputs</td></tr>
+          <tr><td>GitHub secrets properly used for notification tokens</td><td><span class="badge-sev sev-info">Info</span></td><td>Telegram/Google Chat CI secrets correctly in GitHub Secrets</td></tr>
+          <tr><td>No eval() or new Function() usage</td><td><span class="badge-sev sev-info">Info</span></td><td>Good — no dynamic code execution vectors found</td></tr>
+          <tr><td>Privacy policy page exists</td><td><span class="badge-sev sev-info">Info</span></td><td>Positive compliance signal; needs rights clauses added</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ==================== SECTION 3: TEST COVERAGE ==================== -->
+  <section id="tests">
+    <div class="section-title"><span class="icon">🧪</span>3. Test Coverage Gap Analysis</div>
+
+    <div class="alert alert-critical">
+      <span class="alert-icon">⚠</span>
+      <div><strong>Zero unit tests.</strong> All automated testing is E2E only, covering happy paths on a daily schedule. Tests do not run on PR merge. With elite deployment frequency (&gt;1/week), this means every release ships without automated regression detection.</div>
+    </div>
+
+    <div class="card-grid">
+      <div class="stat-card"><div class="stat-label">Unit Tests</div><div class="stat-value color-critical">0</div><div class="stat-sub">No jest, vitest, or unit runner</div></div>
+      <div class="stat-card"><div class="stat-label">E2E Specs (Active)</div><div class="stat-value color-warning">6</div><div class="stat-sub">Playwright, happy paths only</div></div>
+      <div class="stat-card"><div class="stat-label">E2E Specs (Orphaned)</div><div class="stat-value color-warning">3</div><div class="stat-sub">e2e-support/ not in testDir config</div></div>
+      <div class="stat-card"><div class="stat-label">BDD Features</div><div class="stat-value color-warning">4</div><div class="stat-sub">Cucumber, 1 step-def file</div></div>
+    </div>
+
+    <div class="card">
+      <h3>Test Infrastructure Issues</h3>
+      <table>
+        <thead><tr><th>Issue</th><th>Severity</th><th>Evidence</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>Playwright <code>testDir</code> set to <code>./e2e-tests</code> — <code>e2e-support/</code> excluded</td>
+            <td><span class="badge-sev sev-high">High</span></td>
+            <td><span class="filepath">playwright.config.ts line 17</span></td>
+          </tr>
+          <tr>
+            <td>E2E not required in PR pipeline — tests run daily only</td>
+            <td><span class="badge-sev sev-high">High</span></td>
+            <td><span class="filepath">.github/workflows/pr.yml</span> — no test step</td>
+          </tr>
+          <tr>
+            <td>CI env path: both branches of <code>process.env.CI ? '.env.development' : '.env.development'</code> are identical</td>
+            <td><span class="badge-sev sev-medium">Medium</span></td>
+            <td><span class="filepath">playwright.config.ts line 4</span> — copy-paste bug</td>
+          </tr>
+          <tr>
+            <td>Cucumber BDD setup incomplete — <code>steps/practicums/</code> is empty (<code>.gitkeep</code> only)</td>
+            <td><span class="badge-sev sev-low">Low</span></td>
+            <td><span class="filepath">cucumber-e2e-tests/steps/practicums/.gitkeep</span></td>
+          </tr>
+          <tr>
+            <td>E2E tests only run against Chromium (Firefox/WebKit commented out)</td>
+            <td><span class="badge-sev sev-low">Low</span></td>
+            <td><span class="filepath">playwright.config.ts</span> projects section</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <h3>Coverage Gaps by Risk Area</h3>
+      <table>
+        <thead><tr><th>Module</th><th>Risk</th><th>Untested Behaviour</th></tr></thead>
+        <tbody>
+          <tr><td><span class="filepath">src/repositories/</span> (19 files)</td><td><span class="badge-sev sev-critical">Critical</span></td><td>All API call logic, error handling, retry logic</td></tr>
+          <tr><td><span class="filepath">src/utils/coupon.ts</span></td><td><span class="badge-sev sev-high">High</span></td><td>Discount calculations, edge cases (amount &gt; 100, expiry)</td></tr>
+          <tr><td><span class="filepath">src/utils/request.ts</span></td><td><span class="badge-sev sev-high">High</span></td><td>Retry middleware, token injection, error propagation</td></tr>
+          <tr><td><span class="filepath">src/store/</span></td><td><span class="badge-sev sev-medium">Medium</span></td><td>State transitions, user auth state changes</td></tr>
+          <tr><td><span class="filepath">src/utils/cookie.ts</span></td><td><span class="badge-sev sev-medium">Medium</span></td><td>Malformed cookie handling, edge cases</td></tr>
+          <tr><td><span class="filepath">src/constants/placement-quiz.ts</span></td><td><span class="badge-sev sev-medium">Medium</span></td><td>Quiz scoring logic, answer evaluation</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ==================== SECTION 4: CODE QUALITY ==================== -->
+  <section id="quality">
+    <div class="section-title"><span class="icon">📊</span>4. Code Quality Metrics</div>
+
+    <div class="card-grid">
+      <div class="stat-card"><div class="stat-label">Code Duplication</div><div class="stat-value color-good">0.79%</div><div class="stat-sub">Excellent — 6 clones in 111 files</div></div>
+      <div class="stat-card"><div class="stat-label">Largest File</div><div class="stat-value">1,083</div><div class="stat-sub">data.js — monolithic config</div></div>
+      <div class="stat-card"><div class="stat-label">Components &gt;250 LOC</div><div class="stat-value color-warning">8</div><div class="stat-sub">Astro components with embedded styles</div></div>
+      <div class="stat-card"><div class="stat-label">TypeScript</div><div class="stat-value color-good">Strict</div><div class="stat-sub">ESNext, strict null checks on</div></div>
+    </div>
+
+    <div class="card">
+      <h3>File Size Distribution</h3>
+      <table>
+        <thead><tr><th>File</th><th>LOC</th><th>Type</th><th>Concern</th></tr></thead>
+        <tbody>
+          <tr><td><span class="filepath">src/data.js</span></td><td>1,083</td><td>Data/Config</td><td><span class="badge-sev sev-medium">Medium</span> Monolithic static data — split into domain files</td></tr>
+          <tr><td><span class="filepath">src/types.ts</span></td><td>735</td><td>Types</td><td><span class="badge-sev sev-low">Low</span> Large but expected — serves as data model docs</td></tr>
+          <tr><td><span class="filepath">src/constants/placement-quiz.ts</span></td><td>512</td><td>Constants</td><td><span class="badge-sev sev-low">Low</span> Quiz data — acceptable</td></tr>
+          <tr><td><span class="filepath">src/components/widgets/LeadForm.astro</span></td><td>483</td><td>Component</td><td><span class="badge-sev sev-medium">Medium</span> Single component with form + logic + styles</td></tr>
+          <tr><td><span class="filepath">src/components/practicum/PracticumPricing.astro</span></td><td>477</td><td>Component</td><td><span class="badge-sev sev-medium">Medium</span> High churn (30 changes) + large size = refactor candidate</td></tr>
+          <tr><td><span class="filepath">src/scripts/courses.ts</span></td><td>323</td><td>Script</td><td><span class="badge-sev sev-medium">Medium</span> Vanilla DOM manipulation — error-prone pattern</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <h3>Code Pattern Observations</h3>
+      <div class="alert alert-warning" style="margin-bottom:12px;">
+        <span class="alert-icon">⚠</span>
+        <div><strong>Mixed paradigm:</strong> <code>courses.ts</code> uses manual DOM manipulation (querySelector, classList, innerHTML) while the rest of the codebase uses React islands + Astro components. This creates two mental models for interactive UI logic and increases bug risk in the vanilla DOM areas.</div>
+      </div>
+      <div class="alert alert-good">
+        <span class="alert-icon">✓</span>
+        <div><strong>Strengths:</strong> Very low duplication (0.79%), TypeScript strict mode, well-organized component directory structure, repository pattern for API calls, nanostores for lean state management. Net negative commit line count suggests active cleanup culture.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== SECTION 5: GIT & TEAM ==================== -->
+  <section id="git">
+    <div class="section-title"><span class="icon">👥</span>5. Git &amp; Team Analysis</div>
+
+    <!-- DORA -->
+    <h3 style="margin-bottom:12px;">DORA Metrics</h3>
+    <div class="dora-grid" style="margin-bottom:24px;">
+      <div class="dora-card">
+        <div class="dora-metric">Deployment Frequency</div>
+        <div class="dora-value color-good">65/year</div>
+        <div class="dora-tier color-good">Elite (&gt;1/week)</div>
+      </div>
+      <div class="dora-card">
+        <div class="dora-metric">Lead Time</div>
+        <div class="dora-value color-good">Same-day</div>
+        <div class="dora-tier color-good">Elite</div>
+      </div>
+      <div class="dora-card">
+        <div class="dora-metric">Change Failure Rate</div>
+        <div class="dora-value color-good">0.4%</div>
+        <div class="dora-tier color-good">Elite (3 hotfixes / 768 commits)</div>
+      </div>
+      <div class="dora-card">
+        <div class="dora-metric">MTTR</div>
+        <div class="dora-value color-muted">Unknown</div>
+        <div class="dora-tier color-muted">No incident tracking in git</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Contributor Analysis (12 months)</h3>
+      <table>
+        <thead><tr><th>Contributor</th><th>Role (inferred)</th><th>Commits</th><th>Share</th><th>Net Lines</th></tr></thead>
+        <tbody>
+          <tr><td>Ulugbek (3 identities)</td><td>Senior Developer</td><td style="font-weight:700;">223</td><td><span style="color:var(--warning);">29%</span></td><td style="color:var(--good);">+6,805 / −5,621</td></tr>
+          <tr><td>Utkirbek01</td><td>Tech Lead / Merger</td><td>172</td><td>22%</td><td style="color:var(--muted);">Merge commits only</td></tr>
+          <tr><td>O'tkirbek</td><td>QA / E2E Lead</td><td>158</td><td>21%</td><td>+2,585 / −1,062</td></tr>
+          <tr><td>G'olib (2 identities)</td><td>Developer</td><td>152</td><td>20%</td><td style="color:var(--good);">+2,134 / −18,721 (cleanup)</td></tr>
+          <tr><td>NM</td><td>Manager / Reviewer</td><td>32</td><td>4%</td><td style="color:var(--muted);">Merges + 1 minor edit</td></tr>
+          <tr><td>UmarAli</td><td>Developer</td><td>19</td><td>2%</td><td>+179 / −45</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card-grid">
+      <div class="stat-card">
+        <div class="stat-label">Commits / Year</div>
+        <div class="stat-value">768</div>
+        <div class="stat-sub">Peak: Feb 2026 — 180 commits</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">PR Merges / Year</div>
+        <div class="stat-value">300</div>
+        <div class="stat-sub">57% by Utkirbek01 alone</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Bus Factor</div>
+        <div class="stat-value color-warning">2</div>
+        <div class="stat-sub">Ulugbek + O'tkirbek critical</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Conventional Commits</div>
+        <div class="stat-value color-critical">0.5%</div>
+        <div class="stat-sub">4 of 768 commits</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Process Observations</h3>
+      <table>
+        <thead><tr><th>Observation</th><th>Assessment</th></tr></thead>
+        <tbody>
+          <tr><td>Git identity inconsistency — 2 devs use 2–3 names each</td><td><span class="badge-sev sev-low">Low</span> Use <code>.mailmap</code> to normalize; metrics are skewed</td></tr>
+          <tr><td>Version bump commits: 20% of all commits (152 of 768)</td><td><span class="badge-sev sev-low">Low</span> Consider semantic-release to automate</td></tr>
+          <tr><td>Merge authority concentrated: Utkirbek01 57% of merges</td><td><span class="badge-sev sev-medium">Medium</span> Single point of failure for code review bottleneck</td></tr>
+          <tr><td>High-churn files: PracticumPricing.astro (30 changes), BaseLayout.astro (30)</td><td><span class="badge-sev sev-medium">Medium</span> Architectural instability in pricing component</td></tr>
+          <tr><td>Branch naming: username/MOH-XXXX-description</td><td><span class="badge-sev sev-info">Info</span> Good — linked to issue tracker</td></tr>
+          <tr><td>Average commit: 4.3 files touched, +52/−146 lines</td><td><span class="badge-sev sev-info">Info</span> Good granularity; net-negative line count is healthy</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ==================== SECTION 6: DEPENDENCIES ==================== -->
+  <section id="deps">
+    <div class="section-title"><span class="icon">📦</span>6. Dependency Health</div>
+
+    <div class="alert alert-critical">
+      <span class="alert-icon">⚠</span>
+      <div><strong>npm audit cannot run</strong> — no lock file exists. Supply chain vulnerability status is unknown. This is the highest-risk combination: unknown vulnerability exposure + non-deterministic builds.</div>
+    </div>
+
+    <div class="card">
+      <h3>Outdated Dependencies</h3>
+      <table>
+        <thead><tr><th>Package</th><th>Current</th><th>Latest</th><th>Gap</th><th>Risk</th></tr></thead>
+        <tbody>
+          <tr><td>react</td><td><code>18.3.1</code></td><td><code>19.2.4</code></td><td>2 majors</td><td><span class="badge-sev sev-medium">Medium</span></td></tr>
+          <tr><td>@astrojs/react</td><td><code>3.6.1</code></td><td><code>5.0.1</code></td><td>2 majors</td><td><span class="badge-sev sev-medium">Medium</span></td></tr>
+          <tr><td>uuid</td><td><code>10.0.0</code></td><td><code>13.0.0</code></td><td>3 majors</td><td><span class="badge-sev sev-medium">Medium</span></td></tr>
+          <tr><td>dotenv</td><td><code>16.6.1</code></td><td><code>17.3.1</code></td><td>1 major</td><td><span class="badge-sev sev-low">Low</span></td></tr>
+          <tr><td>wretch</td><td><code>2.9.0</code></td><td><code>3.0.7</code></td><td>1 major</td><td><span class="badge-sev sev-low">Low</span></td></tr>
+          <tr><td>nanostores</td><td><code>0.10.3</code></td><td><code>1.2.0</code></td><td>1 major</td><td><span class="badge-sev sev-low">Low</span></td></tr>
+          <tr><td>astro-seo</td><td><code>0.8.4</code></td><td><code>1.1.0</code></td><td>1 major</td><td><span class="badge-sev sev-low">Low</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ==================== SECTION 7: CI/CD ==================== -->
+  <section id="cicd">
+    <div class="section-title"><span class="icon">⚙️</span>7. CI/CD Pipeline</div>
+
+    <div class="card">
+      <h3>Workflow Inventory</h3>
+      <table>
+        <thead><tr><th>Workflow</th><th>Trigger</th><th>Steps</th><th>Issues</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><span class="filepath">pr.yml</span></td>
+            <td>PR to main/develop</td>
+            <td>build:dev + lint:eslint</td>
+            <td><span class="badge-sev sev-high">High</span> No tests</td>
+          </tr>
+          <tr>
+            <td><span class="filepath">release.yml</span></td>
+            <td>workflow_dispatch (manual)</td>
+            <td>version bump → bump branch → PR to main</td>
+            <td><span class="badge-sev sev-low">Low</span> Input injection risk</td>
+          </tr>
+          <tr>
+            <td><span class="filepath">release-note-generation.yml</span></td>
+            <td>push to main (bump-v* branches)</td>
+            <td>Auto-generates GitHub release notes</td>
+            <td><span class="badge-sev sev-info">Info</span> Good practice</td>
+          </tr>
+          <tr>
+            <td><span class="filepath">e2e-cucumber.yml</span></td>
+            <td>Daily schedule + manual</td>
+            <td>Cucumber E2E + Telegram/Google Chat notify</td>
+            <td><span class="badge-sev sev-medium">Medium</span> Not blocking PRs; 22 config changes (instability)</td>
+          </tr>
+          <tr>
+            <td><span class="filepath">e2e.yml</span></td>
+            <td>Manual only (schedule commented out)</td>
+            <td>Playwright E2E</td>
+            <td><span class="badge-sev sev-high">High</span> Effectively disabled</td>
+          </tr>
+          <tr>
+            <td><span class="filepath">enforce-labels.yml</span></td>
+            <td>PR open/edit</td>
+            <td>Requires PR labels (bug/feature/bump etc.)</td>
+            <td><span class="badge-sev sev-info">Info</span> Good governance</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <h3>Release Process Flow</h3>
+      <div style="font-family:var(--mono);font-size:12px;color:var(--text-secondary);background:var(--bg);padding:16px;border-radius:6px;border:1px solid var(--border);line-height:2.2;">
+        <span style="color:var(--info);">Developer</span> opens PR → <span style="color:var(--warning);">pr.yml</span> [build + lint only] → merge to <span style="color:var(--info);">develop</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;↓<br>
+        <span style="color:var(--info);">Tech Lead</span> triggers <span style="color:var(--warning);">release.yml</span> (manual) → bump version → bump-v* branch → PR to <span style="color:var(--info);">main</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;↓<br>
+        PR merged to <span style="color:var(--info);">main</span> → <span style="color:var(--warning);">release-note-generation.yml</span> creates GitHub release<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;↓<br>
+        <span style="color:var(--good);">Vercel</span> auto-deploys on push to main (outside CI pipeline)<br>
+        <br>
+        <span style="color:var(--muted);">⏰ Daily:</span> <span style="color:var(--warning);">e2e-cucumber.yml</span> runs E2E → notifies Telegram + Google Chat
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== SECTION 8: DOCUMENTATION ==================== -->
+  <section id="docs">
+    <div class="section-title"><span class="icon">📚</span>8. Documentation Gaps</div>
+
+    <div class="card">
+      <table>
+        <thead><tr><th>Area</th><th>Status</th><th>Severity</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td>README.md</td><td style="color:var(--critical);">Template boilerplate</td><td><span class="badge-sev sev-medium">Medium</span></td><td>AstroWind template README — no project-specific content, setup instructions, or contribution guide</td></tr>
+          <tr><td>CHANGELOG</td><td style="color:var(--critical);">Missing</td><td><span class="badge-sev sev-medium">Medium</span></td><td>116 release tags, no CHANGELOG.md in repo. Release notes exist on GitHub only.</td></tr>
+          <tr><td>.env.example</td><td style="color:var(--critical);">1 line (of 20+ needed)</td><td><span class="badge-sev sev-medium">Medium</span></td><td>Only <code>VITE_API_URL = localhost:3000</code>. New devs must reverse-engineer env vars from committed .env.development.</td></tr>
+          <tr><td>JSDoc / TSDoc</td><td style="color:var(--critical);">Zero coverage</td><td><span class="badge-sev sev-medium">Medium</span></td><td>No @param, @returns, @description found across all 226 source files. Complex logic (coupon calc, quiz scoring) undocumented.</td></tr>
+          <tr><td>PR Template</td><td style="color:var(--good);">Good</td><td><span class="badge-sev sev-info">Info</span></td><td>Checklist for screenshots (desktop/mobile/dark mode), console.log cleanup, responsiveness. Well-structured.</td></tr>
+          <tr><td>Cucumber E2E README</td><td style="color:var(--good);">Good</td><td><span class="badge-sev sev-info">Info</span></td><td>Quick start, folder structure, usage instructions. Accessible to non-developers.</td></tr>
+          <tr><td>API documentation</td><td style="color:var(--warning);">Implicit only</td><td><span class="badge-sev sev-low">Low</span></td><td>19 repository files serve as de-facto API docs. Expected for a frontend-only repo.</td></tr>
+          <tr><td>Data model</td><td style="color:var(--good);">types.ts</td><td><span class="badge-sev sev-info">Info</span></td><td>735-line types.ts is comprehensive and effectively documents the frontend data model.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ==================== SECTION 9: REMEDIATION ROADMAP ==================== -->
+  <section id="roadmap">
+    <div class="section-title"><span class="icon">🗺</span>9. Remediation Roadmap</div>
+
+    <div class="card" style="margin-bottom:20px;">
+      <h3 style="margin-bottom:4px;color:var(--critical);">Sprint 0 — Immediate (Do Today)</h3>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:16px;">Security incidents in progress. These must be actioned before the next deployment.</div>
+      <ol class="remediation">
+        <li>
+          <div>
+            <strong>Rotate ALL secrets</strong> — ASTRO_TOKEN, Mixpanel, reCAPTCHA, GTM. Assume all credentials in <code>.env.production</code> and <code>.env.development</code> are compromised.
+            <span class="effort effort-low">1–2 hours</span>
+          </div>
+        </li>
+        <li>
+          <div>
+            <strong>Add env files to .gitignore</strong> — add <code>.env.production</code>, <code>.env.development</code>, <code>.env.staging</code>. Run <code>git rm --cached .env.production .env.development</code>.
+            <span class="effort effort-low">30 min</span>
+          </div>
+        </li>
+        <li>
+          <div>
+            <strong>Remove 'password', 'pinfl', 'resetId' from authRepository.ts</strong> userSelect array. These fields must never reach the browser.
+            <span class="effort effort-low">15 min</span>
+          </div>
+        </li>
+        <li>
+          <div>
+            <strong>Rewrite git history</strong> using <code>git filter-repo</code> to remove committed env files, OR formally communicate to all repo stakeholders that credentials are compromised.
+            <span class="effort effort-medium">2–4 hours + coordination</span>
+          </div>
+        </li>
+      </ol>
+    </div>
+
+    <div class="card" style="margin-bottom:20px;">
+      <h3 style="margin-bottom:4px;color:var(--high);">Sprint 1 — Week 1 (High Priority)</h3>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:16px;">Security hardening. These prevent the next class of incidents.</div>
+      <ol class="remediation">
+        <li>
+          <div>
+            <strong>Separate server/client API clients</strong> — create <code>server-request.ts</code> (with ASTRO_TOKEN, used in .astro frontmatter only) and <code>client-request.ts</code> (cookie-only auth, for browser scripts).
+            <span class="effort effort-medium">1–2 days</span>
+          </div>
+        </li>
+        <li>
+          <div>
+            <strong>Fix innerHTML XSS</strong> — replace <code>cardDescription.innerHTML = course.description</code> with <code>textContent</code> or add DOMPurify. Audit all <code>set:html</code> uses.
+            <span class="effort effort-low">Half day</span>
+          </div>
+        </li>
+        <li>
+          <div>
+            <strong>Commit lock file</strong> — remove <code>pnpm-lock.yaml</code> from <code>.gitignore</code>, run <code>pnpm install</code>, commit. Add <code>--frozen-lockfile</code> to CI.
+            <span class="effort effort-low">1 hour</span>
+          </div>
+        </li>
+        <li>
+          <div>
+            <strong>Add E2E tests to PR pipeline</strong> — make Playwright a required PR check in <code>pr.yml</code>. Set as required status check in branch protection.
+            <span class="effort effort-low">2–3 hours</span>
+          </div>
+        </li>
+        <li>
+          <div>
+            <strong>Fix coupon endpoint over-fetching</strong> — remove <code>userPhones</code>, <code>usersWhoUsed</code>, <code>userIds</code>, <code>creatorId</code> from <code>publicCouponFields</code>.
+            <span class="effort effort-low">1 hour</span>
+          </div>
+        </li>
+        <li>
+          <div>
+            <strong>Fix URL parameter injection</strong> — use <code>URLSearchParams</code> in <code>suggestionsRepository.ts</code> and parse/validate <code>window.location.search</code> in <code>leadRepository.ts</code>.
+            <span class="effort effort-low">Half day</span>
+          </div>
+        </li>
+      </ol>
+    </div>
+
+    <div class="card" style="margin-bottom:20px;">
+      <h3 style="margin-bottom:4px;color:var(--warning);">Sprint 2 — Month 1 (Medium Priority)</h3>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:16px;">Quality and reliability improvements.</div>
+      <ol class="remediation">
+        <li>
+          <div>
+            <strong>Add unit tests</strong> — start with highest-risk modules: <code>coupon.ts</code>, <code>request.ts</code>, <code>cookie.ts</code>, repository files. Use Vitest (native Vite/Astro integration).
+            <span class="effort effort-high">1–2 weeks ongoing</span>
+          </div>
+        </li>
+        <li>
+          <div>
+            <strong>Fix CSP</strong> — replace <code>'unsafe-inline'</code> with nonces, remove <code>'unsafe-eval'</code>. Astro supports CSP nonces via middleware.
+            <span class="effort effort-medium">2–3 days</span>
+          </div>
+        </li>
+        <li>
+          <div>
+            <strong>Add SRI hashes</strong> to third-party scripts (imask.js from cdnjs). Self-host imask.js. Review GTM container access controls.
+            <span class="effort effort-low">Half day</span>
+          </div>
+        </li>
+        <li>
+          <div>
+            <strong>Add error monitoring</strong> — integrate Sentry (or similar). Add <code>window.onunhandledrejection</code> handler. Fix silent error swallowing in payment flow.
+            <span class="effort effort-medium">1 day</span>
+          </div>
+        </li>
+        <li>
+          <div>
+            <strong>Fix Dockerfile</strong> — add lock file, use pnpm, add <code>USER nginx</code> directive, use multi-stage build.
+            <span class="effort effort-low">Half day</span>
+          </div>
+        </li>
+        <li>
+          <div>
+            <strong>Fix .env.example</strong> — document all 20+ required environment variables with descriptions and sample values (not real values).
+            <span class="effort effort-low">1–2 hours</span>
+          </div>
+        </li>
+        <li>
+          <div>
+            <strong>Fix playwright.config.ts</strong> — correct the <code>process.env.CI</code> conditional (copy-paste bug), add <code>e2e-support/</code> to testDir or delete orphaned specs.
+            <span class="effort effort-low">30 min</span>
+          </div>
+        </li>
+        <li>
+          <div>
+            <strong>Move server-side auth to Astro frontmatter</strong> — eliminate client-side JWT decode, pass only display-safe user data to client components.
+            <span class="effort effort-high">2–3 days</span>
+          </div>
+        </li>
+      </ol>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-bottom:4px;color:var(--good);">Sprint 3 — Quarter 1 (Ongoing)</h3>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:16px;">Technical debt and process improvements.</div>
+      <ol class="remediation">
+        <li><div><strong>Split data.js</strong> into domain-specific files (<code>headerData.ts</code>, <code>footerData.ts</code>, <code>faqData.ts</code>). <span class="effort effort-low">1 day</span></div></li>
+        <li><div><strong>Migrate vanilla DOM manipulation</strong> in <code>courses.ts</code> to React island components. <span class="effort effort-high">2–3 days</span></div></li>
+        <li><div><strong>Update README</strong> — replace AstroWind template with project-specific docs. <span class="effort effort-low">Half day</span></div></li>
+        <li><div><strong>Add CHANGELOG.md</strong> — generate from git history; maintain going forward. <span class="effort effort-low">1–2 hours</span></div></li>
+        <li><div><strong>Normalize git identities</strong> — create <code>.mailmap</code> to merge Ulugbek and G'olib's multiple identities. <span class="effort effort-low">30 min</span></div></li>
+        <li><div><strong>Automate version bumps</strong> — evaluate semantic-release to eliminate 20% version bump commit noise. <span class="effort effort-medium">1–2 days</span></div></li>
+        <li><div><strong>Update privacy policy</strong> — add data subject rights, retention periods, DPO contact per Uzbek PDPL. <span class="effort effort-medium">1 day + legal review</span></div></li>
+        <li><div><strong>Upgrade React to 19</strong> — after lock file is committed and tests are in place. <span class="effort effort-medium">1–2 days</span></div></li>
+      </ol>
+    </div>
+  </section>
+
+  <div style="margin-top:48px;padding-top:24px;border-top:1px solid var(--border);color:var(--muted);font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+    <span>Technical Audit Report · mohirdev-landing · 2026-03-21</span>
+    <span>HEAD: 83b6902 · Auditor: Automated (Claude Code) · Read-only session</span>
+  </div>
+
+</main>
+
+<script>
+  function toggleSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    const main = document.getElementById('main');
+    const isMobile = window.innerWidth <= 768;
+    if (isMobile) {
+      sidebar.classList.toggle('mobile-open');
+    } else {
+      sidebar.classList.toggle('collapsed');
+      main.classList.toggle('expanded');
+    }
+  }
+
+  function scrollTo(id) {
+    const el = document.getElementById(id);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+      event.currentTarget.classList.add('active');
+    }
+    if (window.innerWidth <= 768) {
+      document.getElementById('sidebar').classList.remove('mobile-open');
+    }
+  }
+
+  function toggleFinding(header) {
+    const body = header.nextElementSibling;
+    const chevron = header.querySelector('.finding-chevron');
+    const isOpen = body.classList.contains('open');
+    body.classList.toggle('open', !isOpen);
+    body.style.display = isOpen ? 'none' : 'block';
+    chevron.classList.toggle('open', !isOpen);
+  }
+
+  // Highlight active nav on scroll
+  const sections = document.querySelectorAll('section[id]');
+  const navItems = document.querySelectorAll('.nav-item');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        navItems.forEach(i => i.classList.remove('active'));
+        const active = document.querySelector(`.nav-item[onclick="scrollTo('${entry.target.id}')"]`);
+        if (active) active.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-20% 0px -70% 0px' });
+  sections.forEach(s => observer.observe(s));
+
+  // Show toggle button on mobile
+  function checkMobile() {
+    const btn = document.getElementById('toggle-sidebar');
+    btn.style.display = window.innerWidth <= 768 ? 'flex' : 'none';
+  }
+  checkMobile();
+  window.addEventListener('resize', checkMobile);
+
+  // Theme toggle
+  function toggleTheme() {
+    const html = document.documentElement;
+    const isLight = html.getAttribute('data-theme') === 'light';
+    const newTheme = isLight ? 'dark' : 'light';
+    html.setAttribute('data-theme', newTheme);
+    localStorage.setItem('theme', newTheme);
+    updateThemeUI(newTheme);
+  }
+
+  function updateThemeUI(theme) {
+    const sw = document.getElementById('theme-switch');
+    const icon = document.getElementById('theme-icon');
+    if (theme === 'light') {
+      sw.setAttribute('aria-checked', 'true');
+      icon.textContent = '☀️';
+    } else {
+      sw.setAttribute('aria-checked', 'false');
+      icon.textContent = '🌙';
+    }
+  }
+
+  // Apply saved theme on load (default: dark)
+  (function() {
+    const saved = localStorage.getItem('theme') || 'dark';
+    if (saved === 'light') {
+      document.documentElement.setAttribute('data-theme', 'light');
+    }
+    updateThemeUI(saved);
+  })();
+</script>
+</body>
+</html>

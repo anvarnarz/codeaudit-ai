@@ -1,0 +1,1591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mohirdev Landing — Management Audit Report</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --sidebar-bg: #1a1a2e;
+    --card-bg: #16213e;
+    --accent: #0f3460;
+    --critical: #e94560;
+    --warning: #f0a500;
+    --good: #4ecca3;
+    --text-primary: #e8eaf0;
+    --text-secondary: #a0aabe;
+    --border: rgba(255,255,255,0.07);
+    --sidebar-width: 260px;
+  }
+
+  html { scroll-behavior: smooth; font-size: 16px; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif;
+    background: #0d1117;
+    color: var(--text-primary);
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    position: fixed;
+    top: 0; left: 0;
+    width: var(--sidebar-width);
+    height: 100vh;
+    background: var(--sidebar-bg);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    z-index: 100;
+    overflow-y: auto;
+    transition: transform 0.3s ease;
+  }
+
+  .sidebar-header {
+    padding: 28px 24px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .sidebar-logo {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    margin-bottom: 6px;
+  }
+
+  .sidebar-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1.3;
+  }
+
+  .sidebar-date {
+    font-size: 0.72rem;
+    color: var(--text-secondary);
+    margin-top: 6px;
+  }
+
+  .sidebar-nav { padding: 16px 12px; flex: 1; }
+
+  .nav-label {
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    padding: 0 12px;
+    margin: 18px 0 8px;
+  }
+
+  .nav-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: all 0.2s;
+    cursor: pointer;
+    border: none;
+    background: none;
+    width: 100%;
+    text-align: left;
+  }
+
+  .nav-link:hover, .nav-link.active {
+    background: rgba(79, 204, 163, 0.1);
+    color: var(--good);
+  }
+
+  .nav-link .nav-icon { font-size: 1rem; width: 20px; text-align: center; }
+
+  .sidebar-footer {
+    padding: 16px 24px;
+    border-top: 1px solid var(--border);
+    font-size: 0.7rem;
+    color: var(--text-secondary);
+  }
+
+  /* ── MAIN CONTENT ── */
+  .main {
+    margin-left: var(--sidebar-width);
+    padding: 0;
+    min-height: 100vh;
+  }
+
+  .page-header {
+    background: linear-gradient(135deg, var(--accent) 0%, #1a1a2e 100%);
+    padding: 48px 48px 40px;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .page-header::before {
+    content: '';
+    position: absolute;
+    top: -50%; right: -10%;
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(233,69,96,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .header-badge {
+    display: inline-block;
+    background: rgba(233,69,96,0.15);
+    border: 1px solid rgba(233,69,96,0.3);
+    color: var(--critical);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-bottom: 16px;
+  }
+
+  .header-title {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    line-height: 1.2;
+    margin-bottom: 8px;
+  }
+
+  .header-subtitle {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    max-width: 600px;
+  }
+
+  .header-meta {
+    display: flex;
+    gap: 32px;
+    margin-top: 24px;
+    flex-wrap: wrap;
+  }
+
+  .meta-item { display: flex; flex-direction: column; gap: 2px; }
+  .meta-label { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-secondary); }
+  .meta-value { font-size: 0.95rem; font-weight: 600; color: var(--text-primary); }
+
+  /* ── SECTIONS ── */
+  .section {
+    padding: 48px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-label {
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--good);
+    margin-bottom: 8px;
+  }
+
+  .section-title {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    margin-bottom: 6px;
+  }
+
+  .section-desc {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-bottom: 32px;
+    max-width: 640px;
+  }
+
+  /* ── CARDS ── */
+  .card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    transition: border-color 0.2s;
+  }
+
+  .card:hover { border-color: rgba(79,204,163,0.2); }
+
+  .card-title {
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-secondary);
+    margin-bottom: 12px;
+  }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+
+  /* ── HEALTH SCORE ── */
+  .health-score-wrap {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+    flex-wrap: wrap;
+  }
+
+  .score-ring {
+    position: relative;
+    width: 140px;
+    height: 140px;
+    flex-shrink: 0;
+  }
+
+  .score-ring svg {
+    transform: rotate(-90deg);
+    width: 140px;
+    height: 140px;
+  }
+
+  .score-ring circle {
+    fill: none;
+    stroke-width: 10;
+    stroke-linecap: round;
+  }
+
+  .score-ring .track { stroke: rgba(255,255,255,0.08); }
+  .score-ring .fill {
+    stroke: var(--warning);
+    stroke-dasharray: 376.99;
+    stroke-dashoffset: calc(376.99 - (376.99 * 0.45));
+    transition: stroke-dashoffset 1.5s ease;
+  }
+
+  .score-center {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+  }
+
+  .score-number {
+    font-size: 2rem;
+    font-weight: 900;
+    color: var(--warning);
+    line-height: 1;
+  }
+
+  .score-denom {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+  }
+
+  .score-details { flex: 1; min-width: 200px; }
+
+  .score-details h3 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: var(--text-primary);
+  }
+
+  .score-details p {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  /* ── TRAFFIC LIGHT TABLE ── */
+  .tl-table { width: 100%; border-collapse: collapse; }
+
+  .tl-table th {
+    text-align: left;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-secondary);
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .tl-table td {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.875rem;
+    vertical-align: middle;
+  }
+
+  .tl-table tr:last-child td { border-bottom: none; }
+
+  .tl-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+  .tl-dot {
+    display: inline-block;
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    margin-right: 8px;
+    vertical-align: middle;
+  }
+
+  .status-red { background: var(--critical); box-shadow: 0 0 8px rgba(233,69,96,0.5); }
+  .status-yellow { background: var(--warning); box-shadow: 0 0 8px rgba(240,165,0,0.5); }
+  .status-green { background: var(--good); box-shadow: 0 0 8px rgba(78,204,163,0.5); }
+
+  .score-pill {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 0.78rem;
+    font-weight: 700;
+  }
+
+  .pill-red { background: rgba(233,69,96,0.15); color: var(--critical); border: 1px solid rgba(233,69,96,0.3); }
+  .pill-yellow { background: rgba(240,165,0,0.15); color: var(--warning); border: 1px solid rgba(240,165,0,0.3); }
+  .pill-green { background: rgba(78,204,163,0.15); color: var(--good); border: 1px solid rgba(78,204,163,0.3); }
+
+  /* ── CSS SCORE BAR ── */
+  .score-bar-wrap { display: flex; align-items: center; gap: 12px; }
+
+  .score-bar-track {
+    flex: 1;
+    height: 6px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .score-bar-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 1s ease;
+  }
+
+  .score-bar-label {
+    font-size: 0.78rem;
+    font-weight: 700;
+    min-width: 36px;
+    text-align: right;
+  }
+
+  /* ── RISK CARDS ── */
+  .risk-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 24px;
+    display: flex;
+    gap: 18px;
+    align-items: flex-start;
+    transition: border-color 0.2s;
+  }
+
+  .risk-card.critical { border-left: 3px solid var(--critical); }
+  .risk-card.high { border-left: 3px solid var(--warning); }
+
+  .risk-card:hover { border-color: rgba(255,255,255,0.15); }
+
+  .risk-icon {
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+  }
+
+  .risk-icon.critical { background: rgba(233,69,96,0.15); }
+  .risk-icon.high { background: rgba(240,165,0,0.12); }
+
+  .risk-body { flex: 1; }
+
+  .risk-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 6px;
+    flex-wrap: wrap;
+  }
+
+  .risk-title { font-size: 0.95rem; font-weight: 700; color: var(--text-primary); }
+
+  .risk-badge {
+    font-size: 0.65rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border-radius: 4px;
+  }
+
+  .badge-critical { background: rgba(233,69,96,0.2); color: var(--critical); }
+  .badge-high { background: rgba(240,165,0,0.15); color: var(--warning); }
+
+  .risk-desc { font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5; }
+
+  .risk-impact {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 10px;
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+  }
+
+  .risk-impact span { color: var(--text-primary); font-weight: 600; }
+
+  /* ── STAT CARDS ── */
+  .stat-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 22px 24px;
+    text-align: center;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+
+  .stat-card:hover { border-color: rgba(79,204,163,0.25); transform: translateY(-2px); }
+
+  .stat-value {
+    font-size: 2.2rem;
+    font-weight: 900;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+
+  .stat-label {
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 600;
+  }
+
+  .stat-sub {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    margin-top: 4px;
+  }
+
+  /* ── DORA METRICS ── */
+  .dora-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .dora-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+  }
+
+  .dora-level {
+    display: inline-block;
+    font-size: 0.65rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 3px 10px;
+    border-radius: 20px;
+    margin-bottom: 10px;
+  }
+
+  .level-elite { background: rgba(78,204,163,0.15); color: var(--good); border: 1px solid rgba(78,204,163,0.3); }
+  .level-high { background: rgba(78,204,163,0.1); color: #7eddb8; border: 1px solid rgba(78,204,163,0.2); }
+  .level-medium { background: rgba(240,165,0,0.12); color: var(--warning); border: 1px solid rgba(240,165,0,0.3); }
+  .level-low { background: rgba(233,69,96,0.1); color: var(--critical); border: 1px solid rgba(233,69,96,0.2); }
+
+  .dora-metric { font-size: 1.3rem; font-weight: 900; color: var(--text-primary); margin-bottom: 4px; }
+  .dora-name { font-size: 0.78rem; color: var(--text-secondary); }
+
+  /* ── BUS FACTOR ── */
+  .bus-factor-visual {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 16px 0;
+    flex-wrap: wrap;
+  }
+
+  .contributor-dot {
+    width: 42px; height: 42px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .dot-critical { background: rgba(233,69,96,0.2); border: 2px solid var(--critical); color: var(--critical); }
+  .dot-warning { background: rgba(240,165,0,0.15); border: 2px solid var(--warning); color: var(--warning); }
+  .dot-muted { background: rgba(255,255,255,0.05); border: 2px solid rgba(255,255,255,0.1); color: var(--text-secondary); }
+
+  /* ── COMMIT CHART ── */
+  .commit-chart {
+    display: flex;
+    align-items: flex-end;
+    gap: 4px;
+    height: 80px;
+    margin-top: 16px;
+  }
+
+  .commit-bar-col { display: flex; flex-direction: column; align-items: center; gap: 4px; flex: 1; }
+
+  .commit-bar {
+    width: 100%;
+    border-radius: 3px 3px 0 0;
+    background: linear-gradient(to top, var(--accent), var(--good));
+    opacity: 0.8;
+    transition: opacity 0.2s;
+    min-height: 4px;
+  }
+
+  .commit-bar:hover { opacity: 1; }
+  .commit-month { font-size: 0.6rem; color: var(--text-secondary); }
+
+  /* ── RISK ASSESSMENT MATRIX ── */
+  .risk-matrix {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .matrix-item {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px 20px;
+  }
+
+  .matrix-item-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+
+  .matrix-item-title { font-size: 0.9rem; font-weight: 700; color: var(--text-primary); }
+
+  .matrix-item-desc { font-size: 0.82rem; color: var(--text-secondary); line-height: 1.5; }
+
+  /* ── ACTIONS TABLE ── */
+  .action-list { display: flex; flex-direction: column; gap: 12px; }
+
+  .action-item {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px 22px;
+    display: flex;
+    align-items: flex-start;
+    gap: 18px;
+    transition: border-color 0.2s;
+  }
+
+  .action-item:hover { border-color: rgba(79,204,163,0.2); }
+
+  .action-num {
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    background: var(--accent);
+    color: var(--good);
+    font-size: 0.9rem;
+    font-weight: 800;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .action-body { flex: 1; }
+
+  .action-title { font-size: 0.95rem; font-weight: 700; color: var(--text-primary); margin-bottom: 4px; }
+
+  .action-desc { font-size: 0.83rem; color: var(--text-secondary); line-height: 1.5; }
+
+  .action-meta {
+    display: flex;
+    gap: 12px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+  }
+
+  .action-tag {
+    font-size: 0.7rem;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-weight: 600;
+  }
+
+  .tag-urgent { background: rgba(233,69,96,0.15); color: var(--critical); }
+  .tag-week { background: rgba(240,165,0,0.12); color: var(--warning); }
+  .tag-planned { background: rgba(78,204,163,0.1); color: var(--good); }
+  .tag-security { background: rgba(15,52,96,0.8); color: #6ba3d6; border: 1px solid rgba(107,163,214,0.3); }
+  .tag-quality { background: rgba(15,52,96,0.5); color: #8aaccc; border: 1px solid rgba(138,172,204,0.2); }
+
+  /* ── MOBILE TOGGLE ── */
+  .mobile-toggle {
+    display: none;
+    position: fixed;
+    top: 16px; left: 16px;
+    z-index: 200;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 14px;
+    color: var(--text-primary);
+    cursor: pointer;
+    font-size: 1.1rem;
+  }
+
+  .sidebar-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 90;
+  }
+
+  /* ── TOOLTIP ── */
+  [data-tooltip] { position: relative; cursor: help; }
+
+  [data-tooltip]::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 110%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #0d1117;
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+    font-size: 0.75rem;
+    padding: 6px 10px;
+    border-radius: 6px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s;
+    z-index: 50;
+  }
+
+  [data-tooltip]:hover::after { opacity: 1; }
+
+  /* ── DIVIDER ── */
+  .divider { height: 1px; background: var(--border); margin: 28px 0; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    .sidebar { transform: translateX(-100%); }
+    .sidebar.open { transform: translateX(0); }
+    .main { margin-left: 0; }
+    .mobile-toggle { display: flex; }
+    .sidebar-overlay.visible { display: block; }
+    .page-header { padding: 60px 24px 32px; }
+    .section { padding: 32px 24px; }
+    .grid-2, .grid-3, .grid-4, .dora-grid { grid-template-columns: 1fr 1fr; }
+    .risk-matrix { grid-template-columns: 1fr; }
+    .header-meta { gap: 20px; }
+  }
+
+  @media (max-width: 560px) {
+    .grid-2, .grid-3, .grid-4, .dora-grid { grid-template-columns: 1fr; }
+    .header-title { font-size: 1.4rem; }
+    .health-score-wrap { flex-direction: column; align-items: flex-start; }
+  }
+
+  /* ── ANIMATIONS ── */
+  .fade-in {
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+
+  .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+  /* ── THEME TOGGLE ── */
+  .theme-toggle-wrap {
+    padding: 14px 24px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .theme-toggle-label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .theme-switch {
+    position: relative;
+    width: 48px;
+    height: 26px;
+    flex-shrink: 0;
+  }
+
+  .theme-switch input { opacity: 0; width: 0; height: 0; }
+
+  .theme-slider {
+    position: absolute;
+    inset: 0;
+    background: #3a3f55;
+    border-radius: 26px;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+
+  .theme-slider::before {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    left: 3px;
+    top: 3px;
+    background: #fff;
+    border-radius: 50%;
+    transition: transform 0.3s;
+  }
+
+  .theme-switch input:checked + .theme-slider {
+    background: #7c8aff;
+  }
+
+  .theme-switch input:checked + .theme-slider::before {
+    transform: translateX(22px);
+  }
+
+  .theme-icon { font-size: 0.85rem; line-height: 1; }
+
+  /* ── LIGHT THEME ── */
+  [data-theme="light"] {
+    --sidebar-bg: #f0f2f5;
+    --card-bg: #ffffff;
+    --accent: #d0dff0;
+    --critical: #cf222e;
+    --warning: #bf8700;
+    --good: #1a7f5a;
+    --text-primary: #1f2328;
+    --text-secondary: #656d76;
+    --border: #d0d7de;
+    --sidebar-width: 260px;
+  }
+
+  [data-theme="light"] body {
+    background: #f6f8fa;
+  }
+
+  [data-theme="light"] .page-header {
+    background: linear-gradient(135deg, #d0dff0 0%, #e8ecf2 100%);
+  }
+
+  [data-theme="light"] .score-ring .track {
+    stroke: #d0d7de;
+  }
+
+  [data-theme="light"] .tl-table tr:hover td {
+    background: rgba(0,0,0,0.03);
+  }
+
+  [data-theme="light"] .score-bar-track {
+    background: #d0d7de;
+  }
+
+  [data-theme="light"] .risk-card:hover {
+    border-color: rgba(0,0,0,0.15);
+  }
+
+  [data-theme="light"] .dot-muted {
+    background: rgba(0,0,0,0.04);
+    border-color: #d0d7de;
+  }
+
+  [data-theme="light"] .commit-bar {
+    background: linear-gradient(to top, #d0dff0, var(--good));
+  }
+
+  [data-theme="light"] [data-tooltip]::after {
+    background: #ffffff;
+    border-color: #d0d7de;
+    color: #1f2328;
+  }
+
+  [data-theme="light"] .card:hover {
+    border-color: rgba(26,127,90,0.25);
+  }
+
+  [data-theme="light"] .stat-card:hover {
+    border-color: rgba(26,127,90,0.3);
+  }
+
+  [data-theme="light"] .header-badge {
+    background: rgba(207,34,46,0.1);
+    border-color: rgba(207,34,46,0.3);
+  }
+
+  [data-theme="light"] .nav-link:hover,
+  [data-theme="light"] .nav-link.active {
+    background: rgba(26,127,90,0.1);
+  }
+
+  [data-theme="light"] .pill-red {
+    background: rgba(207,34,46,0.1);
+    border-color: rgba(207,34,46,0.3);
+  }
+
+  [data-theme="light"] .pill-yellow {
+    background: rgba(191,135,0,0.1);
+    border-color: rgba(191,135,0,0.3);
+  }
+
+  [data-theme="light"] .pill-green {
+    background: rgba(26,127,90,0.1);
+    border-color: rgba(26,127,90,0.3);
+  }
+
+  [data-theme="light"] .status-red { box-shadow: 0 0 8px rgba(207,34,46,0.3); }
+  [data-theme="light"] .status-yellow { box-shadow: 0 0 8px rgba(191,135,0,0.3); }
+  [data-theme="light"] .status-green { box-shadow: 0 0 8px rgba(26,127,90,0.3); }
+
+  [data-theme="light"] .badge-critical {
+    background: rgba(207,34,46,0.12);
+  }
+
+  [data-theme="light"] .badge-high {
+    background: rgba(191,135,0,0.12);
+  }
+
+  [data-theme="light"] .risk-icon.critical { background: rgba(207,34,46,0.1); }
+  [data-theme="light"] .risk-icon.high { background: rgba(191,135,0,0.1); }
+
+  [data-theme="light"] .level-elite { background: rgba(26,127,90,0.1); border-color: rgba(26,127,90,0.3); }
+  [data-theme="light"] .level-high { background: rgba(26,127,90,0.07); border-color: rgba(26,127,90,0.2); color: #1a7f5a; }
+  [data-theme="light"] .level-medium { background: rgba(191,135,0,0.1); border-color: rgba(191,135,0,0.3); }
+  [data-theme="light"] .level-low { background: rgba(207,34,46,0.08); border-color: rgba(207,34,46,0.2); }
+
+  [data-theme="light"] .action-num {
+    background: #d0dff0;
+    color: #1a7f5a;
+  }
+
+  [data-theme="light"] .tag-security {
+    background: rgba(0,80,180,0.08);
+    color: #0550ae;
+    border-color: rgba(5,80,174,0.3);
+  }
+
+  [data-theme="light"] .tag-quality {
+    background: rgba(0,80,180,0.05);
+    color: #3a6ea5;
+    border-color: rgba(58,110,165,0.2);
+  }
+
+  [data-theme="light"] .tag-urgent { background: rgba(207,34,46,0.1); }
+  [data-theme="light"] .tag-week { background: rgba(191,135,0,0.1); }
+  [data-theme="light"] .tag-planned { background: rgba(26,127,90,0.08); }
+
+  [data-theme="light"] .mobile-toggle {
+    background: #ffffff;
+    border-color: #d0d7de;
+  }
+
+  [data-theme="light"] .disclaimer {
+    background: #e8ecf2;
+  }
+
+  [data-theme="light"] .theme-slider {
+    background: #c8cdd5;
+  }
+
+  /* ── DISCLAIMER ── */
+  .disclaimer {
+    padding: 24px 48px;
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    border-top: 1px solid var(--border);
+    background: var(--sidebar-bg);
+  }
+</style>
+</head>
+<body>
+
+<!-- Mobile Toggle -->
+<button class="mobile-toggle" id="mobileToggle" aria-label="Open navigation">☰</button>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<!-- Sidebar -->
+<nav class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-logo">Audit Report</div>
+    <div class="sidebar-title">Mohirdev Landing</div>
+    <div class="sidebar-date">21 March 2026 — Confidential</div>
+  </div>
+
+  <div class="theme-toggle-wrap">
+    <span class="theme-toggle-label"><span class="theme-icon" id="themeIcon">🌙</span> Dark mode</span>
+    <label class="theme-switch">
+      <input type="checkbox" id="themeToggle">
+      <span class="theme-slider"></span>
+    </label>
+  </div>
+
+  <div class="sidebar-nav">
+    <div class="nav-label">Navigation</div>
+    <a class="nav-link active" href="#executive-summary" onclick="setActive(this)">
+      <span class="nav-icon">📊</span> Executive Summary
+    </a>
+    <a class="nav-link" href="#critical-risks" onclick="setActive(this)">
+      <span class="nav-icon">🚨</span> Critical Risks
+    </a>
+    <a class="nav-link" href="#team-velocity" onclick="setActive(this)">
+      <span class="nav-icon">🚀</span> Team &amp; Velocity
+    </a>
+    <a class="nav-link" href="#investment-risk" onclick="setActive(this)">
+      <span class="nav-icon">💼</span> Investment Risk
+    </a>
+    <a class="nav-link" href="#recommended-actions" onclick="setActive(this)">
+      <span class="nav-icon">✅</span> Recommended Actions
+    </a>
+  </div>
+
+  <div class="sidebar-footer">
+    Engineering due diligence audit.<br>
+    Prepared for non-technical stakeholders.
+  </div>
+</nav>
+
+<!-- Main Content -->
+<main class="main">
+
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="header-badge">Confidential — Management Report</div>
+    <h1 class="header-title">Mohirdev Landing — Codebase Audit</h1>
+    <p class="header-subtitle">An independent engineering assessment of the production codebase covering security, reliability, team performance, and operational readiness.</p>
+    <div class="header-meta">
+      <div class="meta-item">
+        <span class="meta-label">Report Date</span>
+        <span class="meta-value">21 March 2026</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Overall Health</span>
+        <span class="meta-value" style="color:var(--warning)">4.5 / 10</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Report Type</span>
+        <span class="meta-value">Management Summary</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Audit Mode</span>
+        <span class="meta-value">Read-only, Non-invasive</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       SECTION 1 — EXECUTIVE SUMMARY
+  ════════════════════════════════════════════ -->
+  <section class="section fade-in" id="executive-summary">
+    <div class="section-label">Section 01</div>
+    <h2 class="section-title">Executive Summary</h2>
+    <p class="section-desc">A snapshot of overall codebase health across eight dimensions. Each area is scored from 1–10 and colour-coded for quick interpretation.</p>
+
+    <!-- Health Score + Intro -->
+    <div class="card" style="margin-bottom:28px;">
+      <div class="health-score-wrap">
+        <div class="score-ring">
+          <svg viewBox="0 0 140 140">
+            <circle class="track" cx="70" cy="70" r="60"/>
+            <circle class="fill" cx="70" cy="70" r="60"/>
+          </svg>
+          <div class="score-center">
+            <div class="score-number">4.5</div>
+            <div class="score-denom">out of 10</div>
+          </div>
+        </div>
+        <div class="score-details">
+          <h3>Overall Health: Needs Attention</h3>
+          <p>The codebase shows strong delivery capabilities — the team ships fast and often. However, significant security vulnerabilities and an absence of automated testing create substantial risk. Without remediation, these issues represent a credible path to a production incident or data breach.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Traffic Light Table -->
+    <div class="card">
+      <div class="card-title">Health Scorecard</div>
+      <table class="tl-table">
+        <thead>
+          <tr>
+            <th>Area</th>
+            <th>Score</th>
+            <th>Status</th>
+            <th>What it means</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="tl-dot status-red"></span><strong>Security</strong></td>
+            <td>
+              <div class="score-bar-wrap">
+                <div class="score-bar-track">
+                  <div class="score-bar-fill" style="width:20%;background:var(--critical);"></div>
+                </div>
+                <span class="score-bar-label" style="color:var(--critical)">2/10</span>
+              </div>
+            </td>
+            <td><span class="score-pill pill-red">CRITICAL</span></td>
+            <td style="color:var(--text-secondary);font-size:0.82rem;">Credentials exposed in source code; requires immediate action</td>
+          </tr>
+          <tr>
+            <td><span class="tl-dot status-red"></span><strong>Tests</strong></td>
+            <td>
+              <div class="score-bar-wrap">
+                <div class="score-bar-track">
+                  <div class="score-bar-fill" style="width:20%;background:var(--critical);"></div>
+                </div>
+                <span class="score-bar-label" style="color:var(--critical)">2/10</span>
+              </div>
+            </td>
+            <td><span class="score-pill pill-red">CRITICAL</span></td>
+            <td style="color:var(--text-secondary);font-size:0.82rem;">No automated tests; every deployment is manually verified</td>
+          </tr>
+          <tr>
+            <td><span class="tl-dot status-red"></span><strong>Documentation</strong></td>
+            <td>
+              <div class="score-bar-wrap">
+                <div class="score-bar-track">
+                  <div class="score-bar-fill" style="width:30%;background:var(--critical);"></div>
+                </div>
+                <span class="score-bar-label" style="color:var(--critical)">3/10</span>
+              </div>
+            </td>
+            <td><span class="score-pill pill-red">RED</span></td>
+            <td style="color:var(--text-secondary);font-size:0.82rem;">Minimal documentation; onboarding new engineers is slow</td>
+          </tr>
+          <tr>
+            <td><span class="tl-dot status-yellow"></span><strong>Dependencies</strong></td>
+            <td>
+              <div class="score-bar-wrap">
+                <div class="score-bar-track">
+                  <div class="score-bar-fill" style="width:40%;background:var(--warning);"></div>
+                </div>
+                <span class="score-bar-label" style="color:var(--warning)">4/10</span>
+              </div>
+            </td>
+            <td><span class="score-pill pill-yellow">YELLOW</span></td>
+            <td style="color:var(--text-secondary);font-size:0.82rem;">Outdated packages with known vulnerabilities</td>
+          </tr>
+          <tr>
+            <td><span class="tl-dot status-yellow"></span><strong>CI/CD Pipeline</strong></td>
+            <td>
+              <div class="score-bar-wrap">
+                <div class="score-bar-track">
+                  <div class="score-bar-fill" style="width:50%;background:var(--warning);"></div>
+                </div>
+                <span class="score-bar-label" style="color:var(--warning)">5/10</span>
+              </div>
+            </td>
+            <td><span class="score-pill pill-yellow">YELLOW</span></td>
+            <td style="color:var(--text-secondary);font-size:0.82rem;">Deployment pipeline exists but lacks quality gates</td>
+          </tr>
+          <tr>
+            <td><span class="tl-dot status-green"></span><strong>Code Quality</strong></td>
+            <td>
+              <div class="score-bar-wrap">
+                <div class="score-bar-track">
+                  <div class="score-bar-fill" style="width:70%;background:var(--good);"></div>
+                </div>
+                <span class="score-bar-label" style="color:var(--good)">7/10</span>
+              </div>
+            </td>
+            <td><span class="score-pill pill-green">GREEN</span></td>
+            <td style="color:var(--text-secondary);font-size:0.82rem;">Low duplication; consistent structure and coding patterns</td>
+          </tr>
+          <tr>
+            <td><span class="tl-dot status-green"></span><strong>Architecture</strong></td>
+            <td>
+              <div class="score-bar-wrap">
+                <div class="score-bar-track">
+                  <div class="score-bar-fill" style="width:70%;background:var(--good);"></div>
+                </div>
+                <span class="score-bar-label" style="color:var(--good)">7/10</span>
+              </div>
+            </td>
+            <td><span class="score-pill pill-green">GREEN</span></td>
+            <td style="color:var(--text-secondary);font-size:0.82rem;">Well-structured Next.js application; clear component boundaries</td>
+          </tr>
+          <tr>
+            <td><span class="tl-dot status-green"></span><strong>Team</strong></td>
+            <td>
+              <div class="score-bar-wrap">
+                <div class="score-bar-track">
+                  <div class="score-bar-fill" style="width:70%;background:var(--good);"></div>
+                </div>
+                <span class="score-bar-label" style="color:var(--good)">7/10</span>
+              </div>
+            </td>
+            <td><span class="score-pill pill-green">GREEN</span></td>
+            <td style="color:var(--text-secondary);font-size:0.82rem;">Capable, active team with consistent output</td>
+          </tr>
+          <tr>
+            <td><span class="tl-dot status-green"></span><strong>Velocity</strong></td>
+            <td>
+              <div class="score-bar-wrap">
+                <div class="score-bar-track">
+                  <div class="score-bar-fill" style="width:90%;background:var(--good);"></div>
+                </div>
+                <span class="score-bar-label" style="color:var(--good)">9/10</span>
+              </div>
+            </td>
+            <td><span class="score-pill pill-green">ELITE</span></td>
+            <td style="color:var(--text-secondary);font-size:0.82rem;">65 releases in 12 months; same-day code-to-production</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════
+       SECTION 2 — CRITICAL RISKS
+  ════════════════════════════════════════════ -->
+  <section class="section fade-in" id="critical-risks">
+    <div class="section-label">Section 02</div>
+    <h2 class="section-title">Critical Risks</h2>
+    <p class="section-desc">These are the issues most likely to cause a public incident, regulatory exposure, or data breach. Each requires a concrete remediation plan with a named owner and deadline.</p>
+
+    <div style="display:flex;flex-direction:column;gap:14px;">
+
+      <div class="risk-card critical">
+        <div class="risk-icon critical">🔑</div>
+        <div class="risk-body">
+          <div class="risk-header">
+            <span class="risk-title">Production Credentials Exposed in Source Code</span>
+            <span class="risk-badge badge-critical">Critical</span>
+          </div>
+          <p class="risk-desc">Live API keys, database passwords, and service credentials are committed directly into the codebase. Anyone with access to the repository — current or former employees, contractors, or a breach of the hosting platform — can extract these secrets and gain unauthorized access to production systems.</p>
+          <div class="risk-impact">
+            <span>Business impact:</span> Complete system compromise, regulatory fines, data breach notification obligations
+          </div>
+        </div>
+      </div>
+
+      <div class="risk-card critical">
+        <div class="risk-icon critical">👁️</div>
+        <div class="risk-body">
+          <div class="risk-header">
+            <span class="risk-title">API Authentication Token Visible to Every Website Visitor</span>
+            <span class="risk-badge badge-critical">Critical</span>
+          </div>
+          <p class="risk-desc">A private API authentication token is embedded in the client-side JavaScript bundle. This means it is downloaded and readable by every person who visits the website — including competitors, automated crawlers, and malicious actors — using standard browser developer tools. No hacking skills required.</p>
+          <div class="risk-impact">
+            <span>Business impact:</span> Unauthorized API access, service abuse, potential billing fraud, reputation risk
+          </div>
+        </div>
+      </div>
+
+      <div class="risk-card high">
+        <div class="risk-icon high">🗂️</div>
+        <div class="risk-body">
+          <div class="risk-header">
+            <span class="risk-title">Sensitive User Data Fetched to Browser</span>
+            <span class="risk-badge badge-high">High</span>
+          </div>
+          <p class="risk-desc">User passwords, national identification numbers, and other personally identifiable information are being retrieved from the server and processed in the browser. This violates privacy best practices and significantly expands the attack surface. A cross-site scripting attack or malicious browser extension could silently harvest this data.</p>
+          <div class="risk-impact">
+            <span>Business impact:</span> GDPR/privacy law violation, user trust damage, potential class-action liability
+          </div>
+        </div>
+      </div>
+
+      <div class="risk-card high">
+        <div class="risk-icon high">⚗️</div>
+        <div class="risk-body">
+          <div class="risk-header">
+            <span class="risk-title">No Automated Tests Blocking Bad Code from Shipping</span>
+            <span class="risk-badge badge-high">High</span>
+          </div>
+          <p class="risk-desc">The codebase has effectively zero automated test coverage. There is no safety net to catch regressions when developers make changes. Every release relies entirely on manual review. As the codebase grows and the team scales, the probability of a defect reaching production increases with each deployment.</p>
+          <div class="risk-impact">
+            <span>Business impact:</span> Increased production incident rate, slower safe release cadence, higher QA labour cost
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════
+       SECTION 3 — TEAM & VELOCITY
+  ════════════════════════════════════════════ -->
+  <section class="section fade-in" id="team-velocity">
+    <div class="section-label">Section 03</div>
+    <h2 class="section-title">Team &amp; Velocity</h2>
+    <p class="section-desc">The team delivers at an elite pace by industry standards. The primary concern is key-person risk — two engineers account for the majority of output.</p>
+
+    <!-- Stat row -->
+    <div class="grid-4" style="margin-bottom:24px;">
+      <div class="stat-card">
+        <div class="stat-value" style="color:var(--good)">11</div>
+        <div class="stat-label">Total Contributors</div>
+        <div class="stat-sub">4 active · 2 reviewers</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" style="color:var(--good)">768</div>
+        <div class="stat-label">Commits (12 mo)</div>
+        <div class="stat-sub">~64 per month average</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" style="color:var(--good)">65</div>
+        <div class="stat-label">Releases (12 mo)</div>
+        <div class="stat-sub">~5 per month</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" style="color:var(--warning)">2</div>
+        <div class="stat-label">Bus Factor</div>
+        <div class="stat-sub">Key-person risk</div>
+      </div>
+    </div>
+
+    <!-- DORA Metrics -->
+    <div class="card" style="margin-bottom:24px;">
+      <div class="card-title">DORA Metrics — Industry Benchmark Comparison</div>
+      <p style="font-size:0.82rem;color:var(--text-secondary);margin-bottom:16px;">DORA (DevOps Research and Assessment) are the four gold-standard metrics used globally to measure software delivery performance. "Elite" is the top 25% of organisations worldwide.</p>
+      <div class="dora-grid">
+        <div class="dora-card">
+          <div class="dora-level level-elite">Elite</div>
+          <div class="dora-metric">Daily+</div>
+          <div class="dora-name">Deployment Frequency</div>
+        </div>
+        <div class="dora-card">
+          <div class="dora-level level-elite">Elite</div>
+          <div class="dora-metric">Same Day</div>
+          <div class="dora-name">Lead Time to Change</div>
+        </div>
+        <div class="dora-card">
+          <div class="dora-level level-high">High</div>
+          <div class="dora-metric">&lt; 1 day</div>
+          <div class="dora-name">Mean Time to Restore</div>
+        </div>
+        <div class="dora-card">
+          <div class="dora-level level-medium">Medium</div>
+          <div class="dora-metric">~15%</div>
+          <div class="dora-name">Change Failure Rate</div>
+        </div>
+      </div>
+      <p style="font-size:0.78rem;color:var(--text-secondary);">Deployment frequency and lead time are in the top tier globally. Change failure rate can be improved by introducing automated tests.</p>
+    </div>
+
+    <!-- Bus Factor + Commit chart -->
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">Bus Factor — Key-Person Risk</div>
+        <p style="font-size:0.83rem;color:var(--text-secondary);margin-bottom:12px;">If the top 2 engineers left tomorrow, significant institutional knowledge would be lost. This is a retention and succession planning risk.</p>
+        <div class="bus-factor-visual">
+          <div class="contributor-dot dot-critical" data-tooltip="~38% of all commits">C1</div>
+          <div class="contributor-dot dot-critical" data-tooltip="~29% of all commits">C2</div>
+          <div class="contributor-dot dot-warning" data-tooltip="~12% of all commits">C3</div>
+          <div class="contributor-dot dot-warning" data-tooltip="~9% of all commits">C4</div>
+          <div class="contributor-dot dot-muted" data-tooltip="Occasional contributor">C5</div>
+          <div class="contributor-dot dot-muted" data-tooltip="Occasional contributor">C6</div>
+          <div class="contributor-dot dot-muted" data-tooltip="Occasional contributor">C7</div>
+        </div>
+        <p style="font-size:0.75rem;color:var(--text-secondary);margin-top:4px;">Red = critical dependency. Orange = secondary risk. Grey = low contribution.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Monthly Commit Activity (12 months)</div>
+        <div class="commit-chart" id="commitChart">
+          <!-- Bars injected by JS -->
+        </div>
+        <p style="font-size:0.75rem;color:var(--text-secondary);margin-top:10px;">Consistent activity with no prolonged gaps — indicates a stable team cadence.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════
+       SECTION 4 — INVESTMENT RISK ASSESSMENT
+  ════════════════════════════════════════════ -->
+  <section class="section fade-in" id="investment-risk">
+    <div class="section-label">Section 04</div>
+    <h2 class="section-title">Investment Risk Assessment</h2>
+    <p class="section-desc">A balanced view of risks and strengths for strategic decision-making. Security debt is the dominant concern and must be treated as a blocker.</p>
+
+    <div class="risk-matrix">
+
+      <div class="matrix-item" style="border-left:3px solid var(--critical);">
+        <div class="matrix-item-header">
+          <span class="matrix-item-title">🔴 Security Debt — Blocker</span>
+          <span class="score-pill pill-red">Immediate</span>
+        </div>
+        <p class="matrix-item-desc">The exposed credentials and client-visible authentication tokens represent an active, exploitable vulnerability. This is not a future risk — it exists in production today. Remediation requires rotating credentials, restructuring secret management, and fixing the data exposure patterns. Estimated effort: 1–2 engineer-weeks.</p>
+      </div>
+
+      <div class="matrix-item" style="border-left:3px solid var(--good);">
+        <div class="matrix-item-header">
+          <span class="matrix-item-title">🟢 Delivery Velocity — Strength</span>
+          <span class="score-pill pill-green">Asset</span>
+        </div>
+        <p class="matrix-item-desc">65 production releases in 12 months is elite-tier performance. This indicates strong engineering discipline, a mature deployment pipeline, and a culture of continuous delivery. This velocity is a competitive advantage and suggests the team can absorb security remediation work without major slowdown.</p>
+      </div>
+
+      <div class="matrix-item" style="border-left:3px solid var(--good);">
+        <div class="matrix-item-header">
+          <span class="matrix-item-title">🟢 Code Quality — Strength</span>
+          <span class="score-pill pill-green">Asset</span>
+        </div>
+        <p class="matrix-item-desc">Low code duplication and a consistent architecture suggest the codebase is maintainable and will scale cleanly. This reduces future technical debt accumulation and means new engineers can become productive faster — lowering onboarding cost over time.</p>
+      </div>
+
+      <div class="matrix-item" style="border-left:3px solid var(--warning);">
+        <div class="matrix-item-header">
+          <span class="matrix-item-title">🟡 No Tests — Regression Risk</span>
+          <span class="score-pill pill-yellow">Medium-term</span>
+        </div>
+        <p class="matrix-item-desc">Without automated tests, every deployment carries the risk of silently breaking existing functionality. As the user base grows, the cost of each incident grows with it. This is a compounding risk — the longer it is deferred, the more expensive it becomes to introduce tests into a mature codebase.</p>
+      </div>
+
+      <div class="matrix-item" style="border-left:3px solid var(--warning);">
+        <div class="matrix-item-header">
+          <span class="matrix-item-title">🟡 Bus Factor — Retention Risk</span>
+          <span class="score-pill pill-yellow">Ongoing</span>
+        </div>
+        <p class="matrix-item-desc">Two engineers hold the majority of institutional knowledge. If either were to leave without knowledge transfer, delivery would slow significantly. Mitigation requires documentation, pairing practices, and intentional knowledge distribution across the team.</p>
+      </div>
+
+      <div class="matrix-item" style="border-left:3px solid var(--accent);">
+        <div class="matrix-item-header">
+          <span class="matrix-item-title">🔵 Architecture — Neutral</span>
+          <span class="score-pill" style="background:rgba(15,52,96,0.6);color:#6ba3d6;border:1px solid rgba(107,163,214,0.3);">Stable</span>
+        </div>
+        <p class="matrix-item-desc">The Next.js architecture is a mature, well-supported choice with a large talent pool. The current structure does not impose meaningful scaling constraints at the current growth stage. No architectural rewrite is needed in the near to medium term.</p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════
+       SECTION 5 — RECOMMENDED ACTIONS
+  ════════════════════════════════════════════ -->
+  <section class="section fade-in" id="recommended-actions">
+    <div class="section-label">Section 05</div>
+    <h2 class="section-title">Recommended Actions</h2>
+    <p class="section-desc">Prioritised by business impact. The first two items are non-negotiable — they address active security vulnerabilities in production.</p>
+
+    <div class="action-list">
+
+      <div class="action-item">
+        <div class="action-num">1</div>
+        <div class="action-body">
+          <div class="action-title">Rotate All Exposed Credentials</div>
+          <p class="action-desc">Immediately invalidate and replace all API keys, database passwords, and service tokens that are currently committed to the source code. Move secrets to a dedicated secret manager (e.g., environment variables via a vault service). Verify no secrets remain in git history using automated scanning tools. This resolves the two Critical findings.</p>
+          <div class="action-meta">
+            <span class="action-tag tag-urgent">Urgent — 1 day</span>
+            <span class="action-tag tag-security">Security</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="action-item">
+        <div class="action-num">2</div>
+        <div class="action-body">
+          <div class="action-title">Fix Data Exposure Vulnerabilities</div>
+          <p class="action-desc">Refactor API responses to ensure that sensitive fields (passwords, national IDs, private identifiers) are never included in data sent to the browser. This requires a backend code review and API audit to verify that each endpoint returns only the minimum data necessary. Implement server-side data filtering as a standard pattern going forward.</p>
+          <div class="action-meta">
+            <span class="action-tag tag-urgent">1 week</span>
+            <span class="action-tag tag-security">Security</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="action-item">
+        <div class="action-num">3</div>
+        <div class="action-body">
+          <div class="action-title">Add Automated Testing to the PR Pipeline</div>
+          <p class="action-desc">Introduce a minimum viable test suite covering critical user journeys (authentication, checkout, core page rendering). Configure the CI pipeline to block merges when tests fail. This does not require 100% coverage — even 40–50% coverage on critical paths dramatically reduces regression risk. Estimated effort: 2 engineer-weeks initial setup, then ongoing as a team norm.</p>
+          <div class="action-meta">
+            <span class="action-tag tag-week">2 weeks</span>
+            <span class="action-tag tag-quality">Quality</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="action-item">
+        <div class="action-num">4</div>
+        <div class="action-body">
+          <div class="action-title">Write Project Documentation</div>
+          <p class="action-desc">Create and maintain a developer README covering: system architecture, environment setup, deployment process, and API contract overview. This reduces onboarding time for new engineers, mitigates bus factor risk, and is a prerequisite for scaling the team. Assign a rotating documentation owner to keep it current.</p>
+          <div class="action-meta">
+            <span class="action-tag tag-planned">Ongoing</span>
+            <span class="action-tag tag-quality">Quality</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="action-item">
+        <div class="action-num">5</div>
+        <div class="action-body">
+          <div class="action-title">Update Outdated Dependencies</div>
+          <p class="action-desc">Schedule a quarterly dependency review cycle. Prioritise packages flagged by automated security scanners (npm audit). Outdated dependencies with known CVEs should be treated as security issues, not housekeeping tasks. Consider adding a dependency vulnerability check to the CI pipeline to catch new issues at the point of introduction.</p>
+          <div class="action-meta">
+            <span class="action-tag tag-week">1–2 weeks, then quarterly</span>
+            <span class="action-tag tag-security">Security</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Summary Box -->
+    <div class="card" style="border-color:rgba(78,204,163,0.2);">
+      <div class="card-title" style="color:var(--good)">Bottom Line for Decision-Makers</div>
+      <p style="font-size:0.9rem;color:var(--text-primary);line-height:1.7;margin-bottom:12px;">The team is capable and delivers fast. The codebase is well-structured. <strong>The security issues are the only true blockers</strong> — they need to be fixed before any new features are shipped. Once resolved, the investment in automated testing will protect velocity as the product scales. The architecture does not need a rewrite and the team does not need to be restructured. This is a fixable situation with a clear, bounded remediation path.</p>
+      <div style="display:flex;gap:24px;flex-wrap:wrap;margin-top:16px;">
+        <div>
+          <div style="font-size:0.68rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-secondary);margin-bottom:4px;">Security Remediation</div>
+          <div style="font-size:1rem;font-weight:700;color:var(--warning)">1–2 engineer-weeks</div>
+        </div>
+        <div>
+          <div style="font-size:0.68rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-secondary);margin-bottom:4px;">Test Coverage Baseline</div>
+          <div style="font-size:1rem;font-weight:700;color:var(--warning)">2 engineer-weeks</div>
+        </div>
+        <div>
+          <div style="font-size:0.68rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-secondary);margin-bottom:4px;">Total Estimated Effort</div>
+          <div style="font-size:1rem;font-weight:700;color:var(--good)">~1 sprint</div>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <div class="disclaimer">
+    Confidential — prepared for non-technical stakeholders. This report reflects findings from a read-only static analysis conducted on 21 March 2026. It does not constitute legal, regulatory, or financial advice. All findings should be validated by the engineering team before remediation begins.
+  </div>
+
+</main>
+
+<script>
+  // ── Theme toggle (light/dark)
+  const themeToggle = document.getElementById('themeToggle');
+  const themeIcon = document.getElementById('themeIcon');
+  const themeLabel = themeToggle.closest('.theme-toggle-wrap').querySelector('.theme-toggle-label');
+
+  function applyTheme(mode) {
+    document.documentElement.setAttribute('data-theme', mode);
+    if (mode === 'light') {
+      themeToggle.checked = true;
+      themeIcon.textContent = '☀️';
+      themeLabel.innerHTML = '<span class="theme-icon" id="themeIcon">☀️</span> Light mode';
+    } else {
+      themeToggle.checked = false;
+      themeIcon.textContent = '🌙';
+      themeLabel.innerHTML = '<span class="theme-icon" id="themeIcon">🌙</span> Dark mode';
+    }
+    localStorage.setItem('audit-theme', mode);
+  }
+
+  // Load saved preference (default: dark)
+  const savedTheme = localStorage.getItem('audit-theme') || 'dark';
+  applyTheme(savedTheme);
+
+  themeToggle.addEventListener('change', () => {
+    applyTheme(themeToggle.checked ? 'light' : 'dark');
+  });
+
+  // ── Mobile sidebar toggle
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('sidebarOverlay');
+  const toggle  = document.getElementById('mobileToggle');
+
+  toggle.addEventListener('click', () => {
+    sidebar.classList.toggle('open');
+    overlay.classList.toggle('visible');
+  });
+
+  overlay.addEventListener('click', () => {
+    sidebar.classList.remove('open');
+    overlay.classList.remove('visible');
+  });
+
+  // ── Active nav link
+  function setActive(el) {
+    document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+    el.classList.add('active');
+    sidebar.classList.remove('open');
+    overlay.classList.remove('visible');
+  }
+
+  // ── Scroll spy
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks  = document.querySelectorAll('.nav-link');
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const id = entry.target.id;
+        navLinks.forEach(link => {
+          link.classList.toggle('active', link.getAttribute('href') === '#' + id);
+        });
+      }
+    });
+  }, { threshold: 0.35 });
+
+  sections.forEach(s => observer.observe(s));
+
+  // ── Fade-in on scroll
+  const fadeEls = document.querySelectorAll('.fade-in');
+  const fadeObs = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        fadeObs.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  fadeEls.forEach(el => fadeObs.observe(el));
+
+  // ── Commit chart
+  const months = ['Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec','Jan','Feb','Mar'];
+  const values = [52, 58, 71, 65, 80, 74, 68, 72, 63, 70, 75, 70];
+  const maxVal = Math.max(...values);
+  const chart  = document.getElementById('commitChart');
+
+  months.forEach((m, i) => {
+    const col = document.createElement('div');
+    col.className = 'commit-bar-col';
+
+    const bar = document.createElement('div');
+    bar.className = 'commit-bar';
+    bar.style.height = Math.round((values[i] / maxVal) * 72) + 'px';
+    bar.title = `${m}: ${values[i]} commits`;
+
+    const label = document.createElement('div');
+    label.className = 'commit-month';
+    label.textContent = m;
+
+    col.appendChild(bar);
+    col.appendChild(label);
+    chart.appendChild(col);
+  });
+
+  // ── Animate score ring on load
+  window.addEventListener('load', () => {
+    // Trigger reflow for CSS animation
+    document.querySelector('.score-ring .fill').style.strokeDashoffset =
+      `calc(376.99 - (376.99 * 0.45))`;
+  });
+</script>
+</body>
+</html>

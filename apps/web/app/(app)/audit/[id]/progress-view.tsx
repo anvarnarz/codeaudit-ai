@@ -104,7 +104,7 @@ export function ProgressView({
   return (
     <div className="flex flex-col gap-4">
       {/* Simplified view — D-05 */}
-      <div className="rounded-lg border bg-card p-5 flex flex-col gap-3">
+      <div className="rounded-lg border border-zinc-300 dark:border-zinc-700 bg-card p-5 flex flex-col gap-3 shadow-sm">
         <div className="flex items-center justify-between">
           <span className="text-sm font-medium">
             {isTerminal
@@ -154,7 +154,7 @@ export function ProgressView({
 
       {/* Expanded detail — D-06 */}
       {expanded && (
-        <div className="rounded-lg border bg-card divide-y divide-border">
+        <div className="rounded-lg border border-zinc-300 dark:border-zinc-700 bg-card divide-y divide-border shadow-sm">
           {Array.from({ length: 12 }, (_, i) => i).map((phaseNum) => {
             const phase = phases.get(phaseNum);
             const status = phase?.status ?? "pending";

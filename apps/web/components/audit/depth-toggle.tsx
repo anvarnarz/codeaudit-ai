@@ -27,13 +27,13 @@ export function DepthToggle({ value, onChange }: DepthToggleProps) {
               "flex flex-col items-start rounded-lg border p-4 text-left transition-colors",
               "hover:border-muted-foreground/50",
               value === id
-                ? "border-primary bg-primary/5 ring-1 ring-primary"
-                : "border-border bg-card"
+                ? "border-primary bg-white text-black ring-2 ring-primary dark:bg-white dark:text-black"
+                : "border-zinc-300 dark:border-zinc-700 bg-card shadow-sm"
             )}
           >
-            <p className={cn("text-sm font-medium", value === id ? "text-primary" : "")}>{label}</p>
-            <p className="text-xs text-muted-foreground mt-0.5">{time}</p>
-            <p className="text-xs text-muted-foreground/70 mt-1">{note}</p>
+            <p className={cn("text-sm font-medium", value === id ? "text-black dark:text-black" : "")}>{label}</p>
+            <p className={cn("text-xs mt-0.5", value === id ? "text-black/70 dark:text-black/70" : "text-muted-foreground")}>{time}</p>
+            <p className={cn("text-xs mt-1", value === id ? "text-black/60 dark:text-black/60" : "text-muted-foreground/70")}>{note}</p>
           </button>
         ))}
       </div>

@@ -6,6 +6,24 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## 2026-03-22 — UI Polish: 6 Feedback Issues
+
+### Fixed
+
+- **Selected buttons indistinguishable**: Provider, audit-type, depth, and filter buttons now use solid white background with ring highlight when selected
+- **No light theme toggle**: Added light/dark theme toggle in sidebar with localStorage persistence; removed forced dark mode from root layout; added proper light mode CSS variables
+- **Display name "CodeAudit" missing "AI"**: Updated metadata title, sidebar logo, and setup wizard to say "CodeAudit AI"
+- **Folder picker browse button useless**: Removed the broken `<input type="file" webkitdirectory>` and Browse button; kept only the text input for pasting absolute paths
+- **Design too minimalistic**: Added visible borders (`border-zinc-300`/`border-zinc-700`), shadow on cards, solid button backgrounds, hover states (`hover:bg-zinc-100`/`hover:bg-zinc-800`), focus rings, and clear active states across all components
+
+### Changed
+
+- CSS variables restructured: light mode is now `:root` default, dark mode under `.dark` class
+- Button variants updated: outline/secondary have visible borders, ghost has proper hover bg
+- Input and select components have stronger border contrast
+
+---
+
 ## 2026-03-22 — Improved HTML Report Design
 
 ### Changed

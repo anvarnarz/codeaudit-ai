@@ -92,7 +92,7 @@ export function SetupWizard() {
             </div>
 
             {/* Feature list */}
-            <div className="border border-border rounded-xl bg-card shadow-sm p-6 space-y-4">
+            <div className="border border-zinc-300 dark:border-zinc-700 rounded-xl bg-card shadow-sm p-6 space-y-4">
               {FEATURES.map(({ icon: Icon, text }) => (
                 <div key={text} className="flex items-start gap-3">
                   <div className="mt-0.5 flex-shrink-0 h-8 w-8 rounded-md bg-primary/10 flex items-center justify-center">
@@ -130,7 +130,7 @@ export function SetupWizard() {
             </div>
 
             {/* Card */}
-            <div className="border border-border rounded-xl bg-card shadow-sm p-6">
+            <div className="border border-zinc-300 dark:border-zinc-700 rounded-xl bg-card shadow-sm p-6">
               {success ? (
                 <div className="flex flex-col items-center gap-3 py-4">
                   <CheckCircle2 className="h-10 w-10 text-green-500" />
@@ -171,7 +171,7 @@ export function SetupWizard() {
                       onChange={(e) => setApiKey(e.target.value)}
                       placeholder={PROVIDERS.find((p) => p.id === provider)?.hint}
                       required
-                      className="w-full px-3 py-2 text-sm rounded-md border border-input bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                      className="w-full px-3 py-2 text-sm rounded-md border border-zinc-300 dark:border-zinc-700 bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
                     />
                   </div>
 
@@ -187,7 +187,7 @@ export function SetupWizard() {
                       value={label}
                       onChange={(e) => setLabel(e.target.value)}
                       placeholder="Personal key"
-                      className="w-full px-3 py-2 text-sm rounded-md border border-input bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                      className="w-full px-3 py-2 text-sm rounded-md border border-zinc-300 dark:border-zinc-700 bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
                     />
                   </div>
 

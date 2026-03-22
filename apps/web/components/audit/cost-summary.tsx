@@ -49,7 +49,7 @@ export function CostSummary({
   const completedPhases = phases.filter((p) => p.status === "completed");
 
   return (
-    <div className="rounded-lg border bg-card p-4 flex flex-col gap-3">
+    <div className="rounded-lg border border-zinc-300 dark:border-zinc-700 bg-card p-4 flex flex-col gap-3 shadow-sm">
       {/* Top banner */}
       <div className="flex items-center gap-2 text-sm">
         <span className="font-medium">
