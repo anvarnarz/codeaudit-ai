@@ -3,9 +3,9 @@ import path from "node:path";
 import { createLlmProvider, resolveModel } from "@codeaudit-ai/llm-adapter";
 import { generateObject } from "ai";
 import { z } from "zod";
-import { execCommand } from "../commands.js";
-import { markPhaseCompleted } from "../progress-emitter.js";
-import type { AuditRunContext, PhaseRunner } from "../orchestrator.js";
+import { execCommand } from "../commands";
+import { markPhaseCompleted } from "../progress-emitter";
+import type { AuditRunContext, PhaseRunner } from "../orchestrator";
 
 export const phase00Runner: PhaseRunner = async (ctx, phaseNumber) => {
   const { auditId, repoPath, auditOutputDir, llmProvider, decryptedApiKey, selectedModel } = ctx;

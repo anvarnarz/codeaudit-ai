@@ -1,12 +1,12 @@
 import fs from "node:fs/promises";
 import path from "node:path";
-import { execCommand } from "../commands.js";
-import { buildPhasePrompt, FINDING_FORMAT_TEMPLATE } from "../prompt-builder.js";
-import { runPhaseLlm } from "../finding-extractor.js";
-import { markPhaseCompleted } from "../progress-emitter.js";
-import { getGuideChunk } from "../guide-chunks.js";
-import { getRepoContext, getModel, headLimit } from "./shared.js";
-import type { AuditRunContext, PhaseRunner } from "../orchestrator.js";
+import { execCommand } from "../commands";
+import { buildPhasePrompt, FINDING_FORMAT_TEMPLATE } from "../prompt-builder";
+import { runPhaseLlm } from "../finding-extractor";
+import { markPhaseCompleted } from "../progress-emitter";
+import { getGuideChunk } from "../guide-chunks";
+import { getRepoContext, getModel, headLimit } from "./shared";
+import type { AuditRunContext, PhaseRunner } from "../orchestrator";
 
 export const phase04Runner: PhaseRunner = async (ctx, phaseNumber) => {
   const { auditId, repoPath, auditOutputDir } = ctx;

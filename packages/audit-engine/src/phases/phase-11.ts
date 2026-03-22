@@ -3,9 +3,9 @@ import path from "node:path";
 import { getDb, audits } from "@codeaudit-ai/db";
 import { eq } from "drizzle-orm";
 import { generateText } from "ai";
-import { markPhaseCompleted } from "../progress-emitter.js";
-import { getModel } from "./shared.js";
-import type { AuditRunContext, PhaseRunner } from "../orchestrator.js";
+import { markPhaseCompleted } from "../progress-emitter";
+import { getModel } from "./shared";
+import type { AuditRunContext, PhaseRunner } from "../orchestrator";
 
 export const phase11Runner: PhaseRunner = async (ctx, phaseNumber) => {
   const { auditId, auditOutputDir } = ctx;

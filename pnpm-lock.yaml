@@ -23,10 +23,10 @@ importers:
 
   apps/web:
     dependencies:
-      '@codeaudit/audit-engine':
+      '@codeaudit-ai/audit-engine':
         specifier: workspace:^
         version: link:../../packages/audit-engine
-      '@codeaudit/db':
+      '@codeaudit-ai/db':
         specifier: workspace:*
         version: link:../../packages/db
       '@radix-ui/react-alert-dialog':
@@ -123,10 +123,10 @@ importers:
       '@ai-sdk/provider':
         specifier: 1.1.3
         version: 1.1.3
-      '@codeaudit/db':
+      '@codeaudit-ai/db':
         specifier: workspace:*
         version: link:../db
-      '@codeaudit/llm-adapter':
+      '@codeaudit-ai/llm-adapter':
         specifier: workspace:*
         version: link:../llm-adapter
       ai:
@@ -218,16 +218,16 @@ importers:
 
   worker:
     dependencies:
-      '@codeaudit/audit-engine':
+      '@codeaudit-ai/audit-engine':
         specifier: workspace:*
         version: link:../packages/audit-engine
-      '@codeaudit/db':
+      '@codeaudit-ai/db':
         specifier: workspace:*
         version: link:../packages/db
-      '@codeaudit/llm-adapter':
+      '@codeaudit-ai/llm-adapter':
         specifier: workspace:*
         version: link:../packages/llm-adapter
-      '@codeaudit/repo-sandbox':
+      '@codeaudit-ai/repo-sandbox':
         specifier: workspace:*
         version: link:../packages/repo-sandbox
       bullmq:

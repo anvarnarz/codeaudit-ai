@@ -1,9 +1,9 @@
 import type { LanguageModelV1 } from "@ai-sdk/provider";
-import { createAnthropicProvider } from "./providers/anthropic.js";
-import { createOpenAIProvider } from "./providers/openai.js";
-import { createGeminiProvider } from "./providers/gemini.js";
-export { resolveModel, PHASE_COMPLEXITY } from "./models.js";
-export type { LlmProvider, PhaseComplexity } from "./models.js";
+import { createAnthropicProvider } from "./providers/anthropic";
+import { createOpenAIProvider } from "./providers/openai";
+import { createGeminiProvider } from "./providers/gemini";
+export { resolveModel, PHASE_COMPLEXITY } from "./models";
+export type { LlmProvider, PhaseComplexity } from "./models";
 
 export type LlmAdapterConfig = {
   provider: "anthropic" | "openai" | "gemini";

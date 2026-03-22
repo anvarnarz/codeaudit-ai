@@ -2,7 +2,7 @@ import { getDb, auditPhases } from "@codeaudit-ai/db";
 import { eq, and } from "drizzle-orm";
 import { createLlmProvider, resolveModel } from "@codeaudit-ai/llm-adapter";
 import type { LanguageModelV1 } from "@ai-sdk/provider";
-import type { AuditRunContext } from "../orchestrator.js";
+import type { AuditRunContext } from "../orchestrator";
 
 /**
  * Retrieve the Phase 0 repo context JSON string for use in subsequent phase prompts.

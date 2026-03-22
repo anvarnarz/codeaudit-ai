@@ -2,7 +2,7 @@
   "name": "@codeaudit-ai/cli",
   "version": "0.1.0",
   "type": "module",
-  "bin": { "codeaudit": "./dist/index.js" },
+  "bin": { "codeaudit": "./src/index.ts" },
   "scripts": {
     "build": "tsc",
     "dev": "ts-node --esm index.ts"

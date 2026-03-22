@@ -3,13 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "description": "Core audit orchestrator — translates 13-phase CLI audit into structured LLM API calls",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
   "exports": {
     ".": {
-      "import": "./dist/index.js",
-      "require": "./dist/index.js",
-      "types": "./dist/index.d.ts"
+      "import": "./src/index.ts",
+      "require": "./src/index.ts",
+      "types": "./src/index.ts"
     }
   },
   "scripts": {
