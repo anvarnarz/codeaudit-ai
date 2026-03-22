@@ -66,8 +66,9 @@ function Checkbox({
   onChange: () => void;
 }) {
   return (
-    <button
-      type="button"
+    <div
+      role="checkbox"
+      aria-checked={checked}
       onClick={(e) => {
         e.stopPropagation();
         e.preventDefault();
@@ -97,7 +98,7 @@ function Checkbox({
           <polyline points="20 6 9 17 4 12" />
         </svg>
       )}
-    </button>
+    </div>
   );
 }
 
@@ -264,13 +265,14 @@ export function HistoryClient({ audits }: { audits: HistoryAudit[] }) {
             All past audits grouped by folder.
           </p>
         </div>
-        <button
+        <div
           onClick={toggleAll}
-          className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-zinc-200 dark:border-zinc-700 bg-transparent text-xs text-muted-foreground hover:text-foreground transition-colors"
+          className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-zinc-200 dark:border-zinc-700 bg-transparent text-xs cursor-pointer select-none"
+          style={{ color: "var(--text-muted)" }}
         >
           <Checkbox checked={allSelected} onChange={toggleAll} />
           {allSelected ? "Deselect all" : "Select all"}
-        </button>
+        </div>
       </div>
 
       {/* Bulk action bar */}
