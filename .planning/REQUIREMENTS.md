@@ -9,12 +9,12 @@ Complete UI redesign — delete all existing page/component/layout code and rebu
 
 ### Design System (DSYS)
 
-- [ ] **DSYS-01**: App uses dark theme by default with design tokens (#0a0a0b bg, #111113 surface, #facc15 accent, full token set from guide)
-- [ ] **DSYS-02**: App supports light theme with correct token mapping (#fafafa bg, #ffffff surface, #ca8a04 accent)
-- [ ] **DSYS-03**: User can toggle between dark/light themes (persisted preference)
-- [ ] **DSYS-04**: Tailwind CSS 4 config uses design tokens as CSS variables for both themes
-- [ ] **DSYS-05**: Geist (sans) and JetBrains Mono (mono) fonts are loaded and applied globally
-- [ ] **DSYS-06**: Animations work: fadeIn, slideIn, progressPulse, spin, stagger-1 through stagger-5
+- [x] **DSYS-01**: App uses dark theme by default with design tokens (#0a0a0b bg, #111113 surface, #facc15 accent, full token set from guide)
+- [x] **DSYS-02**: App supports light theme with correct token mapping (#fafafa bg, #ffffff surface, #ca8a04 accent)
+- [x] **DSYS-03**: User can toggle between dark/light themes (persisted preference)
+- [x] **DSYS-04**: Tailwind CSS 4 config uses design tokens as CSS variables for both themes
+- [x] **DSYS-05**: Geist (sans) and JetBrains Mono (mono) fonts are loaded and applied globally
+- [x] **DSYS-06**: Animations work: fadeIn, slideIn, progressPulse, spin, stagger-1 through stagger-5
 
 ### Shared Components (COMP)
 
@@ -97,8 +97,8 @@ Complete UI redesign — delete all existing page/component/layout code and rebu
 
 ### Cleanup (CLEN)
 
-- [ ] **CLEN-01**: All old page components, layout files, and client components deleted before new code is written
-- [ ] **CLEN-02**: Old CSS/styling that conflicts with new design system removed
+- [x] **CLEN-01**: All old page components, layout files, and client components deleted before new code is written
+- [x] **CLEN-02**: Old CSS/styling that conflicts with new design system removed
 
 ## v2 Requirements
 
@@ -121,14 +121,14 @@ Complete UI redesign — delete all existing page/component/layout code and rebu
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| CLEN-01 | Phase 5 | Pending |
-| CLEN-02 | Phase 5 | Pending |
-| DSYS-01 | Phase 5 | Pending |
-| DSYS-02 | Phase 5 | Pending |
-| DSYS-03 | Phase 5 | Pending |
-| DSYS-04 | Phase 5 | Pending |
-| DSYS-05 | Phase 5 | Pending |
-| DSYS-06 | Phase 5 | Pending |
+| CLEN-01 | Phase 5 | Complete |
+| CLEN-02 | Phase 5 | Complete |
+| DSYS-01 | Phase 5 | Complete |
+| DSYS-02 | Phase 5 | Complete |
+| DSYS-03 | Phase 5 | Complete |
+| DSYS-04 | Phase 5 | Complete |
+| DSYS-05 | Phase 5 | Complete |
+| DSYS-06 | Phase 5 | Complete |
 | COMP-01 | Phase 5 | Pending |
 | COMP-02 | Phase 5 | Pending |
 | COMP-03 | Phase 5 | Pending |
