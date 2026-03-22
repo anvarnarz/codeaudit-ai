@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-stopped_at: Completed 02-audit-setup-02-PLAN.md
-last_updated: "2026-03-22T08:50:26.759Z"
+stopped_at: Completed 02-audit-setup-03-PLAN.md
+last_updated: "2026-03-22T08:55:29.861Z"
 progress:
   total_phases: 4
-  completed_phases: 1
+  completed_phases: 2
   total_plans: 6
-  completed_plans: 5
+  completed_plans: 6
 ---
 
 # Project State
@@ -51,6 +51,7 @@ Plan: 3 of 3
 | Phase 01-foundation P03 | 7 | 3 tasks | 15 files |
 | Phase 02-audit-setup P01 | 8 | 3 tasks | 19 files |
 | Phase 02-audit-setup P02 | 5 | 2 tasks | 15 files |
+| Phase 02-audit-setup P03 | 3 | 2 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -79,6 +80,9 @@ Recent decisions affecting current work:
 - [Phase 02-audit-setup]: shared.ts helper module created for getRepoContext/getModel/headLimit — avoids repeating boilerplate across 11 phase files
 - [Phase 02-audit-setup]: Phase 0 uses generateObject with RepoContextSchema (not PhaseOutputSchema) — produces repo context, not AuditFindings
 - [Phase 02-audit-setup]: Phase 11 uses generateText (not generateObject) — HTML output is unstructured string, not typed JSON
+- [Phase 02-audit-setup]: SSE stream polls SQLite every 500ms directly (no Redis pub/sub) — sufficient for local-first single-user app
+- [Phase 02-audit-setup]: State replay on reconnect: server emits all phase rows from DB immediately on connect, not just deltas
+- [Phase 02-audit-setup]: PHASE_NAMES duplicated in progress-view.tsx client bundle — audit-engine is server-only package
 
 ### Pending Todos
 
@@ -91,6 +95,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-22T08:50:26.756Z
-Stopped at: Completed 02-audit-setup-02-PLAN.md
+Last session: 2026-03-22T08:55:29.859Z
+Stopped at: Completed 02-audit-setup-03-PLAN.md
 Resume file: None

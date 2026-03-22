@@ -42,11 +42,11 @@
 
 ### Live Progress
 
-- [ ] **PROG-01**: User sees a simplified progress view showing current phase and overall percentage while audit runs
-- [ ] **PROG-02**: User can expand the progress view to see detailed phase-by-phase status with findings count per phase
-- [ ] **PROG-03**: User sees real-time token usage and estimated cost during the audit
-- [ ] **PROG-04**: User can leave the browser tab and return to see current progress (state persists server-side on localhost)
-- [ ] **PROG-05**: User can cancel a running audit at any time
+- [x] **PROG-01**: User sees a simplified progress view showing current phase and overall percentage while audit runs
+- [x] **PROG-02**: User can expand the progress view to see detailed phase-by-phase status with findings count per phase
+- [x] **PROG-03**: User sees real-time token usage and estimated cost during the audit
+- [x] **PROG-04**: User can leave the browser tab and return to see current progress (state persists server-side on localhost)
+- [x] **PROG-05**: User can cancel a running audit at any time
 
 ### Results Dashboard
 
@@ -121,11 +121,11 @@
 | EXEC-07 | Phase 2 | Complete |
 | EXEC-08 | Phase 2 | Complete |
 | EXEC-09 | Phase 2 | Complete |
-| PROG-01 | Phase 2 | Pending |
-| PROG-02 | Phase 2 | Pending |
-| PROG-03 | Phase 2 | Pending |
-| PROG-04 | Phase 2 | Pending |
-| PROG-05 | Phase 2 | Pending |
+| PROG-01 | Phase 2 | Complete |
+| PROG-02 | Phase 2 | Complete |
+| PROG-03 | Phase 2 | Complete |
+| PROG-04 | Phase 2 | Complete |
+| PROG-05 | Phase 2 | Complete |
 | DASH-01 | Phase 3 | Pending |
 | DASH-02 | Phase 3 | Pending |
 | DASH-03 | Phase 3 | Pending |
