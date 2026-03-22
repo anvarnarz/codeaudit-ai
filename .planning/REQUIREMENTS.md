@@ -66,34 +66,34 @@ Complete UI redesign — delete all existing page/component/layout code and rebu
 
 ### Results Dashboard (RSLT)
 
-- [ ] **RSLT-01**: Header with folder name, badges, completion stats
-- [ ] **RSLT-02**: Health Score card with large SVG ring (110px), score, letter grade
-- [ ] **RSLT-03**: Severity Breakdown card with bar chart (5 bars, severity colors)
-- [ ] **RSLT-04**: Cost summary banner with per-phase expandable breakdown
-- [ ] **RSLT-05**: Action buttons: Executive Report, Technical Report, Download All
-- [ ] **RSLT-06**: Findings list with severity filter pills (All, Critical, High, Medium, Low, Info) and counts
-- [ ] **RSLT-07**: Finding cards with colored left border, severity badge, title, file path (mono, accent), evidence snippet, expandable remediation
+- [x] **RSLT-01**: Header with folder name, badges, completion stats
+- [x] **RSLT-02**: Health Score card with large SVG ring (110px), score, letter grade
+- [x] **RSLT-03**: Severity Breakdown card with bar chart (5 bars, severity colors)
+- [x] **RSLT-04**: Cost summary banner with per-phase expandable breakdown
+- [x] **RSLT-05**: Action buttons: Executive Report, Technical Report, Download All
+- [x] **RSLT-06**: Findings list with severity filter pills (All, Critical, High, Medium, Low, Info) and counts
+- [x] **RSLT-07**: Finding cards with colored left border, severity badge, title, file path (mono, accent), evidence snippet, expandable remediation
 
 ### History (HIST)
 
-- [ ] **HIST-01**: Audits grouped by folder path
-- [ ] **HIST-02**: Selection system: checkbox per row (yellow accent), row highlights, "Select all" button
-- [ ] **HIST-03**: Bulk action bar appears when selected: count + "Deselect" + "Delete selected" (destructive)
-- [ ] **HIST-04**: Per-row: checkbox, date, type+depth badges, status, health score ring, trash icon
-- [ ] **HIST-05**: Delete confirmation modal with warning icon and "cannot be undone" message
-- [ ] **HIST-06**: "Compare" button on folder groups with 2+ audits
+- [x] **HIST-01**: Audits grouped by folder path
+- [x] **HIST-02**: Selection system: checkbox per row (yellow accent), row highlights, "Select all" button
+- [x] **HIST-03**: Bulk action bar appears when selected: count + "Deselect" + "Delete selected" (destructive)
+- [x] **HIST-04**: Per-row: checkbox, date, type+depth badges, status, health score ring, trash icon
+- [x] **HIST-05**: Delete confirmation modal with warning icon and "cannot be undone" message
+- [x] **HIST-06**: "Compare" button on folder groups with 2+ audits
 
 ### Comparison (CMPR)
 
-- [ ] **CMPR-01**: Delta banner showing point difference (+N green/up or -N red/down)
-- [ ] **CMPR-02**: Side-by-side cards (previous vs latest) with health score ring + severity bars
-- [ ] **CMPR-03**: Three finding sections: Resolved (green, line-through), New (red), Persisted (gray)
+- [x] **CMPR-01**: Delta banner showing point difference (+N green/up or -N red/down)
+- [x] **CMPR-02**: Side-by-side cards (previous vs latest) with health score ring + severity bars
+- [x] **CMPR-03**: Three finding sections: Resolved (green, line-through), New (red), Persisted (gray)
 
 ### API Keys Settings (KEYS)
 
-- [ ] **KEYS-01**: Key list with provider icon, name, label, masked key (mono), created date
-- [ ] **KEYS-02**: Edit + Delete buttons per row
-- [ ] **KEYS-03**: "Add New Key" button opens inline form (same pattern as setup step 2)
+- [x] **KEYS-01**: Key list with provider icon, name, label, masked key (mono), created date
+- [x] **KEYS-02**: Edit + Delete buttons per row
+- [x] **KEYS-03**: "Add New Key" button opens inline form (same pattern as setup step 2)
 
 ### Cleanup (CLEN)
 
@@ -159,25 +159,25 @@ Complete UI redesign — delete all existing page/component/layout code and rebu
 | PROG-04 | Phase 7 | Complete |
 | PROG-05 | Phase 7 | Complete |
 | PROG-06 | Phase 7 | Complete |
-| RSLT-01 | Phase 8 | Pending |
-| RSLT-02 | Phase 8 | Pending |
-| RSLT-03 | Phase 8 | Pending |
-| RSLT-04 | Phase 8 | Pending |
-| RSLT-05 | Phase 8 | Pending |
-| RSLT-06 | Phase 8 | Pending |
-| RSLT-07 | Phase 8 | Pending |
-| HIST-01 | Phase 8 | Pending |
-| HIST-02 | Phase 8 | Pending |
-| HIST-03 | Phase 8 | Pending |
-| HIST-04 | Phase 8 | Pending |
-| HIST-05 | Phase 8 | Pending |
-| HIST-06 | Phase 8 | Pending |
-| CMPR-01 | Phase 8 | Pending |
-| CMPR-02 | Phase 8 | Pending |
-| CMPR-03 | Phase 8 | Pending |
-| KEYS-01 | Phase 8 | Pending |
-| KEYS-02 | Phase 8 | Pending |
-| KEYS-03 | Phase 8 | Pending |
+| RSLT-01 | Phase 8 | Complete |
+| RSLT-02 | Phase 8 | Complete |
+| RSLT-03 | Phase 8 | Complete |
+| RSLT-04 | Phase 8 | Complete |
+| RSLT-05 | Phase 8 | Complete |
+| RSLT-06 | Phase 8 | Complete |
+| RSLT-07 | Phase 8 | Complete |
+| HIST-01 | Phase 8 | Complete |
+| HIST-02 | Phase 8 | Complete |
+| HIST-03 | Phase 8 | Complete |
+| HIST-04 | Phase 8 | Complete |
+| HIST-05 | Phase 8 | Complete |
+| HIST-06 | Phase 8 | Complete |
+| CMPR-01 | Phase 8 | Complete |
+| CMPR-02 | Phase 8 | Complete |
+| CMPR-03 | Phase 8 | Complete |
+| KEYS-01 | Phase 8 | Complete |
+| KEYS-02 | Phase 8 | Complete |
+| KEYS-03 | Phase 8 | Complete |
 
 **Coverage:**
 - v1.1 requirements: 57 total

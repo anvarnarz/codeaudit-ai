@@ -3,8 +3,8 @@ gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: UI Redesign
 status: Phase complete — ready for verification
-stopped_at: Completed 08-data-views-02-PLAN.md
-last_updated: "2026-03-22T20:42:40.447Z"
+stopped_at: Completed 08-data-views-03-PLAN.md
+last_updated: "2026-03-22T20:42:51.513Z"
 progress:
   total_phases: 4
   completed_phases: 4
@@ -49,6 +49,7 @@ Plan: 3 of 3
 | Phase 07-audit-flows P01 | 7 | 2 tasks | 3 files |
 | Phase 08-data-views P02 | 3 | 2 tasks | 2 files |
 | Phase 08-data-views P01 | 165 | 2 tasks | 4 files |
+| Phase 08-data-views P03 | 2 | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -76,6 +77,8 @@ Recent decisions affecting current work:
 - [Phase 08-data-views]: History page: SerializedAudit/FolderGroup types exported from page.tsx, router.refresh() for post-delete reload, optional chaining for TypeScript strict compliance
 - [Phase 08-data-views]: Severity key narrowing: SEVERITY_KEYS tuple defined before SEVERITY_COLORS Record for type-safe lookup
 - [Phase 08-data-views]: Phase cost estimate: proportional allocation (phase.tokensUsed * totalCostMicro / totalTokens) — approximation since LLM billing is per-call
+- [Phase 08-data-views]: Comparison page determines prev/curr by comparing createdAt timestamps, not query param order
+- [Phase 08-data-views]: API Keys delete has no confirmation modal — simpler UX, keys can be re-added if deleted accidentally
 
 ### Pending Todos
 
@@ -88,6 +91,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-22T20:42:24.555Z
-Stopped at: Completed 08-data-views-02-PLAN.md
+Last session: 2026-03-22T20:42:51.510Z
+Stopped at: Completed 08-data-views-03-PLAN.md
 Resume file: None
