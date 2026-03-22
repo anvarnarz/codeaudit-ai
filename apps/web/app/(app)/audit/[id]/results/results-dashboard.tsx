@@ -89,9 +89,9 @@ function formatDate(iso: string | null): string {
 }
 
 function getScoreAssessment(score: number): { text: string; color: string } {
-  if (score >= 70) return { text: "Needs improvement", color: "var(--warning)" };
-  if (score >= 40) return { text: "Critical attention needed", color: "var(--destructive)" };
-  return { text: "Healthy codebase", color: "var(--success)" };
+  if (score > 70) return { text: "Healthy codebase", color: "var(--success)" };
+  if (score > 40) return { text: "Needs improvement", color: "var(--warning)" };
+  return { text: "Critical attention needed", color: "var(--destructive)" };
 }
 
 // ─── Chevron SVG ─────────────────────────────────────────────────────────────
