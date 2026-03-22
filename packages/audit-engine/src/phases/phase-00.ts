@@ -47,15 +47,15 @@ export const phase00Runner: PhaseRunner = async (ctx, phaseNumber) => {
 
   // Phase 0 uses a custom schema (repo context, not findings)
   const RepoContextSchema = z.object({
-    repoName: z.string(),
-    remoteUrl: z.string().optional(),
-    headCommit: z.string().optional(),
-    defaultBranch: z.string().optional(),
-    detectedStack: z.array(z.string()),
-    isMonorepo: z.boolean(),
-    linesOfCode: z.number().optional(),
-    contributorsLast12Months: z.array(z.object({ name: z.string(), commits: z.number() })).optional(),
-    summary: z.string(),
+    repoName: z.string().default(""),
+    remoteUrl: z.string().default("none"),
+    headCommit: z.string().default("unknown"),
+    defaultBranch: z.string().default("main"),
+    detectedStack: z.array(z.string()).default([]),
+    isMonorepo: z.boolean().default(false),
+    linesOfCode: z.number().default(0),
+    contributorsLast12Months: z.array(z.object({ name: z.string().default(""), commits: z.number().default(0) })).default([]),
+    summary: z.string().default(""),
   });
 
   const prompt = `You are analyzing bootstrap output from a codebase audit. Extract structured repo context from the shell command outputs below.
