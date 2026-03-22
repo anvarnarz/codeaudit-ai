@@ -82,7 +82,7 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 04-01-PLAN.md — Audit history page (/history): all audits grouped by folder, date/type/depth/score badge, click-to-view, Compare button for folders with 2+ audits
+- [x] 04-01-PLAN.md — Audit history page (/history): all audits grouped by folder, date/type/depth/score badge, click-to-view, Compare button for folders with 2+ audits
 - [ ] 04-02-PLAN.md — Comparison report (/audit/compare): score delta banner, side-by-side severity charts, resolved/new/persisted finding sections via title+filePath diff
 
 ## Progress
@@ -95,4 +95,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | 1. App Shell & Configuration | 1/3 | In Progress|  |
 | 2. Audit Engine | 3/3 | Complete   | 2026-03-22 |
 | 3. Results & Cost | 2/2 | Complete   | 2026-03-22 |
-| 4. History & Comparison | 0/2 | Not started | - |
+| 4. History & Comparison | 1/2 | In Progress|  |

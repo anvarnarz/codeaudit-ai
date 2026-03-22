@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-stopped_at: Phase 4 context gathered
-last_updated: "2026-03-22T09:51:51.413Z"
+stopped_at: Completed 04-01-PLAN.md
+last_updated: "2026-03-22T10:01:51.285Z"
 progress:
   total_phases: 4
   completed_phases: 3
-  total_plans: 8
-  completed_plans: 8
+  total_plans: 10
+  completed_plans: 9
 ---
 
 # Project State
@@ -19,12 +19,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-22 after local-first pivot)
 
 **Core value:** Anyone can run a thorough codebase audit on any local folder without CLI setup — just open the app, pick a folder, and run.
-**Current focus:** Phase 03 — results-cost
+**Current focus:** Phase 04 — history-comparison
 
 ## Current Position
 
-Phase: 4
-Plan: Not started
+Phase: 04 (history-comparison) — EXECUTING
+Plan: 2 of 2
 
 ## Performance Metrics
 
@@ -54,6 +54,7 @@ Plan: Not started
 | Phase 02-audit-setup P03 | 3 | 2 tasks | 6 files |
 | Phase 03-results-cost P01 | 15 | 3 tasks | 10 files |
 | Phase 03-results-cost P02 | 8 | 2 tasks | 5 files |
+| Phase 04-history-comparison P01 | 4 | 1 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -91,6 +92,8 @@ Recent decisions affecting current work:
 - [Phase 03-results-cost]: Puppeteer pdf() returns Uint8Array in v24+ — wrapped with Buffer.from() for BodyInit compatibility
 - [Phase 03-results-cost]: iframe sandbox uses allow-same-origin allow-scripts — safe at localhost, needed for Phase 11 inline chart JS
 - [Phase 03-results-cost]: Readable.toWeb cast uses import('node:stream').Readable type to satisfy TypeScript (not NodeJS.ReadableStream)
+- [Phase 04-history-comparison]: History page uses server-side Map grouping by folderPath — rows pre-sorted newest-first from DB, index 0=latest, index 1=previous, no client-side sort needed
+- [Phase 04-history-comparison]: Compare button pre-fills /audit/compare?a={latest.id}&b={previous.id} — history page is the primary entry point for compare flow
 
 ### Pending Todos
 
@@ -103,6 +106,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-22T09:51:51.405Z
-Stopped at: Phase 4 context gathered
-Resume file: .planning/phases/04-history-comparison/04-CONTEXT.md
+Last session: 2026-03-22T10:01:51.282Z
+Stopped at: Completed 04-01-PLAN.md
+Resume file: None
