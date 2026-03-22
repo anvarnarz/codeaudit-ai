@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-stopped_at: Completed 01-foundation-01-PLAN.md
-last_updated: "2026-03-22T03:55:51.747Z"
+stopped_at: Completed 01-foundation-02-PLAN.md
+last_updated: "2026-03-22T04:04:23.130Z"
 progress:
   total_phases: 4
   completed_phases: 0
   total_plans: 3
-  completed_plans: 1
+  completed_plans: 2
 ---
 
 # Project State
@@ -24,7 +24,7 @@ See: .planning/PROJECT.md (updated 2026-03-22 after local-first pivot)
 ## Current Position
 
 Phase: 01 (foundation) — EXECUTING
-Plan: 2 of 3
+Plan: 3 of 3
 
 ## Performance Metrics
 
@@ -47,6 +47,7 @@ Plan: 2 of 3
 
 *Updated after each plan completion*
 | Phase 01-foundation P01 | 8 | 3 tasks | 19 files |
+| Phase 01-foundation P02 | 5 | 2 tasks | 13 files |
 
 ## Accumulated Context
 
@@ -63,6 +64,9 @@ Recent decisions affecting current work:
 - [Phase 01-foundation]: SQLite (better-sqlite3) via Drizzle ORM replaces Neon+PostgreSQL — local file at ~/.codeaudit/codeaudit.db, WAL mode
 - [Phase 01-foundation]: No-auth model: middleware is pass-through, setup_complete appSettings flag guards app routes
 - [Phase 01-foundation]: CLI launcher auto-generates ENCRYPTION_KEY persisted to ~/.codeaudit/.env, spawns next dev, polls /api/health, then opens browser
+- [Phase 01-foundation]: git push block runs BEFORE chmod in lockFolder (CRITICAL ORDER) — once chmod -R a-w runs, .git/config becomes unwritable
+- [Phase 01-foundation]: FolderPicker accepts value: string[] for multi-folder support per D-04, uses useTransition + validateFolder server action for sub-1-second validation
+- [Phase 01-foundation]: Setup wizard reuses addApiKey from Plan 01, calls completeSetup to write setup_complete=true, then redirects to dashboard
 
 ### Pending Todos
 
@@ -75,6 +79,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-22T03:55:51.746Z
-Stopped at: Completed 01-foundation-01-PLAN.md
+Last session: 2026-03-22T04:04:23.128Z
+Stopped at: Completed 01-foundation-02-PLAN.md
 Resume file: None

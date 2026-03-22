@@ -14,11 +14,11 @@
 
 ### Folder Selection & Safety
 
-- [ ] **FOLD-01**: User can select a local folder to audit via folder picker or path input
-- [ ] **FOLD-02**: App locks the target folder read-only (chmod -R a-w) before audit starts
-- [ ] **FOLD-03**: App blocks git push on the target folder (git remote set-url --push origin no_push)
-- [ ] **FOLD-04**: App creates a separate audit output directory (~/audit-{repo-name}/) for all findings
-- [ ] **FOLD-05**: App unlocks the folder after audit completes or is cancelled
+- [x] **FOLD-01**: User can select a local folder to audit via folder picker or path input
+- [x] **FOLD-02**: App locks the target folder read-only (chmod -R a-w) before audit starts
+- [x] **FOLD-03**: App blocks git push on the target folder (git remote set-url --push origin no_push)
+- [x] **FOLD-04**: App creates a separate audit output directory (~/audit-{repo-name}/) for all findings
+- [x] **FOLD-05**: App unlocks the folder after audit completes or is cancelled
 
 ### Audit Configuration
 
@@ -102,11 +102,11 @@
 | SETUP-02 | Phase 1 | Complete |
 | SETUP-03 | Phase 1 | Complete |
 | SETUP-04 | Phase 1 | Complete |
-| FOLD-01 | Phase 1 | Pending |
-| FOLD-02 | Phase 1 | Pending |
-| FOLD-03 | Phase 1 | Pending |
-| FOLD-04 | Phase 1 | Pending |
-| FOLD-05 | Phase 1 | Pending |
+| FOLD-01 | Phase 1 | Complete |
+| FOLD-02 | Phase 1 | Complete |
+| FOLD-03 | Phase 1 | Complete |
+| FOLD-04 | Phase 1 | Complete |
+| FOLD-05 | Phase 1 | Complete |
 | CONF-01 | Phase 1 | Pending |
 | CONF-02 | Phase 1 | Pending |
 | CONF-03 | Phase 1 | Pending |
