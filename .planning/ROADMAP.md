@@ -82,7 +82,7 @@ Plans:
   4. The progress view shows an animated gradient progress bar with pulse glow, live token/cost/elapsed stats, and a cancel button
   5. The expandable phase list shows all 13 phases with status icons, finding counts, duration, and per-phase cost
   6. When the audit completes, the progress bar turns green and a "View Results" button appears
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
 - [ ] 07-01: Build New Audit page (folder input, type/depth SelectCards, provider/model selectors, cost estimate, confirmation modal)
