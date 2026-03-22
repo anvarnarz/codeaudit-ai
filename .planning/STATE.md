@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-stopped_at: Completed 01-foundation-02-PLAN.md
-last_updated: "2026-03-22T04:04:23.130Z"
+stopped_at: Completed 01-foundation-03-PLAN.md
+last_updated: "2026-03-22T04:14:02.349Z"
 progress:
   total_phases: 4
-  completed_phases: 0
+  completed_phases: 1
   total_plans: 3
-  completed_plans: 2
+  completed_plans: 3
 ---
 
 # Project State
@@ -48,6 +48,7 @@ Plan: 3 of 3
 *Updated after each plan completion*
 | Phase 01-foundation P01 | 8 | 3 tasks | 19 files |
 | Phase 01-foundation P02 | 5 | 2 tasks | 13 files |
+| Phase 01-foundation P03 | 7 | 3 tasks | 15 files |
 
 ## Accumulated Context
 
@@ -67,6 +68,9 @@ Recent decisions affecting current work:
 - [Phase 01-foundation]: git push block runs BEFORE chmod in lockFolder (CRITICAL ORDER) — once chmod -R a-w runs, .git/config becomes unwritable
 - [Phase 01-foundation]: FolderPicker accepts value: string[] for multi-folder support per D-04, uses useTransition + validateFolder server action for sub-1-second validation
 - [Phase 01-foundation]: Setup wizard reuses addApiKey from Plan 01, calls completeSetup to write setup_complete=true, then redirects to dashboard
+- [Phase 01-foundation]: Server component wrapper + client form for New Audit page: page.tsx async server component loads keys, new-audit-form.tsx is client component — consistent with api-keys page pattern
+- [Phase 01-foundation]: collectFolderStats wrapped in server action (folder-stats.ts): Node.js fs API can't run in browser; thin server action wrapper enables client form to call it
+- [Phase 01-foundation]: startAudit enforces CRITICAL ORDER: createAuditOutputDir BEFORE lockFolder — once chmod -R a-w runs, .git/config becomes unwritable
 
 ### Pending Todos
 
@@ -79,6 +83,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-22T04:04:23.128Z
-Stopped at: Completed 01-foundation-02-PLAN.md
+Last session: 2026-03-22T04:14:02.347Z
+Stopped at: Completed 01-foundation-03-PLAN.md
 Resume file: None

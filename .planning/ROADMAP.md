@@ -36,7 +36,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 Plans:
 - [x] 01-01-PLAN.md — Strip GitHub OAuth/Auth.js/Neon, migrate to SQLite, adapt sidebar/layout, npx CLI launcher
 - [x] 01-02-PLAN.md — Folder safety service (chmod/git-push-block), validateFolder action, FolderPicker component, first-time setup wizard
-- [ ] 01-03-PLAN.md — Audit type cards, depth toggle, model selector, live cost estimate, confirm dialog — complete New Audit page
+- [x] 01-03-PLAN.md — Audit type cards, depth toggle, model selector, live cost estimate, confirm dialog — complete New Audit page
 
 ### Phase 2: Audit Engine
 **Goal**: A configured audit runs end-to-end — Phase 0 bootstrap through Phase 11 report generation — with live per-phase progress visible in the browser, real-time cost tracking, and safe folder cleanup on completion, cancellation, or failure

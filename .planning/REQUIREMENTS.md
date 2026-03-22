@@ -22,11 +22,11 @@
 
 ### Audit Configuration
 
-- [ ] **CONF-01**: User can select audit type: full audit, security-only, team & collaboration, or code quality
-- [ ] **CONF-02**: User can select audit depth: quick scan (~30 min) or deep audit (hours)
-- [ ] **CONF-03**: User can select which LLM provider and key to use for the audit
-- [ ] **CONF-04**: User sees a pre-audit cost estimate based on folder size, audit type, depth, and provider
-- [ ] **CONF-05**: User can start an audit after reviewing the cost estimate
+- [x] **CONF-01**: User can select audit type: full audit, security-only, team & collaboration, or code quality
+- [x] **CONF-02**: User can select audit depth: quick scan (~30 min) or deep audit (hours)
+- [x] **CONF-03**: User can select which LLM provider and key to use for the audit
+- [x] **CONF-04**: User sees a pre-audit cost estimate based on folder size, audit type, depth, and provider
+- [x] **CONF-05**: User can start an audit after reviewing the cost estimate
 
 ### Audit Execution
 
@@ -107,11 +107,11 @@
 | FOLD-03 | Phase 1 | Complete |
 | FOLD-04 | Phase 1 | Complete |
 | FOLD-05 | Phase 1 | Complete |
-| CONF-01 | Phase 1 | Pending |
-| CONF-02 | Phase 1 | Pending |
-| CONF-03 | Phase 1 | Pending |
-| CONF-04 | Phase 1 | Pending |
-| CONF-05 | Phase 1 | Pending |
+| CONF-01 | Phase 1 | Complete |
+| CONF-02 | Phase 1 | Complete |
+| CONF-03 | Phase 1 | Complete |
+| CONF-04 | Phase 1 | Complete |
+| CONF-05 | Phase 1 | Complete |
 | EXEC-01 | Phase 2 | Pending |
 | EXEC-02 | Phase 2 | Pending |
 | EXEC-03 | Phase 2 | Pending |
