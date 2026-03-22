@@ -27,7 +27,7 @@ export const phase11Runner: PhaseRunner = async (ctx, phaseNumber) => {
   const { text: managementHtml } = await generateText({
     // Cast needed: providers return V1, ai@6 types expect V2/V3
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    model: model as any,
+    model: model,
     prompt: `Generate a complete self-contained HTML page for a management/executive codebase audit report.
 Use inline CSS only (no external stylesheets or scripts).
 Include: health score (${scoreValue}/100, grade ${grade}), severity chart (CSS bars for critical/high/medium/low/info counts), executive summary, top 5 most critical findings.
@@ -49,7 +49,7 @@ Return ONLY the HTML document. Start with <!DOCTYPE html>. Use a clean professio
   const { text: technicalHtml } = await generateText({
     // Cast needed: providers return V1, ai@6 types expect V2/V3
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    model: model as any,
+    model: model,
     prompt: `Generate a complete self-contained HTML page for a technical codebase audit report.
 Use inline CSS only (no external stylesheets or scripts).
 Include: full findings table with columns: Phase, Category, Severity, Title, Description, File Paths, Line Numbers, Recommendation.

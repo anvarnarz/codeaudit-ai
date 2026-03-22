@@ -1,7 +1,7 @@
 import { getDb, auditPhases } from "@codeaudit-ai/db";
 import { eq, and } from "drizzle-orm";
 import { createLlmProvider, resolveModel } from "@codeaudit-ai/llm-adapter";
-import type { LanguageModel } from "ai";
+
 import type { AuditRunContext } from "../orchestrator";
 
 /**
@@ -19,7 +19,7 @@ export function getRepoContext(auditId: string): string {
 /**
  * Create the LLM model instance for a given phase and audit context.
  */
-export function getModel(ctx: AuditRunContext, phaseNumber: number): LanguageModel {
+export function getModel(ctx: AuditRunContext, phaseNumber: number): any {
   return createLlmProvider({
     provider: ctx.llmProvider,
     apiKey: ctx.decryptedApiKey,

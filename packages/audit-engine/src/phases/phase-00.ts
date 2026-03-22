@@ -71,7 +71,7 @@ Extract the repo context. For detectedStack, list technologies found (e.g. "Node
   const { object: repoContext } = await generateObject({
     // Cast needed: providers return V1, ai@6 types expect V2/V3
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    model: model as any,
+    model: model,
     schema: RepoContextSchema,
     prompt,
     maxOutputTokens: 2048,

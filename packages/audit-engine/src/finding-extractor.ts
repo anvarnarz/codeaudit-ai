@@ -1,6 +1,6 @@
 import { generateObject } from "ai";
 import { z } from "zod";
-import type { LanguageModel } from "ai";
+
 
 export const AuditFindingSchema = z.object({
   id: z.string().default(() => crypto.randomUUID()),
@@ -23,7 +23,7 @@ export const PhaseOutputSchema = z.object({
 export type PhaseOutput = z.infer<typeof PhaseOutputSchema>;
 
 export async function runPhaseLlm(
-  model: LanguageModel,
+  model: any,
   prompt: string,
   phaseNumber: number,
 ): Promise<{
@@ -35,7 +35,7 @@ export async function runPhaseLlm(
   const { object, usage } = await generateObject({
     // Cast needed: providers return V1, ai@6 types expect V2/V3
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    model: model as any,
+    model: model,
     schema: PhaseOutputSchema,
     prompt,
     maxOutputTokens: 4096,
