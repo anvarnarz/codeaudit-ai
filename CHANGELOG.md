@@ -6,6 +6,17 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## 2026-03-22 — Onboarding Welcome Screen
+
+### Added
+
+- **Onboarding welcome/about screen** as Step 1 of the setup wizard before API key entry
+- Feature highlights: 13-phase audit, multi-provider support, live cost tracking, audit comparison
+- Step indicator dots showing progress through the setup flow
+- "Get Started" button to transition from welcome screen to API key setup
+
+---
+
 ## 2026-03-22 — v1.0 CodeAudit MVP
 
 ### Added
