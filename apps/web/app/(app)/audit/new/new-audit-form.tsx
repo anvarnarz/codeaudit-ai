@@ -36,7 +36,7 @@ export function NewAuditForm({ initialKeys }: NewAuditFormProps) {
   const selectedKey = initialKeys.find((k) => k.id === selectedKeyId) ?? null;
   const provider: Provider | null = selectedKey?.provider ?? null;
 
-  // Handle folder picker changes — load folder stats for first valid folder
+  // Handle folder picker changes -- load folder stats for first valid folder
   async function handleFolderChange(
     paths: string[],
     validations: (FolderValidationResult | null)[]
@@ -84,48 +84,59 @@ export function NewAuditForm({ initialKeys }: NewAuditFormProps) {
   }
 
   return (
-    <div className="mx-auto max-w-2xl px-6 py-8 space-y-8">
-      <div>
-        <h1 className="text-xl font-semibold tracking-tight">New Audit</h1>
+    <div className="mx-auto max-w-2xl px-6 py-8 space-y-10">
+      <div className="fade-in">
+        <h1 className="text-xl font-bold tracking-tight">New Audit</h1>
         <p className="text-sm text-muted-foreground mt-1">
           Select one or more folders and configure your audit.
         </p>
       </div>
 
-      <FolderPicker
-        value={folderPaths}
-        onChange={handleFolderChange}
-      />
+      <div className="fade-in stagger-1">
+        <FolderPicker
+          value={folderPaths}
+          onChange={handleFolderChange}
+        />
+      </div>
 
-      <AuditTypeCards value={auditType} onChange={setAuditType} />
+      <div className="fade-in stagger-2">
+        <AuditTypeCards value={auditType} onChange={setAuditType} />
+      </div>
 
-      <DepthToggle value={depth} onChange={setDepth} />
+      <div className="fade-in stagger-3">
+        <DepthToggle value={depth} onChange={setDepth} />
+      </div>
 
-      <ModelSelector
-        keys={initialKeys.map((k) => ({
-          id: k.id,
-          provider: k.provider,
-          label: k.label,
-          maskedKey: k.maskedKey,
-        }))}
-        selectedKeyId={selectedKeyId}
-        selectedModel={selectedModel}
-        onKeyChange={setSelectedKeyId}
-        onModelChange={setSelectedModel}
-      />
+      <div className="fade-in stagger-4">
+        <ModelSelector
+          keys={initialKeys.map((k) => ({
+            id: k.id,
+            provider: k.provider,
+            label: k.label,
+            maskedKey: k.maskedKey,
+          }))}
+          selectedKeyId={selectedKeyId}
+          selectedModel={selectedModel}
+          onKeyChange={setSelectedKeyId}
+          onModelChange={setSelectedModel}
+        />
+      </div>
 
-      <CostEstimate
-        stats={folderStats}
-        auditType={auditType}
-        depth={depth}
-        provider={provider}
-      />
+      <div className="fade-in stagger-5">
+        <CostEstimate
+          stats={folderStats}
+          auditType={auditType}
+          depth={depth}
+          provider={provider}
+        />
+      </div>
 
       <div className="flex justify-end pb-8">
         <Button
           onClick={() => setDialogOpen(true)}
           disabled={!canSubmit}
           size="lg"
+          className="rounded-[10px] bg-primary text-primary-foreground hover:bg-primary/90"
         >
           Start Audit
         </Button>

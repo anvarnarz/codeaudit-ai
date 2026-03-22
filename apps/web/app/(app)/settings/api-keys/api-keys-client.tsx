@@ -1,7 +1,16 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { Trash2, Plus, Pencil, Loader2, Check, X } from "lucide-react";
+import {
+  Trash2,
+  Plus,
+  Pencil,
+  Loader2,
+  Check,
+  X,
+  AlertTriangle,
+  Key,
+} from "lucide-react";
 import {
   createApiKey,
   deleteApiKey,
@@ -10,21 +19,24 @@ import {
 } from "@/actions/api-keys";
 import type { Provider } from "@/lib/api-key-validator";
 
-const PROVIDERS: { id: Provider; label: string; hint: string }[] = [
+const PROVIDERS: { id: Provider; label: string; hint: string; initial: string }[] = [
   {
     id: "anthropic",
     label: "Anthropic",
     hint: "Starts with sk-ant-",
+    initial: "A",
   },
   {
     id: "openai",
     label: "OpenAI",
     hint: "Starts with sk-",
+    initial: "O",
   },
   {
     id: "gemini",
     label: "Google Gemini",
     hint: "AIza... format",
+    initial: "G",
   },
 ];
 
@@ -44,26 +56,43 @@ function DeleteConfirmDialog({
   isPending: boolean;
 }) {
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div className="bg-card border border-zinc-300 dark:border-zinc-700 rounded-lg p-6 max-w-sm w-full mx-4 shadow-xl">
-        <h3 className="text-base font-semibold text-foreground">Delete API Key</h3>
-        <p className="mt-2 text-sm text-muted-foreground">
-          Are you sure you want to delete{" "}
-          <span className="font-medium text-foreground">{keyLabel}</span>? This
-          action cannot be undone.
-        </p>
-        <div className="mt-4 flex gap-2 justify-end">
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
+      <div className="fade-in bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 rounded-[14px] p-6 max-w-sm w-full mx-4 shadow-2xl">
+        {/* Icon + title */}
+        <div className="flex gap-3.5 mb-5">
+          <div className="flex items-center justify-center w-11 h-11 rounded-xl shrink-0 bg-red-500/10">
+            <AlertTriangle className="w-5 h-5 text-red-500" />
+          </div>
+          <div>
+            <h3 className="text-base font-bold text-foreground">
+              Delete API Key
+            </h3>
+            <p className="mt-1 text-sm text-muted-foreground leading-relaxed">
+              Are you sure you want to delete{" "}
+              <span className="font-semibold text-foreground">{keyLabel}</span>?
+            </p>
+          </div>
+        </div>
+
+        {/* Warning banner */}
+        <div className="rounded-lg px-3 py-2.5 mb-5 bg-orange-500/10">
+          <p className="text-xs font-medium text-orange-600 dark:text-orange-400">
+            This action cannot be undone.
+          </p>
+        </div>
+
+        <div className="flex gap-2.5 justify-end">
           <button
             onClick={onCancel}
             disabled={isPending}
-            className="px-3 py-1.5 text-sm rounded border border-zinc-300 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors disabled:opacity-50"
+            className="px-4 py-2 text-sm font-medium rounded-[10px] border border-zinc-200 dark:border-zinc-700 bg-transparent text-foreground hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors disabled:opacity-50"
           >
             Cancel
           </button>
           <button
             onClick={onConfirm}
             disabled={isPending}
-            className="px-3 py-1.5 text-sm rounded bg-destructive text-destructive-foreground hover:bg-destructive/90 transition-colors disabled:opacity-50 flex items-center gap-1.5"
+            className="px-4 py-2 text-sm font-medium rounded-[10px] bg-red-500/10 text-red-500 border border-red-500/30 hover:bg-red-500/20 transition-colors disabled:opacity-50 flex items-center gap-1.5"
           >
             {isPending && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
             Delete
@@ -109,9 +138,12 @@ function AddKeyForm({
   }
 
   return (
-    <form onSubmit={handleSubmit} className="mt-3 space-y-3 p-4 border border-zinc-300 dark:border-zinc-700 rounded-lg bg-muted/30">
+    <form
+      onSubmit={handleSubmit}
+      className="fade-in mt-3 space-y-3 p-5 border border-zinc-200 dark:border-zinc-700 rounded-[14px] bg-zinc-50/50 dark:bg-zinc-800/30"
+    >
       <div>
-        <label className="block text-xs font-medium text-muted-foreground mb-1">
+        <label className="block text-xs font-medium text-muted-foreground mb-1.5">
           Label
         </label>
         <input
@@ -121,14 +153,16 @@ function AddKeyForm({
           placeholder="e.g. Personal, Work"
           maxLength={64}
           required
-          className="w-full px-3 py-1.5 text-sm rounded border border-zinc-300 dark:border-zinc-700 bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+          className="w-full px-3.5 py-2.5 text-sm rounded-[10px] border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-yellow-400 dark:focus:border-yellow-400 transition-colors"
         />
       </div>
 
       <div>
-        <label className="block text-xs font-medium text-muted-foreground mb-1">
+        <label className="block text-xs font-medium text-muted-foreground mb-1.5">
           {providerInfo.label} API Key
-          <span className="ml-1 text-muted-foreground/60">({providerInfo.hint})</span>
+          <span className="ml-1 text-muted-foreground/60">
+            ({providerInfo.hint})
+          </span>
         </label>
         <input
           type="password"
@@ -137,30 +171,30 @@ function AddKeyForm({
           placeholder={`Paste your ${providerInfo.label} API key`}
           required
           autoComplete="off"
-          className="w-full px-3 py-1.5 text-sm rounded border border-border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring font-mono"
+          className="w-full px-3.5 py-2.5 text-sm rounded-[10px] border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-yellow-400 dark:focus:border-yellow-400 font-mono transition-colors"
         />
       </div>
 
       {error && (
-        <p className="text-sm text-destructive flex items-start gap-1.5">
+        <p className="text-sm text-red-500 flex items-start gap-1.5">
           <X className="h-4 w-4 mt-0.5 flex-shrink-0" />
           {error}
         </p>
       )}
 
-      <div className="flex gap-2 justify-end">
+      <div className="flex gap-2.5 justify-end pt-1">
         <button
           type="button"
           onClick={onCancel}
           disabled={isPending}
-          className="px-3 py-1.5 text-sm rounded border border-zinc-300 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors disabled:opacity-50"
+          className="px-4 py-2 text-sm font-medium rounded-[10px] border border-zinc-200 dark:border-zinc-700 bg-transparent text-foreground hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors disabled:opacity-50"
         >
           Cancel
         </button>
         <button
           type="submit"
           disabled={isPending}
-          className="px-3 py-1.5 text-sm rounded bg-primary text-primary-foreground hover:bg-primary/90 transition-colors disabled:opacity-50 flex items-center gap-1.5"
+          className="px-4 py-2 text-sm font-semibold rounded-[10px] bg-yellow-400 text-zinc-900 hover:bg-yellow-300 transition-colors disabled:opacity-50 flex items-center gap-1.5"
         >
           {isPending ? (
             <>
@@ -216,23 +250,23 @@ function EditLabelForm({
         maxLength={64}
         required
         autoFocus
-        className="px-2 py-1 text-sm rounded border border-zinc-300 dark:border-zinc-700 bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-ring w-40"
+        className="px-3 py-1.5 text-sm rounded-[10px] border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-foreground focus:outline-none focus:border-yellow-400 w-40 transition-colors"
       />
       <button
         type="submit"
         disabled={isPending}
-        className="p-1 rounded hover:bg-accent transition-colors"
+        className="p-1.5 rounded-lg hover:bg-yellow-400/10 transition-colors"
       >
         {isPending ? (
           <Loader2 className="h-3.5 w-3.5 animate-spin" />
         ) : (
-          <Check className="h-3.5 w-3.5 text-primary" />
+          <Check className="h-3.5 w-3.5 text-yellow-500" />
         )}
       </button>
       <button
         type="button"
         onClick={onCancel}
-        className="p-1 rounded hover:bg-accent transition-colors"
+        className="p-1.5 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
       >
         <X className="h-3.5 w-3.5 text-muted-foreground" />
       </button>
@@ -246,10 +280,12 @@ function EditLabelForm({
 
 function KeyRow({
   apiKey,
+  providerInfo,
   onDelete,
   onLabelUpdate,
 }: {
   apiKey: ApiKeyRecord;
+  providerInfo: (typeof PROVIDERS)[number];
   onDelete: (id: string) => void;
   onLabelUpdate: (id: string, newLabel: string) => void;
 }) {
@@ -266,49 +302,67 @@ function KeyRow({
 
   return (
     <>
-      <div className="flex items-center justify-between py-2 px-3 rounded hover:bg-muted/40 group">
-        <div className="flex items-center gap-3 min-w-0">
-          {isEditing ? (
-            <EditLabelForm
-              keyId={apiKey.id}
-              currentLabel={apiKey.label}
-              onSuccess={(newLabel) => {
-                onLabelUpdate(apiKey.id, newLabel);
-                setIsEditing(false);
-              }}
-              onCancel={() => setIsEditing(false)}
-            />
-          ) : (
-            <>
-              <span className="text-sm font-medium text-foreground truncate">
-                {apiKey.label}
-              </span>
-              <button
-                onClick={() => setIsEditing(true)}
-                className="opacity-0 group-hover:opacity-100 p-0.5 rounded hover:bg-accent transition-all"
-                title="Edit label"
-              >
-                <Pencil className="h-3 w-3 text-muted-foreground" />
-              </button>
-            </>
-          )}
+      <div className="flex items-center justify-between py-4 px-5 group transition-colors hover:bg-zinc-50 dark:hover:bg-zinc-800/30">
+        <div className="flex items-center gap-3.5 min-w-0">
+          {/* Provider initial icon */}
+          <div className="flex items-center justify-center w-10 h-10 rounded-[10px] bg-zinc-100 dark:bg-zinc-800 shrink-0">
+            <span className="text-xs font-bold text-yellow-500 dark:text-yellow-400">
+              {providerInfo.initial}
+            </span>
+          </div>
+
+          <div className="min-w-0">
+            {isEditing ? (
+              <EditLabelForm
+                keyId={apiKey.id}
+                currentLabel={apiKey.label}
+                onSuccess={(newLabel) => {
+                  onLabelUpdate(apiKey.id, newLabel);
+                  setIsEditing(false);
+                }}
+                onCancel={() => setIsEditing(false)}
+              />
+            ) : (
+              <>
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-semibold text-foreground">
+                    {providerInfo.label}
+                  </span>
+                  <span className="text-sm text-muted-foreground">
+                    {apiKey.label}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2 mt-0.5">
+                  <code className="text-xs text-muted-foreground font-mono bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded-md">
+                    {apiKey.maskedKey}
+                  </code>
+                  <span className="text-[11px] text-muted-foreground">
+                    Added {new Date(apiKey.createdAt).toLocaleDateString()}
+                  </span>
+                </div>
+              </>
+            )}
+          </div>
         </div>
 
-        <div className="flex items-center gap-4 flex-shrink-0">
-          <code className="text-xs text-muted-foreground font-mono bg-muted px-1.5 py-0.5 rounded">
-            {apiKey.maskedKey}
-          </code>
-          <span className="text-xs text-muted-foreground">
-            {new Date(apiKey.createdAt).toLocaleDateString()}
-          </span>
-          <button
-            onClick={() => setConfirmDelete(true)}
-            className="opacity-0 group-hover:opacity-100 p-1 rounded hover:bg-destructive/10 transition-all"
-            title="Delete key"
-          >
-            <Trash2 className="h-3.5 w-3.5 text-muted-foreground hover:text-destructive" />
-          </button>
-        </div>
+        {!isEditing && (
+          <div className="flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
+            <button
+              onClick={() => setIsEditing(true)}
+              className="px-3 py-1.5 text-xs font-medium text-muted-foreground hover:text-foreground rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+              title="Edit label"
+            >
+              Edit
+            </button>
+            <button
+              onClick={() => setConfirmDelete(true)}
+              className="px-3 py-1.5 text-xs font-medium text-red-500/70 hover:text-red-500 rounded-lg hover:bg-red-500/10 transition-colors"
+              title="Delete key"
+            >
+              Delete
+            </button>
+          </div>
+        )}
       </div>
 
       {confirmDelete && (
@@ -343,20 +397,29 @@ function ProviderSection({
   const [showAddForm, setShowAddForm] = useState(false);
 
   return (
-    <div className="border border-zinc-300 dark:border-zinc-700 rounded-lg overflow-hidden shadow-sm">
+    <div className="bg-white dark:bg-zinc-900/50 border border-zinc-200 dark:border-zinc-800 rounded-[14px] overflow-hidden">
       {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3 bg-muted/30 border-b border-zinc-300 dark:border-zinc-700">
-        <div>
-          <h3 className="text-sm font-semibold text-foreground">{provider.label}</h3>
-          <p className="text-xs text-muted-foreground mt-0.5">
-            {keys.length === 0
-              ? "No keys stored"
-              : `${keys.length} key${keys.length !== 1 ? "s" : ""}`}
-          </p>
+      <div className="flex items-center justify-between px-5 py-3.5 bg-zinc-50/80 dark:bg-zinc-800/30 border-b border-zinc-200 dark:border-zinc-800">
+        <div className="flex items-center gap-3">
+          <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-zinc-100 dark:bg-zinc-800">
+            <span className="text-xs font-bold text-yellow-500 dark:text-yellow-400">
+              {provider.initial}
+            </span>
+          </div>
+          <div>
+            <h3 className="text-sm font-semibold text-foreground">
+              {provider.label}
+            </h3>
+            <p className="text-[11px] text-muted-foreground">
+              {keys.length === 0
+                ? "No keys stored"
+                : `${keys.length} key${keys.length !== 1 ? "s" : ""}`}
+            </p>
+          </div>
         </div>
         <button
           onClick={() => setShowAddForm(true)}
-          className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs rounded border border-zinc-300 dark:border-zinc-700 bg-background hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+          className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-[10px] bg-yellow-400 text-zinc-900 hover:bg-yellow-300 transition-colors"
         >
           <Plus className="h-3.5 w-3.5" />
           Add key
@@ -364,24 +427,26 @@ function ProviderSection({
       </div>
 
       {/* Keys list */}
-      <div className="divide-y divide-border/50">
+      <div className="divide-y divide-zinc-100 dark:divide-zinc-800/60">
         {keys.length === 0 && !showAddForm && (
-          <div className="px-4 py-4 text-sm text-muted-foreground text-center">
+          <div className="px-5 py-8 text-sm text-muted-foreground text-center">
+            <Key className="h-5 w-5 mx-auto mb-2 text-muted-foreground/40" />
             No {provider.label} keys yet.
           </div>
         )}
 
-        {keys.map((key) => (
+        {keys.map((key, i) => (
           <KeyRow
             key={key.id}
             apiKey={key}
+            providerInfo={provider}
             onDelete={onKeyDeleted}
             onLabelUpdate={onLabelUpdated}
           />
         ))}
 
         {showAddForm && (
-          <div className="px-4 pb-4">
+          <div className="px-5 py-4">
             <AddKeyForm
               provider={provider.id}
               onSuccess={(key) => {
@@ -401,7 +466,11 @@ function ProviderSection({
 // Main client component
 // ============================================================
 
-export function ApiKeysClient({ initialKeys }: { initialKeys: ApiKeyRecord[] }) {
+export function ApiKeysClient({
+  initialKeys,
+}: {
+  initialKeys: ApiKeyRecord[];
+}) {
   const [keys, setKeys] = useState<ApiKeyRecord[]>(initialKeys);
 
   function handleKeyAdded(newKey: ApiKeyRecord) {
@@ -419,16 +488,20 @@ export function ApiKeysClient({ initialKeys }: { initialKeys: ApiKeyRecord[] }) 
   }
 
   return (
-    <div className="space-y-4">
-      {PROVIDERS.map((provider) => (
-        <ProviderSection
+    <div className="space-y-5">
+      {PROVIDERS.map((provider, i) => (
+        <div
           key={provider.id}
-          provider={provider}
-          keys={keys.filter((k) => k.provider === provider.id)}
-          onKeyAdded={handleKeyAdded}
-          onKeyDeleted={handleKeyDeleted}
-          onLabelUpdated={handleLabelUpdated}
-        />
+          className={`fade-in stagger-${Math.min(i + 1, 5)}`}
+        >
+          <ProviderSection
+            provider={provider}
+            keys={keys.filter((k) => k.provider === provider.id)}
+            onKeyAdded={handleKeyAdded}
+            onKeyDeleted={handleKeyDeleted}
+            onLabelUpdated={handleLabelUpdated}
+          />
+        </div>
       ))}
     </div>
   );

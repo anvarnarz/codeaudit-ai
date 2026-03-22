@@ -3,7 +3,15 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
-import { LayoutDashboard, Plus, History, Settings, Sun, Moon } from "lucide-react";
+import {
+  LayoutDashboard,
+  Plus,
+  History,
+  Settings,
+  Sun,
+  Moon,
+  Shield,
+} from "lucide-react";
 
 const navItems = [
   {
@@ -35,10 +43,9 @@ function ThemeToggle() {
     setIsDark(document.documentElement.classList.contains("dark"));
   }, []);
 
-  function toggle() {
-    const next = !isDark;
-    setIsDark(next);
-    if (next) {
+  function setTheme(dark: boolean) {
+    setIsDark(dark);
+    if (dark) {
       document.documentElement.classList.add("dark");
       localStorage.setItem("theme", "dark");
     } else {
@@ -48,18 +55,49 @@ function ThemeToggle() {
   }
 
   return (
-    <button
-      onClick={toggle}
-      className="flex items-center gap-3 rounded-md px-3 py-2 text-sm text-muted-foreground hover:bg-accent hover:text-foreground transition-colors"
-      title={isDark ? "Switch to light mode" : "Switch to dark mode"}
-    >
-      {isDark ? (
-        <Sun className="h-4 w-4 flex-shrink-0" aria-hidden="true" />
-      ) : (
-        <Moon className="h-4 w-4 flex-shrink-0" aria-hidden="true" />
-      )}
-      {isDark ? "Light Mode" : "Dark Mode"}
-    </button>
+    <div className="flex items-center justify-between px-3 py-2">
+      <span className="text-xs font-medium text-[hsl(var(--text-secondary))]">
+        Theme
+      </span>
+      <div className="flex rounded-[10px] bg-[hsl(var(--elevated))] p-1">
+        <button
+          onClick={() => setTheme(false)}
+          className={`flex h-7 w-9 items-center justify-center rounded-[8px] transition-all ${
+            !isDark
+              ? "bg-[hsl(var(--surface))]"
+              : ""
+          }`}
+          title="Light mode"
+        >
+          <Sun
+            className={`h-3.5 w-3.5 ${
+              !isDark
+                ? "text-[hsl(var(--foreground))]"
+                : "text-[hsl(var(--text-secondary))]"
+            }`}
+            aria-hidden="true"
+          />
+        </button>
+        <button
+          onClick={() => setTheme(true)}
+          className={`flex h-7 w-9 items-center justify-center rounded-[8px] transition-all ${
+            isDark
+              ? "bg-[hsl(var(--surface))]"
+              : ""
+          }`}
+          title="Dark mode"
+        >
+          <Moon
+            className={`h-3.5 w-3.5 ${
+              isDark
+                ? "text-[hsl(var(--foreground))]"
+                : "text-[hsl(var(--text-secondary))]"
+            }`}
+            aria-hidden="true"
+          />
+        </button>
+      </div>
+    </div>
   );
 }
 
@@ -67,19 +105,24 @@ export function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="flex h-full w-60 flex-col border-r border-border bg-background">
+    <aside className="fade-in flex h-full w-[252px] flex-col border-r border-[hsl(var(--border))] bg-background p-5">
       {/* Logo */}
-      <div className="flex h-14 items-center gap-2 border-b border-border px-4">
-        <div className="flex h-6 w-6 items-center justify-center rounded bg-primary/10 border border-border">
-          <span className="text-xs font-bold text-foreground">CA</span>
+      <div className="mb-7 flex items-center gap-2.5 px-3">
+        <div className="flex h-10 w-10 items-center justify-center rounded-[12px] bg-gradient-to-br from-yellow-400 to-amber-500">
+          <Shield className="h-4 w-4 text-gray-900" aria-hidden="true" />
         </div>
-        <span className="text-sm font-semibold text-foreground tracking-wide">
-          CodeAudit AI
-        </span>
+        <div>
+          <div className="text-sm font-bold tracking-tight text-foreground">
+            CodeAudit
+          </div>
+          <div className="-mt-0.5 text-[10px] font-medium tracking-wider text-muted-foreground">
+            AI
+          </div>
+        </div>
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 space-y-0.5 px-2 py-4" aria-label="Main navigation">
+      <nav className="flex flex-1 flex-col gap-0.5" aria-label="Main navigation">
         {navItems.map((item) => {
           const isActive =
             item.href === "/dashboard"
@@ -90,14 +133,17 @@ export function Sidebar() {
             <Link
               key={item.href}
               href={item.href}
-              className={`flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors ${
+              className={`flex items-center gap-2.5 rounded-[10px] px-3 py-2.5 text-[14px] transition-all ${
                 isActive
-                  ? "bg-accent text-foreground font-medium border border-border"
-                  : "text-muted-foreground hover:bg-accent hover:text-foreground"
+                  ? "bg-[hsl(var(--accent-subtle))] text-[hsl(var(--accent))] font-semibold"
+                  : "text-[hsl(var(--text-secondary))] hover:bg-[hsl(var(--hover))] font-medium"
               }`}
               aria-current={isActive ? "page" : undefined}
             >
-              <item.icon className="h-4 w-4 flex-shrink-0" aria-hidden="true" />
+              <item.icon
+                className="h-[18px] w-[18px] flex-shrink-0"
+                aria-hidden="true"
+              />
               {item.label}
             </Link>
           );
@@ -105,7 +151,7 @@ export function Sidebar() {
       </nav>
 
       {/* Theme toggle */}
-      <div className="border-t border-border px-2 py-3">
+      <div className="mt-2 border-t border-[hsl(var(--border))] pt-3">
         <ThemeToggle />
       </div>
     </aside>

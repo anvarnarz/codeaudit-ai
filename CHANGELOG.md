@@ -6,6 +6,41 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## 2026-03-22 — Restyle Progress & Results Pages
+
+### Changed
+
+- **Progress page header**: Monospace folder name with audit type/depth badges (accent-styled)
+- **Progress bar**: Gradient fill (`accent` to `amber-500`), `progressPulse` animation while running, turns green on completion
+- **Stats row**: Monospace font for token count and cost display
+- **Phase list**: Grid layout with colored status icons in rounded circles (green check for completed, blue spinner for running, muted circle for pending, red X for failed), findings count, duration, and cost columns
+- **Cancel button**: Destructive variant with red bg/border
+- **Completion banner**: Green-tinted surface with check icon and "View Results" primary button with chevron
+- **Results page header**: Monospace folder name with type/depth badges
+- **Health Score + Severity**: Two side-by-side cards with `HealthScore` ring (lg size) and severity breakdown chart
+- **Cost summary**: Surface bg card with rounded-[14px], large monospace total cost, expandable per-phase breakdown table with monospace numbers, yellow budget warning with icon
+- **Action buttons**: "Executive Report", "Technical Report", "Download All" as outline buttons with icons
+- **Filter bar**: Severity pills with severity-colored bg/border when active, count badges
+- **Findings list**: fadeIn + stagger animations on each finding card
+- **Finding card**: Surface bg with rounded-[14px], 3px left border in severity color, category tag in elevated bg, monospace file path in accent color, collapsible remediation with accent left border on elevated bg, hover shadow lift
+
+---
+
+## 2026-03-22 — Dashboard & New Audit Restyle
+
+### Changed
+
+- **Dashboard quick actions**: Surface bg cards with rounded-[14px], accent-subtle icon bg for "New Audit", elevated bg for others, hover lift animation
+- **Dashboard recent audits**: Surface bg card with rounded-[14px], folder names in monospace, type/depth badges with accent styling, grid layout with proper columns
+- **Dashboard animations**: Added fadeIn + stagger animations to all sections
+- **Audit type cards**: Replaced custom selection styling with `SelectCard` component, 2x2 grid, 36x36 rounded-[10px] icon containers (accent-subtle when selected, elevated when not)
+- **Depth toggle**: Replaced custom buttons with `SelectCard`, side-by-side 2-column layout showing time estimate and description
+- **Folder picker**: Input uses monospace font with elevated bg and accent focus; added recent folder suggestion chips (elevated bg, mono font, rounded-lg, text-xs)
+- **Confirm dialog**: Surface bg modal with rounded-[18px], grid layout summary with muted labels, warning note in elevated bg with rounded-[10px], outline "Go Back" and primary "Start Audit" buttons
+- **New audit form**: Section labels now uppercase text-xs font-semibold tracking-wider text-muted, max-w-2xl centered layout, increased spacing between sections, staggered fadeIn animations per section
+
+---
+
 ## 2026-03-22 — Setup Wizard Restyle
 
 ### Changed

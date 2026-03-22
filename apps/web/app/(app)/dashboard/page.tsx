@@ -1,7 +1,9 @@
 import Link from "next/link";
-import { ScanSearch, KeyRound, History } from "lucide-react";
+import { ScanSearch, KeyRound, History, Folder } from "lucide-react";
 import { getDb, audits } from "@codeaudit-ai/db";
 import { desc } from "drizzle-orm";
+// HealthScore ring — available when audit results include a score
+// import { HealthScore } from "@/components/ui/health-score";
 
 const AUDIT_TYPE_LABELS: Record<string, string> = {
   full: "Full Audit",
@@ -56,6 +58,7 @@ export default async function DashboardPage() {
       href: "/audit/new",
       icon: ScanSearch,
       cta: "Start audit",
+      accent: true,
     },
     {
       title: "Audit History",
@@ -63,6 +66,7 @@ export default async function DashboardPage() {
       href: "/history",
       icon: History,
       cta: "View history",
+      accent: false,
     },
     {
       title: "API Keys",
@@ -70,96 +74,124 @@ export default async function DashboardPage() {
       href: "/settings/api-keys",
       icon: KeyRound,
       cta: "Manage keys",
+      accent: false,
     },
   ] as const;
 
   return (
     <div className="p-8 max-w-4xl">
-      <div className="mb-8">
-        <h1 className="text-2xl font-semibold tracking-tight text-foreground">Dashboard</h1>
+      <div className="mb-8 fade-in">
+        <h1 className="text-2xl font-bold tracking-tight text-foreground">Dashboard</h1>
         <p className="mt-1 text-muted-foreground">
           Run a codebase audit or review your previous results.
         </p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-        {quickActions.map((action) => (
+      {/* Quick action cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5 mb-9">
+        {quickActions.map((action, i) => (
           <Link
             key={action.href}
             href={action.href}
-            className="group rounded-lg border border-zinc-300 dark:border-zinc-700 bg-card p-5 shadow-sm hover:border-zinc-400 dark:hover:border-zinc-500 hover:shadow-md transition-all"
+            className={`fade-in stagger-${i + 1} group bg-[hsl(var(--surface))] border border-border rounded-[14px] p-5 hover:-translate-y-[1px] hover:shadow-lg transition-all duration-200`}
           >
-            <div className="flex items-start justify-between mb-3">
-              <div className="flex h-9 w-9 items-center justify-center rounded-lg border border-zinc-300 dark:border-zinc-700 bg-background">
-                <action.icon className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
+            <div className="mb-3.5">
+              <div
+                className={`flex h-10 w-10 items-center justify-center rounded-[12px] ${
+                  action.accent
+                    ? "bg-[hsl(var(--accent-subtle))]"
+                    : "bg-[hsl(var(--elevated))]"
+                }`}
+              >
+                <action.icon
+                  className={`h-[18px] w-[18px] ${
+                    action.accent ? "text-[hsl(var(--accent))]" : "text-muted-foreground"
+                  }`}
+                  aria-hidden="true"
+                />
               </div>
             </div>
-            <h2 className="text-sm font-medium text-foreground mb-1">{action.title}</h2>
+            <h2 className="text-sm font-semibold text-foreground mb-1">{action.title}</h2>
             <p className="text-xs text-muted-foreground leading-relaxed">{action.description}</p>
           </Link>
         ))}
       </div>
 
-      <div className="rounded-lg border border-zinc-300 dark:border-zinc-700 shadow-sm">
-        <div className="flex items-center justify-between px-5 py-4 border-b border-border">
-          <h2 className="text-sm font-medium text-foreground">Recent audits</h2>
+      {/* Recent audits */}
+      <div className="fade-in stagger-3">
+        <div className="flex items-center justify-between mb-3.5">
+          <h2 className="text-[15px] font-semibold text-foreground">Recent Audits</h2>
           <Link
             href="/history"
-            className="text-xs text-muted-foreground hover:text-foreground transition-colors"
+            className="text-xs font-medium text-[hsl(var(--accent))] hover:opacity-80 transition-opacity"
           >
-            View all
+            View all &rarr;
           </Link>
         </div>
 
-        {recentAudits.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-12 text-center">
-            <ScanSearch className="h-8 w-8 text-muted-foreground/40 mb-3" aria-hidden="true" />
-            <p className="text-sm text-muted-foreground">No audits yet</p>
-            <p className="text-xs text-muted-foreground/60 mt-1">
-              Run your first audit to see results here.
-            </p>
-            <Link
-              href="/audit/new"
-              className="mt-4 inline-flex items-center gap-1.5 rounded-md bg-primary text-primary-foreground px-3 py-1.5 text-xs font-medium hover:bg-primary/90 transition-colors shadow-sm"
-            >
-              Start an audit
-            </Link>
-          </div>
-        ) : (
-          <div className="divide-y divide-border/50">
-            {recentAudits.map((audit) => {
-              const badge = STATUS_BADGE[audit.status] ?? STATUS_BADGE.queued!;
-              const typeLabel = AUDIT_TYPE_LABELS[audit.auditType] ?? audit.auditType;
-              const depthLabel = audit.depth === "quick" ? "Quick" : "Deep";
-              const date = audit.createdAt ?? new Date();
+        <div className="bg-[hsl(var(--surface))] border border-border rounded-[14px] overflow-hidden">
+          {recentAudits.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-12 text-center">
+              <ScanSearch className="h-8 w-8 text-muted-foreground/40 mb-3" aria-hidden="true" />
+              <p className="text-sm text-muted-foreground">No audits yet</p>
+              <p className="text-xs text-muted-foreground/60 mt-1">
+                Run your first audit to see results here.
+              </p>
+              <Link
+                href="/audit/new"
+                className="mt-4 inline-flex items-center gap-1.5 rounded-[10px] bg-primary text-primary-foreground px-3 py-1.5 text-xs font-medium hover:bg-primary/90 transition-colors shadow-sm"
+              >
+                Start an audit
+              </Link>
+            </div>
+          ) : (
+            <div className="divide-y divide-border/50">
+              {recentAudits.map((audit) => {
+                const badge = STATUS_BADGE[audit.status] ?? STATUS_BADGE.queued!;
+                const typeLabel = AUDIT_TYPE_LABELS[audit.auditType] ?? audit.auditType;
+                const depthLabel = audit.depth === "quick" ? "Quick" : "Deep";
+                const date = audit.createdAt ?? new Date();
+                return (
+                  <Link
+                    key={audit.id}
+                    href={`/audit/${audit.id}/queued`}
+                    className="grid grid-cols-[1.5fr_1fr_0.8fr_0.6fr] items-center px-5 py-3.5 hover:bg-[hsl(var(--hover))] transition-colors"
+                  >
+                    {/* Folder name */}
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <Folder className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+                      <span className="text-sm font-medium text-foreground font-mono truncate">
+                        {audit.folderName}
+                      </span>
+                    </div>
 
-              return (
-                <Link
-                  key={audit.id}
-                  href={`/audit/${audit.id}/queued`}
-                  className="flex items-center justify-between px-5 py-3.5 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
-                >
-                  <div className="min-w-0">
-                    <p className="text-sm font-medium text-foreground truncate">{audit.folderName}</p>
-                    <p className="text-xs text-muted-foreground mt-0.5">
-                      {typeLabel} · {depthLabel}
-                    </p>
-                  </div>
-                  <div className="flex items-center gap-3 flex-shrink-0 ml-4">
-                    <span
-                      className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${badge.className}`}
-                    >
-                      {badge.label}
-                    </span>
+                    {/* Type & Depth badges */}
+                    <div className="flex gap-1.5">
+                      <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-semibold tracking-wide bg-[hsl(var(--accent-subtle))] text-[hsl(var(--accent))] border border-[hsl(var(--accent)/0.2)]">
+                        {typeLabel}
+                      </span>
+                      <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-semibold tracking-wide bg-muted text-muted-foreground border border-border">
+                        {depthLabel}
+                      </span>
+                    </div>
+
+                    {/* Date */}
                     <span className="text-xs text-muted-foreground">
                       {formatRelativeDate(date)}
                     </span>
-                  </div>
-                </Link>
-              );
-            })}
-          </div>
-        )}
+
+                    {/* Status badge */}
+                    <span
+                      className={`inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-semibold ${badge.className}`}
+                    >
+                      {badge.label}
+                    </span>
+                  </Link>
+                );
+              })}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

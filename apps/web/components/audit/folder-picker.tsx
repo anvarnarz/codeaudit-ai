@@ -2,18 +2,18 @@
 import { useState, useTransition } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { CheckCircle2, AlertTriangle, XCircle, Plus, Trash2 } from "lucide-react";
 import { validateFolder, type FolderValidationResult } from "@/actions/folders";
 
+const RECENT_FOLDERS = ["my-saas-app", "api-gateway", "frontend-v2"];
+
 interface FolderPickerProps {
-  value: string[];                                                          // per D-04: array of paths
+  value: string[];
   onChange: (paths: string[], validations: (FolderValidationResult | null)[]) => void;
 }
 
 export function FolderPicker({ value, onChange }: FolderPickerProps) {
-  // Internal state: one validation result per path entry
   const [validations, setValidations] = useState<(FolderValidationResult | null)[]>(
     () => value.map(() => null)
   );
@@ -48,7 +48,7 @@ export function FolderPicker({ value, onChange }: FolderPickerProps) {
   }
 
   function removeEntry(index: number) {
-    if (value.length <= 1) return; // always keep at least one row
+    if (value.length <= 1) return;
     const newPaths = value.filter((_, i) => i !== index);
     const newValidations = validations.filter((_, i) => i !== index);
     setValidations(newValidations);
@@ -57,7 +57,9 @@ export function FolderPicker({ value, onChange }: FolderPickerProps) {
 
   return (
     <div className="space-y-3">
-      <Label className="text-sm font-medium">Target Folder{value.length > 1 ? "s" : ""}</Label>
+      <p className="uppercase text-xs font-semibold tracking-wider text-muted-foreground">
+        Target Folder{value.length > 1 ? "s" : ""}
+      </p>
 
       {value.map((folderPath, index) => {
         const v = validations[index];
@@ -69,17 +71,17 @@ export function FolderPicker({ value, onChange }: FolderPickerProps) {
                   placeholder="/Users/you/Projects/my-repo"
                   value={folderPath}
                   onChange={(e) => updateEntry(index, e.target.value)}
-                  className={
+                  className={`font-mono bg-[hsl(var(--elevated))] focus:border-[hsl(var(--accent))] focus:ring-[hsl(var(--accent))] ${
                     v?.valid === false
                       ? "border-destructive"
                       : v?.valid === true
                       ? "border-green-600"
                       : ""
-                  }
+                  }`}
                 />
                 {pending && (
                   <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
-                    checking…
+                    checking...
                   </span>
                 )}
               </div>
@@ -107,7 +109,7 @@ export function FolderPicker({ value, onChange }: FolderPickerProps) {
                   <Alert variant="default" className="border-yellow-600/50 bg-yellow-600/10">
                     <AlertTriangle className="h-4 w-4 text-yellow-600" />
                     <AlertDescription className="text-yellow-600 text-xs">
-                      Not a git repository — git-specific audit phases will be skipped. Continue anyway?
+                      Not a git repository -- git-specific audit phases will be skipped. Continue anyway?
                     </AlertDescription>
                   </Alert>
                 )}
@@ -123,6 +125,20 @@ export function FolderPicker({ value, onChange }: FolderPickerProps) {
           </div>
         );
       })}
+
+      {/* Recent folder suggestions */}
+      <div className="flex flex-wrap gap-1.5">
+        {RECENT_FOLDERS.map((f) => (
+          <button
+            key={f}
+            type="button"
+            onClick={() => updateEntry(0, `/Users/you/Projects/${f}`)}
+            className="px-2.5 py-1 rounded-lg bg-[hsl(var(--elevated))] text-[hsl(var(--text-secondary))] text-xs font-mono hover:bg-[hsl(var(--hover))] transition-colors cursor-pointer border border-transparent hover:border-border"
+          >
+            {f}
+          </button>
+        ))}
+      </div>
 
       <Button
         type="button"

@@ -1,6 +1,6 @@
 "use client";
 import { ShieldCheck, Shield, Users, Code2 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { SelectCard } from "@/components/ui/select-card";
 
 export type AuditType = "full" | "security" | "team-collaboration" | "code-quality";
 
@@ -18,29 +18,37 @@ interface AuditTypeCardsProps {
 
 export function AuditTypeCards({ value, onChange }: AuditTypeCardsProps) {
   return (
-    <div className="space-y-2">
-      <p className="text-sm font-medium">Audit Type</p>
+    <div className="space-y-2.5">
+      <p className="uppercase text-xs font-semibold tracking-wider text-muted-foreground">
+        Audit Type
+      </p>
       <div className="grid grid-cols-2 gap-3">
-        {AUDIT_TYPES.map(({ id, icon: Icon, title, description }) => (
-          <button
-            key={id}
-            type="button"
-            onClick={() => onChange(id)}
-            className={cn(
-              "flex flex-col items-start gap-2 rounded-lg border p-4 text-left transition-colors",
-              "hover:border-muted-foreground/50 hover:bg-accent/50",
-              value === id
-                ? "border-primary bg-white text-black ring-2 ring-primary dark:bg-white dark:text-black"
-                : "border-zinc-300 dark:border-zinc-700 bg-card shadow-sm"
-            )}
-          >
-            <Icon className={cn("h-5 w-5", value === id ? "text-black dark:text-black" : "text-muted-foreground")} />
-            <div>
-              <p className={cn("text-sm font-medium leading-none", value === id && "text-black dark:text-black")}>{title}</p>
-              <p className={cn("mt-1 text-xs leading-relaxed", value === id ? "text-black/70 dark:text-black/70" : "text-muted-foreground")}>{description}</p>
-            </div>
-          </button>
-        ))}
+        {AUDIT_TYPES.map(({ id, icon: Icon, title, description }) => {
+          const selected = value === id;
+          return (
+            <SelectCard key={id} selected={selected} onClick={() => onChange(id)}>
+              <div className="flex flex-col items-start gap-2.5">
+                <div
+                  className={`flex h-9 w-9 items-center justify-center rounded-[10px] ${
+                    selected
+                      ? "bg-[hsl(var(--accent-subtle))]"
+                      : "bg-[hsl(var(--elevated))]"
+                  }`}
+                >
+                  <Icon
+                    className={`h-[18px] w-[18px] ${
+                      selected ? "text-[hsl(var(--accent))]" : "text-muted-foreground"
+                    }`}
+                  />
+                </div>
+                <div>
+                  <p className="text-sm font-bold text-foreground leading-none">{title}</p>
+                  <p className="mt-1.5 text-sm text-muted-foreground leading-relaxed">{description}</p>
+                </div>
+              </div>
+            </SelectCard>
+          );
+        })}
       </div>
     </div>
   );
