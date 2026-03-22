@@ -31,12 +31,12 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. User can select a local folder via folder picker or path input, and the app locks it read-only and blocks git push before the audit begins
   4. User can choose audit type (full / security-only / team & collaboration / code quality), depth (quick scan / deep audit), and which stored API key to use
   5. User sees a pre-audit cost estimate and can confirm to proceed or go back to reconfigure
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 01-01: Strip GitHub OAuth/App from scaffold, wire localhost-only setup, verify app starts clean
-- [ ] 01-02: Folder selection UI, safety enforcement (chmod read-only, git push block), audit output directory creation, and unlock on cancel/completion
-- [ ] 01-03: Audit configuration screen — type, depth, provider/key selection, cost estimate display, and confirm gate
+- [ ] 01-01-PLAN.md — Strip GitHub OAuth/Auth.js/Neon, migrate to SQLite, adapt sidebar/layout, npx CLI launcher
+- [ ] 01-02-PLAN.md — Folder safety service (chmod/git-push-block), validateFolder action, FolderPicker component, first-time setup wizard
+- [ ] 01-03-PLAN.md — Audit type cards, depth toggle, model selector, live cost estimate, confirm dialog — complete New Audit page
 
 ### Phase 2: Audit Engine
 **Goal**: A configured audit runs end-to-end — Phase 0 bootstrap through Phase 11 report generation — with live per-phase progress visible in the browser, real-time cost tracking, and safe folder cleanup on completion, cancellation, or failure
@@ -92,7 +92,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. App Shell & Configuration | 0/3 | Not started | - |
+| 1. App Shell & Configuration | 0/3 | Planned | - |
 | 2. Audit Engine | 0/3 | Not started | - |
 | 3. Results & Cost | 0/2 | Not started | - |
 | 4. History & Comparison | 0/2 | Not started | - |
