@@ -6,59 +6,80 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
-## 2026-03-22 — GitHub App + API Key Management (Phase 1, Plan 01-03)
+## 2026-03-22 — v1.0 CodeAudit MVP
 
 ### Added
 
-- **AES-256-GCM encryption utility** (`packages/db/src/encryption.ts`) with `encryptApiKey()`, `decryptApiKey()`, `maskApiKey()` — unique IV per key, auth-tag tamper detection
-- **API key validation service** (`lib/api-key-validator.ts`) — lightweight test calls to Anthropic, OpenAI, and Gemini APIs; returns typed result (`valid | invalid_key | rate_limited | quota_exceeded | network_error`)
-- **API key CRUD server actions** (`actions/api-keys.ts`) — create, list, update label, delete; all scoped to authenticated userId (IDOR safe); encrypted keys never returned to client
-- **`maskedKey` column** added to `api_keys` schema — stores last-4 chars display string at creation, avoiding decryption for list views
-- **API Keys settings page** at `/settings/api-keys` with three equal sections (Anthropic, OpenAI, Gemini); add/edit label/delete with confirmation
-- **GitHub App installation flow** — `lib/github-app.ts` with install URL, token expiry checks, and refresh function
-- **GitHub App webhook handler** at `/api/github/webhook` — processes `installation.created`, `installation.deleted`, `installation_repositories.added/removed`; HMAC-SHA256 signature verification with timing-safe comparison
-- **GitHub App installation callback** at `/api/github/callback` — stores installation record after GitHub App install, redirects to onboarding or settings
-- **Proactive GitHub token refresh** (`lib/github-token-refresh.ts`) — refreshes access_token 15 minutes before expiry; in-memory lock prevents concurrent refreshes; null return signals expired refresh token (re-auth needed)
-- **GitHub connection settings page** at `/settings/github` — shows connection status, account login, installation ID, manage repos link (opens GitHub), disconnect with confirmation
-- **Settings index page** updated with navigation cards to API Keys and GitHub sections
-- **Onboarding Step 2 (API key)** wired to real API key form — shows existing keys, allows adding inline, Continue button unlocks after first key
-- **Onboarding Step 3 (Repo)** wired to GitHub App install — Install GitHub App button, confirmation state after callback, skip remains available
-- **Encryption unit tests** — round-trip, unique IVs, tamper detection, wrong-key failure, key validation edge cases
+**Phase 1: App Shell & Configuration**
+- Local-first app architecture — runs at localhost, no cloud, no auth
+- `npx codeaudit` CLI launcher with auto-generated ENCRYPTION_KEY
+- SQLite database at `~/.codeaudit/codeaudit.db` (zero-config, no Docker needed)
+- API key management with AES-256-GCM encryption, multiple keys per provider with labels
+- API key validation via test API call on entry (Anthropic, OpenAI, Gemini)
+- Multi-folder picker with path input and per-path validation
+- Safety enforcement: `chmod -R a-w` + git push block with guaranteed unlock
+- Non-git folder support (skip git-specific phases with user confirmation)
+- First-time setup wizard (add API key → done)
+- Audit type selection (full, security-only, team, code quality) with card UI
+- Audit depth toggle (quick scan / deep audit) with time + cost details
+- Model selector fetching available models dynamically from provider API
+- Auto mode (cost-optimized model selection per phase)
+- Live cost estimate updating as configuration changes
+- Confirmation dialog summarizing audit before start
+- Dark mode UI with Linear aesthetic, left sidebar navigation
 
-## 2026-03-22 — Auth Flows (Phase 1, Plan 01-02)
+**Phase 2: Audit Engine**
+- LLM adapter for Anthropic, OpenAI, and Gemini via Vercel AI SDK 6
+- AUTO model selection with 3 complexity tiers (simple/medium/complex)
+- Audit orchestrator with cancel polling, phase checkpointing, and guaranteed folder cleanup
+- Prompt builder with per-phase guide chunks (not full 93K guide per call)
+- `<data_block trust="untrusted">` prompt injection defense
+- Structured finding extraction via Zod schemas
+- Phase 0 bootstrap: 14 detection commands + LLM context synthesis
+- Phases 1-9: shell commands → LLM analysis → structured findings
+- Phase 10: final report aggregation with scoring and grading
+- Phase 11: HTML dashboard generation (management + technical)
+- Audit type filtering (run only relevant phases per type)
+- Quick scan depth mode (sampling, reduced grep output)
+- SSE progress streaming polling SQLite every 500ms with state replay on reconnect
+- Expandable per-phase detail view (status, findings count, duration, token cost)
+- Cancel endpoint + resume from checkpoint support
+- Budget warning when cost exceeds estimate by >20%
+- All output to audit directory, never inside target folder
 
-### Added
+**Phase 3: Results & Cost**
+- Findings dashboard with health score, letter grade (A-F), and severity breakdown chart (Recharts)
+- Filterable/sortable findings list by severity (Critical, High, Medium, Low, Info)
+- Finding cards with severity badge, file path, line number, evidence snippet, collapsible remediation
+- Separate executive and technical report pages (iframe-embedded Phase 11 HTML)
+- Cost summary banner (total tokens + cost) with per-phase breakdown table
+- Budget overrun warning (yellow banner when >20% over estimate)
+- Partial results support for cancelled/failed audits
+- "View Results" transition from progress view on completion
+- Zip download of all audit artifacts (HTML, markdown, JSON, all files)
+- PDF generation via Puppeteer from HTML dashboards
+- Raw HTML report serve for iframe embedding
 
-- **Auth.js v5** with GitHub OAuth provider and Drizzle adapter (database session strategy)
-- **Sign-in page** at `/sign-in` with "Sign in with GitHub" button, dark mode styling, OAuth error messages
-- **Auth middleware** protecting `/dashboard/*` and `/onboarding/*` — unauthenticated users redirected to sign-in
-- **Session utilities**: `getRequiredSession()`, `getOptionalSession()`, `getRequiredUser()` in `lib/auth.ts`
-- **Sign-out action** and `SignOutButton` component (integrated into sidebar)
-- **Guided onboarding flow** (4 steps): Welcome, Add API Key (placeholder), Connect Repo (placeholder), Ready
-- **`has_completed_onboarding` flag** on users table — first-time users redirected to onboarding after sign-in
-- **Dashboard shell** with persistent sidebar navigation, GitHub avatar, user name/email, sign-out button
-- **Dashboard home page** with quick-action cards and empty state for recent audits
-- GitHub avatar image domain configured in `next.config.ts`
+**Phase 4: History & Comparison**
+- Audit history page grouped by folder path with score/grade badges
+- Per-audit row with date, type, depth, and health score
+- Click any audit to view its full results dashboard
+- "Compare latest two" button for folders with 2+ audits
+- Delta comparison page with score delta banner (colored +/-)
+- Side-by-side severity charts (previous vs latest)
+- Three-section finding diff: new (red), resolved (green), persisted (gray)
+- Set-based finding matching by title + file path
 
-## 2026-03-21 — Project Scaffolding (Phase 1, Plan 01-01)
+### Changed
+- **Architecture pivot**: Switched from cloud webapp (GitHub OAuth, PostgreSQL, BullMQ) to local-first (no auth, SQLite, in-process execution)
+- Stripped all GitHub OAuth, Auth.js, GitHub App webhook code from Phase 1 scaffold
 
-### Added
+### Fixed
+- Argument order bug in settings page `createApiKey` call (label/key swap)
+- Missing `actualCostMicrodollars` computation in `markPhaseCompleted`
+- Import typo `findRunPhaseLlm` → `runPhaseLlm` in phase-00 runner
+- Undefined `result.score` variable in phase-10 runner
 
-- **Monorepo structure** with pnpm workspaces (`apps/*`, `packages/*`, `worker`)
-- **Next.js 16 app** at `apps/web` with App Router, React 19, TypeScript 5.x
-- **Dark mode default** (Linear-style aesthetic) with Geist font, CSS variables, custom scrollbar
-- **Landing page** — product name, one-liner, "Sign in with GitHub" button (non-functional at this stage)
-- **Dashboard layout** with left sidebar navigation (Dashboard, Audits, Repos, Settings)
-- **Drizzle ORM schema** at `packages/db` with Auth.js-compatible tables (users, accounts, sessions, verification_tokens)
-- **api_keys table** with AES-256-GCM encrypted storage design (encrypted_key + iv columns)
-- **github_installations table** for GitHub App installation tracking
-- **audits table** with structured JSONB findings column and typed `AuditFindings` schema
-- **audit_phases table** for per-phase output and token tracking
-- **`AuditFinding` / `AuditFindings` TypeScript types** defined in Phase 1 for Phase 5 comparison feature
-- **Stub packages**: `@codeaudit/audit-engine`, `@codeaudit/llm-adapter`, `@codeaudit/repo-sandbox`
-- **Worker stub** at `worker/` with BullMQ + ioredis dependencies
-- **Docker Compose** with PostgreSQL 16 + Redis 7, persistent volumes, health checks
-- **Root dev scripts**: `dev`, `dev:db`, `dev:web`, `db:generate`, `db:migrate`
-- **Vitest config** for cross-package unit testing
-- **Prettier + ESLint** with consistent formatting rules
-- **`.env.example`** documenting all required environment variables
+---
+
+*CodeAudit v1.0 — 4 phases, 10 plans, 22 tasks, 7,860 LOC TypeScript*

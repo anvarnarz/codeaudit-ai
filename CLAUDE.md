@@ -3,147 +3,122 @@
 
 **CodeAudit**
 
-A local web application that wraps the manual codebase audit process into a browser-based UI. Users run it on their machine (localhost), point it at a local folder, choose an audit type and depth, provide their own LLM API key (Anthropic, OpenAI, or Gemini), and get a comprehensive codebase health report — viewable in-app with option to download full reports. No code ever leaves the user's machine. Built initially for internal use, designed to distribute as a downloadable tool.
+A local web application (`npx codeaudit`) that wraps a manual 13-phase codebase audit process into a browser-based UI. Users run it on their machine at localhost, point it at local folders, choose an audit type/depth/LLM model, and get a comprehensive codebase health report. No code ever leaves the user's machine except LLM API calls with the user's own key.
 
-**Core Value:** Anyone can run a thorough, structured codebase health audit on any local codebase without needing to set up Claude Code CLI, manage read-only filesystem locks, or paste multi-page prompts — just open the app, pick a folder, and run.
+**Core Value:** Anyone can run a thorough, structured codebase health audit on any local codebase without CLI setup — just open the app, pick a folder, and run.
 
 ### Constraints
 
-- **Local execution**: All code stays on the user's machine. No data sent anywhere except LLM API calls with the user's own key.
-- **Safety**: Target folder must be locked read-only before audit starts, git push must be blocked — exactly replicating the manual process.
-- **Multi-LLM**: Must support at least Anthropic, OpenAI, and Gemini APIs from day one.
-- **Cost transparency**: Users pay for their own tokens — the app must show real-time token usage and cost estimates.
-- **Existing guides**: The 13-phase audit logic in `codebase_review_guide.md` is the source of truth. The app implements this, not a reimagined version.
+- **Local execution**: All code stays on the user's machine. Only LLM API calls go outbound.
+- **Safety**: Target folder locked read-only + git push blocked before every audit, guaranteed unlock on exit.
+- **Multi-LLM**: Anthropic, OpenAI, and Gemini with provider-tuned prompts.
+- **Cost transparency**: Real-time token/cost display with budget overrun warnings.
+- **Source of truth**: The 13-phase audit logic in `manual-codebase-review-process/codebase_review_guide.md` is the source of truth.
 <!-- GSD:project-end -->
 
-<!-- GSD:stack-start source:research/STACK.md -->
+<!-- GSD:stack-start -->
 ## Technology Stack
 
-## Recommended Stack
-### Core Technologies
-| Technology | Version | Purpose | Why Recommended |
-|------------|---------|---------|-----------------|
-| Next.js | 16.x (current stable as of March 2026) | Full-stack React framework | App Router + React Server Components eliminate most API boilerplate; built-in SSE streaming with Route Handlers; Vercel official support. Avoid Pages Router — App Router is now the baseline. |
-| TypeScript | 5.x | Language | Non-negotiable for a codebase that generates typed audit schemas, multi-LLM response parsing, and structured phase output. |
-| PostgreSQL via Neon | Neon serverless | Primary database | Serverless-native, branches per PR automatically, tightest Next.js/Vercel integration. Pure database (no BaaS bloat). Audit history with JSON audit results fits Postgres well. |
-| Drizzle ORM | 0.36.x | Database ORM | SQL-first TypeScript ORM, ~7KB bundle, runs within 10-20% of raw SQL. Neon official integration. Prisma is now comparable post-v7 but Drizzle remains preferred for lean serverless workloads. |
-| Auth.js (NextAuth) | v5 (stable) | Authentication + GitHub OAuth | Framework-native, GitHub provider built in, stores OAuth access_token in JWT callbacks, zero vendor lock-in. 2M weekly downloads. Preferred over Clerk (paid) for a project where you control the infra. |
-| Vercel AI SDK | 6.x (released Dec 2025) | Multi-LLM abstraction | Single API for Anthropic, OpenAI, and Gemini. Handles streaming, structured output, tool calls across all three providers uniformly. AI SDK 6 adds DevTools and MCP support. Write prompt logic once, swap providers. |
-| BullMQ | 5.x | Background job queue for audits | Redis-backed, self-hostable, TypeScript-native. Audits are long-running (30 min to 4+ hours) — they cannot run in serverless functions. BullMQ workers run as persistent processes outside Next.js. Trigger.dev is a managed alternative but adds vendor dependency and cost. |
-| Redis (Upstash or self-hosted) | — | BullMQ backend + SSE event bridge | BullMQ requires Redis. Upstash HTTP Redis works for serverless job enqueuing; a dedicated Redis instance is needed for the worker process. Also used as the event bus to push phase progress from worker to SSE endpoints. |
-| Tailwind CSS | 4.x | Styling | De facto standard for Next.js apps in 2026. Shadcn/ui depends on it. Zero-config purging. |
-| Shadcn/ui | latest | UI component library | Copy-paste components built on Radix UI. Includes Chart components (powered by Recharts) for audit score dashboards. No version lock-in; components live in your repo. |
-| simple-git | 3.x | Git cloning in the worker | Wraps the system git binary; supports token-based HTTPS cloning for private repos using URL-embedded credentials. Simpler than isomorphic-git for server-only use, no native binding segfaults like nodegit. |
-### Supporting Libraries
-| Library | Version | Purpose | When to Use |
-|---------|---------|---------|-------------|
-| @ai-sdk/anthropic | 1.x | Anthropic provider for AI SDK | Always — Anthropic is the primary audit LLM |
-| @ai-sdk/openai | 1.x | OpenAI provider for AI SDK | Always — OpenAI is a required BYOK provider |
-| @ai-sdk/google | 1.x | Gemini provider for AI SDK | Always — Gemini is a required BYOK provider |
-| TanStack Query (React Query) | v5 | Client-side server state | Audit history listing, comparison fetching, status polling fallback. 12.3M weekly downloads, overtook SWR in late 2024. Use for data that benefits from caching and background refetch. |
-| Zod | 3.x | Schema validation | Validate user inputs (API keys, repo selection), parse structured LLM output, runtime type safety at API boundaries. |
-| @node-rs/argon2 or bcryptjs | latest | Password hashing | Only if adding email+password auth alongside GitHub OAuth. Argon2 is preferred; bcryptjs if native bindings are a concern. |
-| node:crypto (built-in) | Node 18+ | BYOK API key encryption | Encrypt user-provided LLM API keys at rest using AES-256-GCM with unique IVs. Use Node's built-in crypto — no extra dependency needed. Store master encryption key in environment secrets (not database). |
-| @ioredis / @upstash/redis | latest | Redis client | ioredis for self-hosted Redis (worker process); @upstash/redis for serverless Route Handlers that enqueue jobs. |
-| bullmq | 5.x | Worker-side queue processing | Import in the long-running worker process (not in Next.js app router). |
-| recharts | 2.x | Charts in dashboards | Already bundled via Shadcn charts. Use for phase scores, complexity trends, audit comparison charts. |
-| react-markdown / remark | latest | Markdown rendering | Render audit findings.md and codebase_health.md in-app without converting to HTML at generation time. |
-| archiver or tar-stream | latest | Report bundling | ZIP or tarball downloadable report packages (HTML + markdown + budget log). |
-### Development Tools
-| Tool | Purpose | Notes |
-|------|---------|-------|
-| pnpm | Package manager | Faster than npm, better monorepo support if worker process is split into a separate workspace package. |
-| Vitest | Unit testing | Vite-native, fast, works with TypeScript out of the box. Use for audit phase logic, LLM prompt builders, and schema validators. |
-| Playwright | E2E testing | Critical for GitHub OAuth flow and multi-step audit UI. |
-| Docker Compose | Local dev environment | Run Redis + PostgreSQL locally. The BullMQ worker runs as a separate container to mirror production. |
-| ESLint + Prettier | Linting + formatting | Standard. Use eslint-config-next for Next.js rules. |
-| Drizzle Kit | Database migrations | Drizzle's CLI for schema push and migration generation (`drizzle-kit generate`, `drizzle-kit migrate`). |
-## Installation
-# Core framework
-# Database
-# Auth
-# AI SDK + providers
-# Job queue
-# Validation
-# Git operations (in worker)
-# Client data fetching
-# UI components (Shadcn CLI — adds components individually)
-# Markdown rendering
-# Dev dependencies
-## Alternatives Considered
-| Recommended | Alternative | When to Use Alternative |
-|-------------|-------------|-------------------------|
-| Next.js 16 App Router | Remix v2 | If you need edge-first deployment on Cloudflare Workers. Remix's loader/action model is cleaner for form-heavy apps, but Next.js has stronger ecosystem for dashboard-heavy UIs and AI SDK integration is Next.js-first. |
-| BullMQ | Trigger.dev v3 | If you want zero-infrastructure managed workers and don't mind vendor dependency + managed cost. Trigger.dev v3 has better observability UI and native LLM streaming to frontend. Worth revisiting if self-hosting ops become a bottleneck. |
-| BullMQ | Inngest | If you're running fully serverless (no persistent worker process). Inngest can run workflows without a Redis instance but adds cloud vendor dependency. |
-| Neon (serverless Postgres) | Supabase | If you want a batteries-included backend (realtime, auth, storage) and are willing to use Supabase's client library patterns in Next.js Server Components. More friction with App Router than Neon. |
-| Drizzle ORM | Prisma 7 | Prisma 7 dropped the Rust query engine (pure TypeScript now), so performance is comparable. Choose Prisma if team is more familiar with it — the DX gap has narrowed. |
-| Auth.js v5 | Clerk | If you want a drop-in auth UI with org management and don't mind $25+/month at scale. Overkill for a single-user GitHub OAuth flow. |
-| simple-git | isomorphic-git | If you need pure JS (no system git binary dependency). Significantly slower on large repos. Only relevant for edge/serverless environments where exec is not available — the worker runs on Node, so simple-git is appropriate. |
-| node:crypto AES-256-GCM | Infisical / Doppler / AWS KMS | If compliance requirements (SOC 2, HIPAA) demand external key management. For v1, envelope encryption with a server-side master key in environment secrets is sufficient and avoids vendor dependency. |
-| Shadcn/ui + Recharts | Tremor | Tremor (now Vercel-owned) sits on top of Shadcn and is purpose-built for dashboards. Use Tremor components if the audit dashboard requires complex KPI cards and multi-series time charts with minimal custom code. Both share the same Radix + Tailwind foundation — they're compatible. |
-## What NOT to Use
-| Avoid | Why | Use Instead |
-|-------|-----|-------------|
-| vm2 / isolated-vm for code sandboxing | vm2 has active CVEs (CVE-2026-22709, CVSS 9.8). vm2 maintainers recommend Docker-based isolation. isolated-vm is better but still requires careful hardening. The repo clone sandbox is a filesystem concern, not a code execution concern — you're running LLM API calls, not executing cloned code. | Read-only filesystem mount + no network access in the worker container. Docker with `--read-only` and network policy restricting outbound to only LLM API endpoints. No code execution sandbox needed. |
-| Vercel Serverless Functions for audit execution | Vercel's max execution timeout (even Pro) is 300s. A full audit takes 30 min to 4+ hours. Serverless will time out. | BullMQ workers running as persistent Node.js processes (Docker container / Railway / Fly.io). |
-| WebSockets for progress updates | Bidirectional — unnecessary complexity for one-way server-to-client progress pushes. SSE is simpler, firewall-friendly, and native HTTP. | Server-Sent Events (SSE) via Next.js Route Handlers + Redis pub/sub as the worker-to-SSE bridge. |
-| Storing raw LLM API keys in the database | Plain-text secrets are a breach liability. | AES-256-GCM encryption via node:crypto, master key in environment variables / secrets manager. |
-| nodegit | Authentication errors cause segfaults due to libgit2 assertions. Actively problematic for private repo cloning. | simple-git (wraps system git, token-in-URL pattern). |
-| Next.js Pages Router | Deprecated path. App Router is stable since Next.js 13.4, now the default in Next.js 16. App Router is required for RSC and native streaming. | Next.js App Router. |
-| JWT session storing GitHub access_token in cookie | OAuth tokens can exceed cookie size limits; storing in JWT exposes the token client-side. | Auth.js database session strategy with access_token persisted in the database sessions/accounts tables, retrieved server-side only. |
-## Stack Patterns by Variant
-- Run as a dedicated Docker container or Railway/Fly.io service
-- Import BullMQ Worker, simple-git, AI SDK, Zod
-- No Next.js, no Tailwind — pure Node.js TypeScript
-- Worker emits phase events to Redis pub/sub channel
-- Next.js SSE Route Handler subscribes to that Redis channel and streams to client
-- User submits key via form in Next.js Server Action
-- Server Action encrypts with AES-256-GCM (node:crypto), stores ciphertext + IV in Postgres
-- Worker retrieves ciphertext, decrypts at job start, passes to AI SDK provider constructor
-- Key is never logged, never returned to client after submission
-- Use Auth.js database session strategy (not JWT)
-- The GitHub access_token lands in the `account` table (Auth.js default schema)
-- Worker retrieves access_token via server-side database query, not from session cookie
-- Use token in simple-git clone URL: `https://x-access-token:${token}@github.com/org/repo.git`
-- Next.js app: Vercel (tightest integration with Neon + Auth.js)
-- Worker process: Railway or Fly.io (long-running containers, no timeout)
-- Redis: Upstash (serverless, Vercel add-on) or Railway Redis
-- Postgres: Neon (Vercel Postgres integration)
-## Version Compatibility
-| Package | Compatible With | Notes |
-|---------|-----------------|-------|
-| next@16.x | react@19.x | App Router requires React 19.x. Do not use React 18 with the App Router in Next.js 16. |
-| next-auth@beta (v5) | next@16.x | Auth.js v5 renamed middleware.ts to proxy.ts in Next.js 16 — follow migration guide at authjs.dev. |
-| drizzle-orm@0.36.x | @neondatabase/serverless@latest | Use neon's HTTP adapter for serverless Route Handlers; use neon's WebSocket adapter for the worker process. |
-| ai@6.x (@ai-sdk/anthropic etc.) | next@16.x | AI SDK 6 ships v3 Language Model Specification. Use `npx @ai-sdk/codemod v6` if upgrading from v5. |
-| bullmq@5.x | ioredis@5.x | BullMQ 5 requires ioredis 5. Do not use the redis package (not ioredis) — BullMQ explicitly requires ioredis. |
-| @tanstack/react-query@5.x | react@19.x | TanStack Query v5 supports React 19 with no issues. Use the `ReactQueryDevtools` panel in dev. |
-## Sources
-- [Next.js 16 release / upgrade guide](https://nextjs.org/docs/app/guides/upgrading/version-16) — version confirmed current stable March 2026
-- [AI SDK 6 — Vercel Blog](https://vercel.com/blog/ai-sdk-6) — release Dec 22, 2025; Anthropic/OpenAI/Google provider support confirmed
-- [AI SDK 6 — WebFetch verification](https://vercel.com/blog/ai-sdk-6) — unified provider API, MCP support, DevTools
-- [Auth.js reference — authjs.dev](https://authjs.dev/reference/nextjs) — v5 stable, GitHub provider, database session strategy
-- [Neon vs Supabase comparison — bytebase.com](https://www.bytebase.com/blog/neon-vs-supabase/) — MEDIUM confidence (third party, consistent with official Neon positioning)
-- [Drizzle vs Prisma 2026 — makerkit.dev](https://makerkit.dev/blog/tutorials/drizzle-vs-prisma) — Prisma 7 architectural change confirmed; Drizzle recommended for serverless
-- [BullMQ vs Trigger.dev — GitHub Discussion](https://github.com/triggerdotdev/trigger.dev/discussions/922) — MEDIUM confidence; BullMQ preferred for self-hosted
-- [Server-Sent Events vs WebSockets — HackerNoon](https://hackernoon.com/streaming-in-nextjs-15-websockets-vs-server-sent-events) — SSE recommendation for one-way progress streams
-- [vm2 CVE-2026-22709 — Semgrep](https://semgrep.dev/blog/2026/calling-back-to-vm2-and-escaping-sandbox/) — HIGH confidence; critical sandbox escape confirmed
-- [simple-git npm](https://www.npmjs.com/package/simple-git) — token-in-URL auth pattern confirmed
-- [TanStack Query vs SWR 2025 — Refine](https://refine.dev/blog/react-query-vs-tanstack-query-vs-swr-2025/) — 12.3M vs 7.7M weekly downloads confirmed
-- Vercel templates (Next.js + Drizzle + Neon + Auth.js) — confirmed as Vercel's own recommended starter
+### Core
+| Technology | Version | Purpose |
+|------------|---------|---------|
+| Next.js | 16.x | Full-stack React framework (App Router, Server Components, Route Handlers) |
+| TypeScript | 5.7 | Language for all packages |
+| SQLite (better-sqlite3) | 12.x | Local database at `~/.codeaudit/codeaudit.db` — zero config, no Docker needed |
+| Drizzle ORM | 0.36.x | SQL-first TypeScript ORM for SQLite |
+| Vercel AI SDK | 6.x | Multi-LLM abstraction (Anthropic, OpenAI, Gemini) — write once, swap providers |
+| Tailwind CSS | 4.x | Styling — dark mode default, Linear aesthetic |
+| Shadcn/ui | latest | UI components (Radix UI based) — buttons, cards, badges, charts |
+| Recharts | 2.x | Severity breakdown charts in results dashboard |
+
+### Monorepo Structure
+```
+apps/web/              → Next.js 16 frontend + API routes
+packages/db/           → Drizzle schema + SQLite client
+packages/audit-engine/ → 13-phase audit orchestrator + phase runners
+packages/llm-adapter/  → Multi-LLM abstraction (3 providers + AUTO)
+packages/repo-sandbox/ → Git cloning utilities (stub)
+packages/cli/          → npx entry point (ENCRYPTION_KEY bootstrap + browser open)
+worker/                → BullMQ worker (stub — audits run in-process for v1)
+```
+
+### Key Libraries
+| Library | Purpose |
+|---------|---------|
+| @ai-sdk/anthropic, @ai-sdk/openai, @ai-sdk/google | LLM provider adapters |
+| node:crypto (AES-256-GCM) | API key encryption at rest |
+| archiver | Zip download of audit artifacts |
+| puppeteer | PDF generation from HTML dashboards |
+| Zod | Schema validation for LLM structured output |
+| TanStack Query v5 | Client-side data fetching |
+
+### No Auth
+This is a local-only tool. No authentication layer — localhost access is sufficient.
+No Auth.js, no GitHub OAuth, no session management.
+
+### No Cloud Infrastructure
+No PostgreSQL, no Redis, no BullMQ workers, no Docker required to run.
+SQLite handles all storage. Audits run in the Next.js process.
+Docker Compose exists for development convenience only.
 <!-- GSD:stack-end -->
 
-<!-- GSD:conventions-start source:CONVENTIONS.md -->
+<!-- GSD:conventions-start -->
 ## Conventions
 
-Conventions not yet established. Will populate as patterns emerge during development.
+### Code Patterns
+- **Server Actions** in `apps/web/actions/` for all mutations
+- **Server Components** for data loading, **Client Components** for interactivity
+- **Drizzle ORM** queries via `getDb()` singleton (WAL mode, `~/.codeaudit/codeaudit.db`)
+- **AES-256-GCM** for all secrets at rest (API keys). Master key at `~/.codeaudit/.env`
+- **Shadcn/ui** components — dark mode, Linear aesthetic
+- **Prompt injection defense**: `<data_block trust="untrusted">` wraps all repo content sent to LLMs
+
+### Safety Enforcement
+- `lockFolder()`: `git remote set-url --push origin no_push` THEN `chmod -R a-w` (order is critical)
+- `unlockFolder()`: Always in `finally` block — guaranteed cleanup on complete/cancel/fail
+- All audit output goes to `~/audit-{name}-{timestamp}/`, never inside the target folder
+
+### Audit Engine
+- Per-phase guide chunks from `manual-codebase-review-process/codebase_review_guide.md` (not full 93K per call)
+- App runs bash commands via `child_process.execFile`, feeds results to LLM for analysis
+- Structured JSON output via Zod schemas — markdown/PDF are export formats
+- SSE streaming progress from SQLite polling every 500ms
 <!-- GSD:conventions-end -->
 
-<!-- GSD:architecture-start source:ARCHITECTURE.md -->
+<!-- GSD:architecture-start -->
 ## Architecture
 
-Architecture not yet mapped. Follow existing patterns found in the codebase.
+### Data Flow
+```
+User → localhost:3000 → Next.js App Router
+  → Server Action (startAudit) → lockFolder + DB insert
+  → POST /api/audit/[id] → void runAudit() (detached)
+    → Phase 0-11: execCommand() → buildPhasePrompt() → LLM API → markPhaseCompleted()
+    → finally: unlockFolder()
+  → SSE /api/audit/[id]/stream → polls auditPhases table → pushes to browser
+  → Results at /audit/[id]/results → reads audits.findings JSONB
+```
+
+### Key Tables (SQLite)
+- `api_keys` — encrypted BYOK keys (AES-256-GCM, multiple per provider)
+- `app_settings` — key-value store (setup_complete flag)
+- `audits` — audit records (status, findings JSONB, tokenCount, actualCostMicrodollars)
+- `audit_phases` — per-phase results (status, findings array, tokensUsed)
+
+### Routes
+| Route | Purpose |
+|-------|---------|
+| `/` | Redirects to `/dashboard` |
+| `/setup` | First-time wizard (add API key) |
+| `/dashboard` | Recent audits |
+| `/audit/new` | Configure + start audit |
+| `/audit/[id]` | Live progress view |
+| `/audit/[id]/results` | Findings dashboard |
+| `/audit/[id]/executive` | Management report (iframe) |
+| `/audit/[id]/technical` | Technical report (iframe) |
+| `/audit/compare?a=&b=` | Delta comparison |
+| `/history` | All audits grouped by folder |
+| `/settings/api-keys` | API key management |
 <!-- GSD:architecture-end -->
 
 <!-- GSD:workflow-start source:GSD defaults -->
@@ -158,8 +133,6 @@ Use these entry points:
 
 Do not make direct repo edits outside a GSD workflow unless the user explicitly asks to bypass it.
 <!-- GSD:workflow-end -->
-
-
 
 <!-- GSD:profile-start -->
 ## Developer Profile
