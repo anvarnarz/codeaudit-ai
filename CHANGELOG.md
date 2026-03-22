@@ -6,6 +6,20 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## 2026-03-22 — Replace LLM-Generated HTML Reports with Local Templates
+
+### Changed
+
+- **Phase 11 rewritten**: HTML report generation now uses deterministic local templates instead of LLM `generateText` calls
+- **New file `report-templates.ts`**: Two exported functions (`generateManagementReport`, `generateTechnicalReport`) produce self-contained HTML via template literals
+- **Removed `ai` / `generateText` dependency** from phase-11.ts — zero LLM tokens consumed for report generation
+- **Dark theme by default** (#0d1117) with light theme toggle, inspired by reference report designs
+- **Management report**: health score ring, severity pills + table, finding cards with severity borders, summary section
+- **Technical report**: score badge, severity stat grid, all findings as expandable `<details>` cards grouped by severity, remediation priority list
+- Both reports handle edge cases: empty findings, missing fields, zero scores
+
+---
+
 ## 2026-03-22 — UI Polish: 6 Feedback Issues
 
 ### Fixed
