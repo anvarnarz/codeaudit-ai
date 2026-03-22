@@ -2,7 +2,7 @@
   "name": "@codeaudit/db",
   "version": "0.1.0",
   "private": true,
-  "description": "Drizzle ORM schema and database client for CodeAudit",
+  "description": "Drizzle ORM schema and SQLite database client for CodeAudit",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
@@ -21,10 +21,11 @@
     "studio": "drizzle-kit studio"
   },
   "dependencies": {
-    "@neondatabase/serverless": "^0.10.0",
+    "better-sqlite3": "^11.0.0",
     "drizzle-orm": "^0.36.0"
   },
   "devDependencies": {
+    "@types/better-sqlite3": "^7.6.0",
     "drizzle-kit": "^0.27.0",
     "typescript": "^5.7.0"
   }

@@ -1,39 +1,23 @@
-import { neon } from "@neondatabase/serverless";
-import { drizzle } from "drizzle-orm/neon-http";
+import Database from "better-sqlite3";
+import { drizzle } from "drizzle-orm/better-sqlite3";
 import * as schema from "./schema.js";
+import path from "node:path";
+import os from "node:os";
+import fs from "node:fs";
 
-export type DbClient = ReturnType<typeof createDbClient>;
+const DB_DIR = path.join(os.homedir(), ".codeaudit");
+const DB_PATH = process.env["DATABASE_PATH"] ?? path.join(DB_DIR, "codeaudit.db");
 
-/**
- * Create a Drizzle ORM client using Neon's serverless HTTP adapter.
- * Use this in Next.js Route Handlers and Server Components.
- *
- * For the worker process, use createDbClientWebSocket() instead.
- */
-export function createDbClient(connectionString: string) {
-  const sql = neon(connectionString);
-  return drizzle(sql, { schema });
-}
+let _db: ReturnType<typeof drizzle> | null = null;
 
-/**
- * Singleton database client for use in Next.js.
- * Reads DATABASE_URL from environment.
- */
-let _db: DbClient | null = null;
-
-export function getDb(): DbClient {
+export function getDb() {
   if (!_db) {
-    const url = process.env["DATABASE_URL"];
-    if (!url) {
-      throw new Error(
-        "DATABASE_URL environment variable is not set. " +
-          "Set it to your Neon database connection string.",
-      );
-    }
-    _db = createDbClient(url);
+    fs.mkdirSync(DB_DIR, { recursive: true });
+    const sqlite = new Database(DB_PATH);
+    sqlite.pragma("journal_mode = WAL");
+    _db = drizzle(sqlite, { schema });
   }
   return _db;
 }
 
-// Re-export schema for convenience
-export { schema };
+export type DbClient = ReturnType<typeof getDb>;
