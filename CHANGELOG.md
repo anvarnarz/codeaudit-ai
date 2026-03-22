@@ -6,6 +6,17 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## 2026-03-22 — Setup Wizard Restyle
+
+### Changed
+
+- **Setup wizard Step 1 (Welcome)**: 72x72 gradient icon with Shield, `text-[30px]` bold heading, 2x2 feature card grid with stagger animations, full-width primary button, absolute-positioned theme toggle
+- **Setup wizard Step 2 (API Key)**: Provider selector uses `SelectCard` component, API key input uses `Input` with mono font, label input uses `Input`, full-width primary submit button
+- **Step indicator**: Switched from pill bars to accent/muted dots
+- **Design tokens**: All colors reference CSS custom properties (`--accent`, `--text-secondary`, `--surface`, etc.) instead of Tailwind defaults
+
+---
+
 ## 2026-03-22 — Design Overhaul Phase 1 & 2: Foundation & UI Primitives
 
 ### Added
