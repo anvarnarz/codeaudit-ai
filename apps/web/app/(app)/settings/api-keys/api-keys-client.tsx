@@ -99,7 +99,7 @@ function AddKeyForm({
     setError(null);
 
     startTransition(async () => {
-      const result = await createApiKey(provider, label, rawKey);
+      const result = await createApiKey(provider, rawKey, label);
       if (result.success) {
         onSuccess(result.data);
       } else {
