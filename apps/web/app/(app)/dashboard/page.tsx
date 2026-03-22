@@ -142,7 +142,7 @@ export default async function DashboardPage() {
                     )}
                   </div>
                   <div style={{ display: "flex", justifyContent: "flex-end" }}>
-                    <Link href="/audit/new" onClick={(e) => e.stopPropagation()} className="dash-edit"
+                    <Link href="/audit/new" className="dash-edit"
                       style={{ width: 30, height: 30, borderRadius: 8, border: "none", background: "transparent", display: "flex", alignItems: "center", justifyContent: "center", textDecoration: "none" }}>
                       <Pencil style={{ width: 14, height: 14, color: "var(--text-muted)" }} />
                     </Link>
