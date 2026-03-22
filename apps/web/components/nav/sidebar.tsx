@@ -2,22 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { SignOutButton } from "@/components/sign-out-button";
-import {
-  LayoutDashboard,
-  ScanSearch,
-  GitBranch,
-  Settings,
-} from "lucide-react";
-import Image from "next/image";
-
-interface SidebarProps {
-  user: {
-    name?: string | null;
-    email?: string | null;
-    image?: string | null;
-  };
-}
+import { LayoutDashboard, Plus, History, Settings } from "lucide-react";
 
 const navItems = [
   {
@@ -26,23 +11,23 @@ const navItems = [
     icon: LayoutDashboard,
   },
   {
-    label: "Audits",
-    href: "/dashboard/audits",
-    icon: ScanSearch,
+    label: "New Audit",
+    href: "/audit/new",
+    icon: Plus,
   },
   {
-    label: "Repos",
-    href: "/dashboard/repos",
-    icon: GitBranch,
+    label: "History",
+    href: "/history",
+    icon: History,
   },
   {
     label: "Settings",
-    href: "/dashboard/settings",
+    href: "/settings/api-keys",
     icon: Settings,
   },
 ];
 
-export function Sidebar({ user }: SidebarProps) {
+export function Sidebar() {
   const pathname = usePathname();
 
   return (
@@ -76,52 +61,12 @@ export function Sidebar({ user }: SidebarProps) {
               }`}
               aria-current={isActive ? "page" : undefined}
             >
-              <item.icon
-                className="h-4 w-4 flex-shrink-0"
-                aria-hidden="true"
-              />
+              <item.icon className="h-4 w-4 flex-shrink-0" aria-hidden="true" />
               {item.label}
             </Link>
           );
         })}
       </nav>
-
-      {/* User profile + sign out */}
-      <div className="border-t border-border p-3 space-y-1">
-        <div className="flex items-center gap-3 px-3 py-2">
-          {user.image ? (
-            <Image
-              src={user.image}
-              alt={user.name ?? "User avatar"}
-              width={28}
-              height={28}
-              className="rounded-full flex-shrink-0"
-            />
-          ) : (
-            <div className="h-7 w-7 rounded-full bg-white/10 border border-white/20 flex items-center justify-center flex-shrink-0">
-              <span className="text-xs font-medium text-white">
-                {(user.name ?? user.email ?? "?")[0]?.toUpperCase()}
-              </span>
-            </div>
-          )}
-          <div className="min-w-0 flex-1">
-            <p className="text-sm font-medium text-foreground truncate">
-              {user.name ?? "User"}
-            </p>
-            {user.email && (
-              <p className="text-xs text-muted-foreground truncate">
-                {user.email}
-              </p>
-            )}
-          </div>
-        </div>
-
-        <SignOutButton
-          className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm text-muted-foreground hover:bg-white/5 hover:text-foreground transition-colors"
-          showIcon={true}
-          showLabel={true}
-        />
-      </div>
     </aside>
   );
 }

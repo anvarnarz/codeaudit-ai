@@ -1,14 +1,7 @@
-import { redirect } from "next/navigation";
-import { auth } from "@/auth";
 import { listApiKeys } from "@/actions/api-keys";
 import { ApiKeysClient } from "./api-keys-client";
 
 export default async function ApiKeysPage() {
-  const session = await auth();
-  if (!session?.user?.id) {
-    redirect("/sign-in");
-  }
-
   const result = await listApiKeys();
   const keys = result.success ? result.data : [];
 
