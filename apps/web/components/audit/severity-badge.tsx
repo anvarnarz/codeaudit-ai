@@ -1,4 +1,4 @@
-import type { FindingsSeverity } from "@codeaudit/db";
+import type { FindingsSeverity } from "@codeaudit-ai/db";
 
 const SEVERITY_STYLES: Record<FindingsSeverity, string> = {
   critical: "bg-red-500/15 text-red-400 border-red-500/30",

@@ -1,6 +1,6 @@
 import fs from "node:fs/promises";
 import path from "node:path";
-import { getDb, audits } from "@codeaudit/db";
+import { getDb, audits } from "@codeaudit-ai/db";
 import { eq } from "drizzle-orm";
 import { generateText } from "ai";
 import { markPhaseCompleted } from "../progress-emitter.js";

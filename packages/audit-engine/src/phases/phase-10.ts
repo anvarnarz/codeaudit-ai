@@ -1,8 +1,8 @@
 import fs from "node:fs/promises";
 import path from "node:path";
-import { getDb, auditPhases, audits } from "@codeaudit/db";
+import { getDb, auditPhases, audits } from "@codeaudit-ai/db";
 import { eq } from "drizzle-orm";
-import type { AuditFindings, FindingsSeverity } from "@codeaudit/db";
+import type { AuditFindings, FindingsSeverity } from "@codeaudit-ai/db";
 import { runPhaseLlm } from "../finding-extractor.js";
 import { markPhaseCompleted } from "../progress-emitter.js";
 import { getModel } from "./shared.js";

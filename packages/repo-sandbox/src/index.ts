@@ -1,5 +1,5 @@
 /**
- * @codeaudit/repo-sandbox
+ * @codeaudit-ai/repo-sandbox
  *
  * Secure repository cloning and read-only sandbox isolation.
  *

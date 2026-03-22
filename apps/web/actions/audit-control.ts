@@ -1,5 +1,5 @@
 "use server";
-import { getDb, audits } from "@codeaudit/db";
+import { getDb, audits } from "@codeaudit-ai/db";
 import { eq } from "drizzle-orm";
 import { redirect } from "next/navigation";
 

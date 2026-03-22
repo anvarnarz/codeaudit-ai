@@ -1,7 +1,7 @@
 import { NextRequest } from "next/server";
-import { getDb, auditPhases, audits } from "@codeaudit/db";
+import { getDb, auditPhases, audits } from "@codeaudit-ai/db";
 import { eq } from "drizzle-orm";
-import { getPhasesForAuditType } from "@codeaudit/audit-engine";
+import { getPhasesForAuditType } from "@codeaudit-ai/audit-engine";
 
 export async function GET(
   _req: NextRequest,

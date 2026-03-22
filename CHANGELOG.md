@@ -1,4 +1,4 @@
-# Changelog
+# Changelog — CodeAudit AI
 
 All notable changes to CodeAudit will be documented in this file.
 
@@ -12,8 +12,8 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 **Phase 1: App Shell & Configuration**
 - Local-first app architecture — runs at localhost, no cloud, no auth
-- `npx codeaudit` CLI launcher with auto-generated ENCRYPTION_KEY
-- SQLite database at `~/.codeaudit/codeaudit.db` (zero-config, no Docker needed)
+- `npx codeaudit-ai` CLI launcher with auto-generated ENCRYPTION_KEY
+- SQLite database at `~/.codeaudit-ai/codeaudit.db` (zero-config, no Docker needed)
 - API key management with AES-256-GCM encryption, multiple keys per provider with labels
 - API key validation via test API call on entry (Anthropic, OpenAI, Gemini)
 - Multi-folder picker with path input and per-path validation

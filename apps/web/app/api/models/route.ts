@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getDb, decryptApiKey, apiKeys } from "@codeaudit/db";
+import { getDb, decryptApiKey, apiKeys } from "@codeaudit-ai/db";
 import { eq } from "drizzle-orm";
 
 // Anthropic models we surface (from research D-14)

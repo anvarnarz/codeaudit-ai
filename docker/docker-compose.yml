@@ -1,7 +1,7 @@
 services:
   postgres:
     image: postgres:16-alpine
-    container_name: codeaudit-postgres
+    container_name: codeaudit-ai-postgres
     restart: unless-stopped
     environment:
       POSTGRES_USER: codeaudit
@@ -19,7 +19,7 @@ services:
 
   redis:
     image: redis:7-alpine
-    container_name: codeaudit-redis
+    container_name: codeaudit-ai-redis
     restart: unless-stopped
     command: redis-server --appendonly yes --requirepass redis_dev_password
     ports:
@@ -34,6 +34,6 @@ services:
 
 volumes:
   postgres_data:
-    name: codeaudit_postgres_data
+    name: codeaudit_ai_postgres_data
   redis_data:
-    name: codeaudit_redis_data
+    name: codeaudit_ai_redis_data

@@ -1,5 +1,5 @@
 "use server";
-import { getDb, audits } from "@codeaudit/db";
+import { getDb, audits } from "@codeaudit-ai/db";
 import { lockFolder, createAuditOutputDir } from "@/lib/folder-safety";
 import { redirect } from "next/navigation";
 

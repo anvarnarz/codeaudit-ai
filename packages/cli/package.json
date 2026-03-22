@@ -1,5 +1,5 @@
 {
-  "name": "@codeaudit/cli",
+  "name": "@codeaudit-ai/cli",
   "version": "0.1.0",
   "type": "module",
   "bin": { "codeaudit": "./dist/index.js" },

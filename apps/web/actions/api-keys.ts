@@ -8,7 +8,7 @@
  */
 
 import { revalidatePath } from "next/cache";
-import { getDb, apiKeys, encryptApiKey, decryptApiKey, maskApiKey } from "@codeaudit/db";
+import { getDb, apiKeys, encryptApiKey, decryptApiKey, maskApiKey } from "@codeaudit-ai/db";
 import { validateApiKey } from "@/lib/api-key-validator";
 import { eq } from "drizzle-orm";
 

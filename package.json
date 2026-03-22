@@ -15,9 +15,9 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "tsc": "tsc --build",
-    "db:generate": "pnpm --filter @codeaudit/db drizzle-kit generate",
-    "db:migrate": "pnpm --filter @codeaudit/db drizzle-kit migrate",
-    "db:studio": "pnpm --filter @codeaudit/db drizzle-kit studio"
+    "db:generate": "pnpm --filter @codeaudit-ai/db drizzle-kit generate",
+    "db:migrate": "pnpm --filter @codeaudit-ai/db drizzle-kit migrate",
+    "db:studio": "pnpm --filter @codeaudit-ai/db drizzle-kit studio"
   },
   "devDependencies": {
     "concurrently": "^9.0.0",

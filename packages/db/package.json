@@ -1,5 +1,5 @@
 {
-  "name": "@codeaudit/db",
+  "name": "@codeaudit-ai/db",
   "version": "0.1.0",
   "private": true,
   "description": "Drizzle ORM schema and SQLite database client for CodeAudit",

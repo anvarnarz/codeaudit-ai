@@ -9,7 +9,7 @@ import {
   ResponsiveContainer,
   Cell,
 } from "recharts";
-import type { FindingsSeverity } from "@codeaudit/db";
+import type { FindingsSeverity } from "@codeaudit-ai/db";
 
 const SEVERITY_ORDER: FindingsSeverity[] = [
   "critical",

@@ -1,5 +1,5 @@
 {
-  "name": "@codeaudit/llm-adapter",
+  "name": "@codeaudit-ai/llm-adapter",
   "version": "0.1.0",
   "private": true,
   "description": "Multi-LLM abstraction layer — unified interface for Anthropic, OpenAI, and Gemini",

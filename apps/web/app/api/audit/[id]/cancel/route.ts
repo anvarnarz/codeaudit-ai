@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getDb, audits } from "@codeaudit/db";
+import { getDb, audits } from "@codeaudit-ai/db";
 import { eq } from "drizzle-orm";
 
 export async function POST(

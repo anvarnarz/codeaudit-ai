@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getDb, audits } from "@codeaudit/db";
+import { getDb, audits } from "@codeaudit-ai/db";
 import { eq } from "drizzle-orm";
-import type { AuditFinding, AuditFindings } from "@codeaudit/db";
+import type { AuditFinding, AuditFindings } from "@codeaudit-ai/db";
 import { FindingCard } from "@/components/audit/finding-card";
 import { SeverityChart } from "@/components/audit/severity-chart";
 

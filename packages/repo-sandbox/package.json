@@ -1,5 +1,5 @@
 {
-  "name": "@codeaudit/repo-sandbox",
+  "name": "@codeaudit-ai/repo-sandbox",
   "version": "0.1.0",
   "private": true,
   "description": "Secure repo cloning and read-only sandbox isolation for audit workers",

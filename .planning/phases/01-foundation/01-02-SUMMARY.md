@@ -93,7 +93,7 @@ Each task was committed atomically:
 1. **Task 1: Build folder-safety.ts service library** - `9f0b07f` (feat + test)
 2. **Task 2: validateFolder action + FolderPicker + pages** - `ee062f8` (feat)
 
-**Plan metadata:** (pending docs commit)
+**Plan metadata:** `e5e9c67` (docs: complete plan)
 
 _Note: Task 1 is TDD — tests written first (RED), then implementation (GREEN)_
 

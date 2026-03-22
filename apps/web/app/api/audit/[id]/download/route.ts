@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import archiver from "archiver";
 import { Readable } from "node:stream";
-import { getDb, audits } from "@codeaudit/db";
+import { getDb, audits } from "@codeaudit-ai/db";
 import { eq } from "drizzle-orm";
 
 export async function GET(

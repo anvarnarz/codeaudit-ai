@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  transpilePackages: ["@codeaudit/db"],
+  transpilePackages: ["@codeaudit-ai/db"],
   experimental: {
     // Opt into React 19 features
   },

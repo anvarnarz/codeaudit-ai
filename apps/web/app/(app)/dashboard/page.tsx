@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ScanSearch, KeyRound, History } from "lucide-react";
-import { getDb, audits } from "@codeaudit/db";
+import { getDb, audits } from "@codeaudit-ai/db";
 import { desc } from "drizzle-orm";
 
 const AUDIT_TYPE_LABELS: Record<string, string> = {

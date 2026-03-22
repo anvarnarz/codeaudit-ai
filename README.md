@@ -1,4 +1,4 @@
-# CodeAudit
+# CodeAudit AI
 
 A local-first codebase audit tool with a browser UI. Run a thorough 13-phase code health audit on any local folder using your own LLM API key (Anthropic, OpenAI, or Gemini). No code ever leaves your machine.
 
@@ -36,7 +36,7 @@ pnpm dev:web
 
 This starts the Next.js dev server at `http://localhost:3000`. Open it in your browser.
 
-> **First run**: The app auto-creates a SQLite database at `~/.codeaudit/codeaudit.db` and generates an encryption key at `~/.codeaudit/.env`. No manual setup needed.
+> **First run**: The app auto-creates a SQLite database at `~/.codeaudit-ai/codeaudit.db` and generates an encryption key at `~/.codeaudit-ai/.env`. No manual setup needed.
 
 ### 3. Setup Wizard
 
@@ -180,7 +180,7 @@ pnpm --filter web exec tsc --noEmit
 
 ## API Key Storage
 
-Your API keys are encrypted at rest using AES-256-GCM with a unique IV per key. The master encryption key is auto-generated on first run and stored at `~/.codeaudit/.env`. Keys are never returned to the browser after storage — only the label and last 4 characters are shown.
+Your API keys are encrypted at rest using AES-256-GCM with a unique IV per key. The master encryption key is auto-generated on first run and stored at `~/.codeaudit-ai/.env`. Keys are never returned to the browser after storage — only the label and last 4 characters are shown.
 
 ## Cost
 

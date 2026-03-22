@@ -1,5 +1,5 @@
 import { Sidebar } from "@/components/nav/sidebar";
-import { getDb, appSettings } from "@codeaudit/db";
+import { getDb, appSettings } from "@codeaudit-ai/db";
 import { eq } from "drizzle-orm";
 import { redirect } from "next/navigation";
 

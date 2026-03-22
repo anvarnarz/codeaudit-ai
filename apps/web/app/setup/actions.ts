@@ -1,7 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { getDb, appSettings } from "@codeaudit/db";
+import { getDb, appSettings } from "@codeaudit-ai/db";
 import { eq } from "drizzle-orm";
 
 /**

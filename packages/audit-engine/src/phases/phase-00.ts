@@ -1,6 +1,6 @@
 import fs from "node:fs/promises";
 import path from "node:path";
-import { createLlmProvider, resolveModel } from "@codeaudit/llm-adapter";
+import { createLlmProvider, resolveModel } from "@codeaudit-ai/llm-adapter";
 import { generateObject } from "ai";
 import { z } from "zod";
 import { execCommand } from "../commands.js";

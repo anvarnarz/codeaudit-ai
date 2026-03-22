@@ -1,9 +1,9 @@
 <!-- GSD:project-start source:PROJECT.md -->
 ## Project
 
-**CodeAudit**
+**CodeAudit AI**
 
-A local web application (`npx codeaudit`) that wraps a manual 13-phase codebase audit process into a browser-based UI. Users run it on their machine at localhost, point it at local folders, choose an audit type/depth/LLM model, and get a comprehensive codebase health report. No code ever leaves the user's machine except LLM API calls with the user's own key.
+A local web application (`npx codeaudit-ai`) that wraps a manual 13-phase codebase audit process into a browser-based UI. Users run it on their machine at localhost, point it at local folders, choose an audit type/depth/LLM model, and get a comprehensive codebase health report. No code ever leaves the user's machine except LLM API calls with the user's own key.
 
 **Core Value:** Anyone can run a thorough, structured codebase health audit on any local codebase without CLI setup — just open the app, pick a folder, and run.
 
@@ -24,7 +24,7 @@ A local web application (`npx codeaudit`) that wraps a manual 13-phase codebase 
 |------------|---------|---------|
 | Next.js | 16.x | Full-stack React framework (App Router, Server Components, Route Handlers) |
 | TypeScript | 5.7 | Language for all packages |
-| SQLite (better-sqlite3) | 12.x | Local database at `~/.codeaudit/codeaudit.db` — zero config, no Docker needed |
+| SQLite (better-sqlite3) | 12.x | Local database at `~/.codeaudit-ai/codeaudit.db` — zero config, no Docker needed |
 | Drizzle ORM | 0.36.x | SQL-first TypeScript ORM for SQLite |
 | Vercel AI SDK | 6.x | Multi-LLM abstraction (Anthropic, OpenAI, Gemini) — write once, swap providers |
 | Tailwind CSS | 4.x | Styling — dark mode default, Linear aesthetic |
@@ -68,8 +68,8 @@ Docker Compose exists for development convenience only.
 ### Code Patterns
 - **Server Actions** in `apps/web/actions/` for all mutations
 - **Server Components** for data loading, **Client Components** for interactivity
-- **Drizzle ORM** queries via `getDb()` singleton (WAL mode, `~/.codeaudit/codeaudit.db`)
-- **AES-256-GCM** for all secrets at rest (API keys). Master key at `~/.codeaudit/.env`
+- **Drizzle ORM** queries via `getDb()` singleton (WAL mode, `~/.codeaudit-ai/codeaudit.db`)
+- **AES-256-GCM** for all secrets at rest (API keys). Master key at `~/.codeaudit-ai/.env`
 - **Shadcn/ui** components — dark mode, Linear aesthetic
 - **Prompt injection defense**: `<data_block trust="untrusted">` wraps all repo content sent to LLMs
 

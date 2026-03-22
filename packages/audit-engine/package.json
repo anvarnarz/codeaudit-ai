@@ -1,5 +1,5 @@
 {
-  "name": "@codeaudit/audit-engine",
+  "name": "@codeaudit-ai/audit-engine",
   "version": "0.1.0",
   "private": true,
   "description": "Core audit orchestrator — translates 13-phase CLI audit into structured LLM API calls",
@@ -18,8 +18,8 @@
   },
   "dependencies": {
     "@ai-sdk/provider": "1.1.3",
-    "@codeaudit/db": "workspace:*",
-    "@codeaudit/llm-adapter": "workspace:*",
+    "@codeaudit-ai/db": "workspace:*",
+    "@codeaudit-ai/llm-adapter": "workspace:*",
     "ai": "^6.0.0",
     "drizzle-orm": "^0.36.0",
     "zod": "^3.24.0"

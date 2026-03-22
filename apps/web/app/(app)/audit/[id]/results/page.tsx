@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { getDb, audits, auditPhases } from "@codeaudit/db";
+import { getDb, audits, auditPhases } from "@codeaudit-ai/db";
 import { eq } from "drizzle-orm";
 import { ResultsView } from "./results-view";
 

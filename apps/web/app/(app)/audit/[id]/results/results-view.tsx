@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import type { FindingsSeverity, AuditFindings } from "@codeaudit/db";
+import type { FindingsSeverity, AuditFindings } from "@codeaudit-ai/db";
 import { SeverityChart } from "@/components/audit/severity-chart";
 import { FindingCard } from "@/components/audit/finding-card";
 import { CostSummary } from "@/components/audit/cost-summary";
@@ -24,7 +24,7 @@ type PhaseRow = {
   id: string;
   phaseNumber: number;
   status: "pending" | "running" | "completed" | "failed" | "skipped";
-  findings: import("@codeaudit/db").AuditFinding[] | null | undefined;
+  findings: import("@codeaudit-ai/db").AuditFinding[] | null | undefined;
   tokensUsed: number;
   startedAt: Date | null;
   completedAt: Date | null;

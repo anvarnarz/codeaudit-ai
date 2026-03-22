@@ -1,8 +1,8 @@
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
-import { getDb, audits, auditPhases, apiKeys } from "@codeaudit/db";
+import { getDb, audits, auditPhases, apiKeys } from "@codeaudit-ai/db";
 import { eq, and } from "drizzle-orm";
-import { decryptApiKey } from "@codeaudit/db";
+import { decryptApiKey } from "@codeaudit-ai/db";
 import "./phases/index.js"; // side-effect: registers all phase runners (plan 02)
 import { getPhasesForAuditType } from "./phases/index.js";
 import { markPhaseRunning, markPhaseCompleted, markPhaseSkipped, markPhaseFailed } from "./progress-emitter.js";

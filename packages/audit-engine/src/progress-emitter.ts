@@ -1,6 +1,6 @@
-import { getDb, auditPhases, audits } from "@codeaudit/db";
+import { getDb, auditPhases, audits } from "@codeaudit-ai/db";
 import { eq, and } from "drizzle-orm";
-import type { AuditFinding } from "@codeaudit/db";
+import type { AuditFinding } from "@codeaudit-ai/db";
 
 export async function markPhaseRunning(auditId: string, phaseNumber: number): Promise<void> {
   const db = getDb();

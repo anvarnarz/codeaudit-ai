@@ -1,7 +1,7 @@
 import Link from "next/link";
-import { getDb, audits } from "@codeaudit/db";
+import { getDb, audits } from "@codeaudit-ai/db";
 import { desc } from "drizzle-orm";
-import type { AuditFindings } from "@codeaudit/db";
+import type { AuditFindings } from "@codeaudit-ai/db";
 
 // ---------------------------------------------------------------
 // Helpers (inline — do not import from dashboard)

@@ -10,10 +10,10 @@
     "start": "node dist/index.js"
   },
   "dependencies": {
-    "@codeaudit/audit-engine": "workspace:*",
-    "@codeaudit/db": "workspace:*",
-    "@codeaudit/llm-adapter": "workspace:*",
-    "@codeaudit/repo-sandbox": "workspace:*",
+    "@codeaudit-ai/audit-engine": "workspace:*",
+    "@codeaudit-ai/db": "workspace:*",
+    "@codeaudit-ai/llm-adapter": "workspace:*",
+    "@codeaudit-ai/repo-sandbox": "workspace:*",
     "bullmq": "^5.0.0",
     "ioredis": "^5.4.0",
     "dotenv": "^16.4.0"

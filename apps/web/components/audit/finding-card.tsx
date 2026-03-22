@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import * as Collapsible from "@radix-ui/react-collapsible";
-import type { AuditFinding } from "@codeaudit/db";
+import type { AuditFinding } from "@codeaudit-ai/db";
 import { SeverityBadge } from "./severity-badge";
 
 type FindingCardProps = {

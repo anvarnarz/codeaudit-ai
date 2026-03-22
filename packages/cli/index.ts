@@ -6,7 +6,7 @@ import fs from "node:fs";
 import os from "node:os";
 import crypto from "node:crypto";
 
-// Auto-generate ENCRYPTION_KEY on first run (persisted to ~/.codeaudit/.env)
+// Auto-generate ENCRYPTION_KEY on first run (persisted to ~/.codeaudit-ai/.env)
 const envDir = path.join(os.homedir(), ".codeaudit");
 const envFile = path.join(envDir, ".env");
 if (!process.env["ENCRYPTION_KEY"]) {
