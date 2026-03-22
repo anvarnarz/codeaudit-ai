@@ -1,0 +1,17 @@
+{
+  "name": "@codeaudit/cli",
+  "version": "0.1.0",
+  "type": "module",
+  "bin": { "codeaudit": "./dist/index.js" },
+  "scripts": {
+    "build": "tsc",
+    "dev": "ts-node --esm index.ts"
+  },
+  "dependencies": {
+    "open": "^11.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.0",
+    "@types/node": "^22.0.0"
+  }
+}
