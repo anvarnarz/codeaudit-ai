@@ -1,27 +1,24 @@
-/**
- * @codeaudit/llm-adapter
- *
- * Multi-LLM abstraction layer built on Vercel AI SDK 6.x.
- * Provides a unified interface for Anthropic Claude, OpenAI GPT, and Google Gemini.
- *
- * BYOK (Bring Your Own Key) pattern:
- *   - Caller decrypts user's API key from DB using AES-256-GCM
- *   - Passes decrypted key to createLlmProvider()
- *   - Adapter constructs the AI SDK provider instance
- *   - Key is never logged or persisted after use
- *
- * Implemented in Phase 2.
- */
-
-export type LlmProvider = "anthropic" | "openai" | "gemini";
+import type { LanguageModelV1 } from "@ai-sdk/provider";
+import { createAnthropicProvider } from "./providers/anthropic.js";
+import { createOpenAIProvider } from "./providers/openai.js";
+import { createGeminiProvider } from "./providers/gemini.js";
+export { resolveModel, PHASE_COMPLEXITY } from "./models.js";
+export type { LlmProvider, PhaseComplexity } from "./models.js";
 
 export type LlmAdapterConfig = {
-  provider: LlmProvider;
+  provider: "anthropic" | "openai" | "gemini";
   apiKey: string; // decrypted — never log this
-  model?: string; // defaults to best available for provider
+  model: string;  // already resolved via resolveModel()
 };
 
-// Placeholder — implemented in Phase 2
-export function createLlmProvider(_config: LlmAdapterConfig): never {
-  throw new Error("LlmAdapter not yet implemented — coming in Phase 2");
+// Returns the provider's LanguageModelV1 instance.
+// Vercel AI SDK's generateObject / generateText accept LanguageModelV1 at runtime.
+export function createLlmProvider(config: LlmAdapterConfig): LanguageModelV1 {
+  switch (config.provider) {
+    case "anthropic": return createAnthropicProvider(config.apiKey, config.model);
+    case "openai":    return createOpenAIProvider(config.apiKey, config.model);
+    case "gemini":    return createGeminiProvider(config.apiKey, config.model);
+    default:
+      throw new Error(`Unknown LLM provider: ${String(config.provider)}`);
+  }
 }
