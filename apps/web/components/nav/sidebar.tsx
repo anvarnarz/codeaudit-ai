@@ -3,156 +3,151 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
-import {
-  LayoutDashboard,
-  Plus,
-  History,
-  Settings,
-  Sun,
-  Moon,
-  Shield,
-} from "lucide-react";
+import { LayoutGrid, Plus, Clock, Key, Shield, Sun, Moon } from "lucide-react";
 
 const navItems = [
-  {
-    label: "Dashboard",
-    href: "/dashboard",
-    icon: LayoutDashboard,
-  },
-  {
-    label: "New Audit",
-    href: "/audit/new",
-    icon: Plus,
-  },
-  {
-    label: "History",
-    href: "/history",
-    icon: History,
-  },
-  {
-    label: "Settings",
-    href: "/settings/api-keys",
-    icon: Settings,
-  },
+  { href: "/dashboard", icon: LayoutGrid, label: "Dashboard" },
+  { href: "/audit/new", icon: Plus, label: "New Audit" },
+  { href: "/history", icon: Clock, label: "History" },
+  { href: "/settings/api-keys", icon: Key, label: "API Keys" },
 ];
-
-function ThemeToggle() {
-  const [isDark, setIsDark] = useState(true);
-
-  useEffect(() => {
-    setIsDark(document.documentElement.classList.contains("dark"));
-  }, []);
-
-  function setTheme(dark: boolean) {
-    setIsDark(dark);
-    if (dark) {
-      document.documentElement.classList.add("dark");
-      localStorage.setItem("theme", "dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-      localStorage.setItem("theme", "light");
-    }
-  }
-
-  return (
-    <div className="flex items-center justify-between px-3 py-2">
-      <span className="text-xs font-medium text-[hsl(var(--text-secondary))]">
-        Theme
-      </span>
-      <div className="flex rounded-[10px] bg-[hsl(var(--elevated))] p-1">
-        <button
-          onClick={() => setTheme(false)}
-          className={`flex h-7 w-9 items-center justify-center rounded-[8px] transition-all ${
-            !isDark
-              ? "bg-[hsl(var(--surface))]"
-              : ""
-          }`}
-          title="Light mode"
-        >
-          <Sun
-            className={`h-3.5 w-3.5 ${
-              !isDark
-                ? "text-[hsl(var(--foreground))]"
-                : "text-[hsl(var(--text-secondary))]"
-            }`}
-            aria-hidden="true"
-          />
-        </button>
-        <button
-          onClick={() => setTheme(true)}
-          className={`flex h-7 w-9 items-center justify-center rounded-[8px] transition-all ${
-            isDark
-              ? "bg-[hsl(var(--surface))]"
-              : ""
-          }`}
-          title="Dark mode"
-        >
-          <Moon
-            className={`h-3.5 w-3.5 ${
-              isDark
-                ? "text-[hsl(var(--foreground))]"
-                : "text-[hsl(var(--text-secondary))]"
-            }`}
-            aria-hidden="true"
-          />
-        </button>
-      </div>
-    </div>
-  );
-}
 
 export function Sidebar() {
   const pathname = usePathname();
+  const [theme, setTheme] = useState<"dark" | "light">("dark");
+
+  useEffect(() => {
+    const stored = localStorage.getItem("theme");
+    setTheme(stored === "light" ? "light" : "dark");
+  }, []);
+
+  function toggleTheme() {
+    const next = theme === "dark" ? "light" : "dark";
+    setTheme(next);
+    localStorage.setItem("theme", next);
+    document.documentElement.classList.toggle("dark", next === "dark");
+  }
 
   return (
-    <aside className="fade-in flex h-full w-[252px] flex-col border-r border-[hsl(var(--border))] bg-background p-5">
+    <aside
+      className="fade-in"
+      style={{
+        width: 252,
+        height: "100vh",
+        background: "var(--surface)",
+        borderRight: "1px solid var(--border)",
+        display: "flex",
+        flexDirection: "column",
+        padding: "20px 12px",
+        flexShrink: 0,
+        position: "sticky",
+        top: 0,
+      }}
+    >
       {/* Logo */}
-      <div className="mb-7 flex items-center gap-2.5 px-3">
-        <div className="flex h-10 w-10 items-center justify-center rounded-[12px] bg-gradient-to-br from-yellow-400 to-amber-500">
-          <Shield className="h-4 w-4 text-gray-900" aria-hidden="true" />
+      <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "4px 12px", marginBottom: 28 }}>
+        <div
+          style={{
+            width: 32,
+            height: 32,
+            borderRadius: 10,
+            background: "linear-gradient(135deg, var(--accent), #f59e0b)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <Shield size={16} color="#0a0a0b" strokeWidth={2} />
         </div>
         <div>
-          <div className="text-sm font-bold tracking-tight text-foreground">
+          <div style={{ fontSize: 14, fontWeight: 700, letterSpacing: "-0.02em", color: "var(--text)" }}>
             CodeAudit
           </div>
-          <div className="-mt-0.5 text-[10px] font-medium tracking-wider text-muted-foreground">
+          <div style={{ fontSize: 10, color: "var(--text-muted)", fontWeight: 500, letterSpacing: "0.04em", marginTop: -1 }}>
             AI
           </div>
         </div>
       </div>
 
-      {/* Navigation */}
-      <nav className="flex flex-1 flex-col gap-0.5" aria-label="Main navigation">
+      {/* Nav */}
+      <nav style={{ display: "flex", flexDirection: "column", gap: 2, flex: 1 }}>
         {navItems.map((item) => {
-          const isActive =
-            item.href === "/dashboard"
-              ? pathname === "/dashboard"
-              : pathname.startsWith(item.href);
-
+          const active = pathname === item.href || pathname.startsWith(item.href + "/");
+          const Icon = item.icon;
           return (
             <Link
               key={item.href}
               href={item.href}
-              className={`flex items-center gap-2.5 rounded-[10px] px-3 py-2.5 text-[14px] transition-all ${
-                isActive
-                  ? "bg-[hsl(var(--accent-subtle))] text-[hsl(var(--accent))] font-semibold"
-                  : "text-[hsl(var(--text-secondary))] hover:bg-[hsl(var(--hover))] font-medium"
-              }`}
-              aria-current={isActive ? "page" : undefined}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 10,
+                padding: "10px 12px",
+                borderRadius: 10,
+                textDecoration: "none",
+                background: active ? "var(--accent-subtle)" : "transparent",
+                color: active ? "var(--accent)" : "var(--text-secondary)",
+                fontSize: 13,
+                fontWeight: active ? 600 : 400,
+                transition: "all 0.15s ease",
+              }}
             >
-              <item.icon
-                className="h-[18px] w-[18px] flex-shrink-0"
-                aria-hidden="true"
-              />
+              <Icon size={18} color={active ? "var(--accent)" : "var(--text-muted)"} strokeWidth={1.8} />
               {item.label}
             </Link>
           );
         })}
       </nav>
 
-      {/* Theme toggle */}
-      <div className="mt-2 border-t border-[hsl(var(--border))] pt-3">
-        <ThemeToggle />
+      {/* Theme Toggle */}
+      <div style={{ padding: "12px 12px 4px", borderTop: "1px solid var(--border)", marginTop: 8 }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "8px 12px" }}>
+          <span style={{ fontSize: 12, color: "var(--text-muted)", fontWeight: 500 }}>Theme</span>
+          <div
+            style={{
+              display: "flex",
+              borderRadius: 10,
+              overflow: "hidden",
+              border: "1px solid var(--border)",
+              background: "var(--elevated)",
+            }}
+          >
+            <button
+              onClick={() => theme !== "light" && toggleTheme()}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                width: 34,
+                height: 28,
+                border: "none",
+                cursor: "pointer",
+                background: theme === "light" ? "var(--text)" : "transparent",
+                transition: "all 0.2s ease",
+                padding: 0,
+              }}
+            >
+              <Sun size={14} color={theme === "light" ? "var(--background)" : "var(--text-muted)"} />
+            </button>
+            <button
+              onClick={() => theme !== "dark" && toggleTheme()}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                width: 34,
+                height: 28,
+                border: "none",
+                cursor: "pointer",
+                background: theme === "dark" ? "var(--text)" : "transparent",
+                transition: "all 0.2s ease",
+                padding: 0,
+              }}
+            >
+              <Moon size={14} color={theme === "dark" ? "var(--background)" : "var(--text-muted)"} />
+            </button>
+          </div>
+        </div>
       </div>
     </aside>
   );

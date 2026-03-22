@@ -1,9 +1,32 @@
 @import "tailwindcss";
 
+/* ─── Theme Tokens ─────────────────────────────────────────────────── */
+/* Exact values from codeaudit-ai.jsx prototype                        */
+
 @layer base {
   :root {
-    --background: 0 0% 98%;
-    --foreground: 240 10% 3.9%;
+    /* Light theme */
+    --background: #fafafa;
+    --foreground: #09090b;
+    --surface: #ffffff;
+    --elevated: #f4f4f5;
+    --hover: #e4e4e7;
+    --border: #e4e4e7;
+    --border-subtle: #f0f0f2;
+    --text: #09090b;
+    --text-secondary: #52525b;
+    --text-muted: #a1a1aa;
+    --accent: #ca8a04;
+    --accent-hover: #a16207;
+    --accent-subtle: rgba(202,138,4,0.1);
+    --success: #16a34a;
+    --success-subtle: rgba(22,163,74,0.08);
+    --destructive: #dc2626;
+    --destructive-subtle: rgba(220,38,38,0.08);
+    --warning: #ea580c;
+    --warning-subtle: rgba(234,88,12,0.08);
+
+    /* Shadcn compat (HSL) */
     --card: 0 0% 100%;
     --card-foreground: 240 10% 3.9%;
     --popover: 0 0% 100%;
@@ -14,32 +37,11 @@
     --secondary-foreground: 240 10% 3.9%;
     --muted: 240 5% 96%;
     --muted-foreground: 240 4% 46%;
-    --accent: 48 94% 40%;
-    --accent-foreground: 240 10% 3.9%;
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 240 5% 90%;
     --input: 240 5% 90%;
     --ring: 48 94% 40%;
     --radius: 0.875rem;
-    --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 240 4% 46%;
-    --sidebar-border: 240 5% 90%;
-    --sidebar-accent: 240 5% 96%;
-    --sidebar-accent-foreground: 240 10% 3.9%;
 
-    /* CodeAudit design tokens — Light */
-    --surface: 0 0% 100%;
-    --elevated: 240 5% 96%;
-    --hover: 0 0% 0% / 0.03;
-    --text-secondary: 240 4% 34%;
-    --text-muted: 240 4% 46%;
-    --accent-hex: #ca8a04;
-    --accent-subtle: 48 94% 40% / 0.06;
-    --success: 142 76% 36%;
-    --warning: 25 95% 53%;
-
-    /* Severity colors (sacred) */
+    /* Severity (sacred) */
     --severity-critical: #ef4444;
     --severity-high: #f97316;
     --severity-medium: #eab308;
@@ -48,44 +50,41 @@
   }
 
   .dark {
-    --background: 240 5% 3.3%;
-    --foreground: 240 5% 90%;
-    --card: 240 5% 7.8%;
-    --card-foreground: 240 5% 90%;
-    --popover: 240 5% 7.8%;
-    --popover-foreground: 240 5% 90%;
-    --primary: 48 97% 53%;
-    --primary-foreground: 240 5% 3.3%;
+    /* Dark theme — exact values from prototype */
+    --background: #0a0a0b;
+    --foreground: #fafafa;
+    --surface: #111113;
+    --elevated: #18181b;
+    --hover: #1f1f23;
+    --border: #27272a;
+    --border-subtle: #1e1e22;
+    --text: #fafafa;
+    --text-secondary: #a1a1aa;
+    --text-muted: #71717a;
+    --accent: #facc15;
+    --accent-hover: #fde047;
+    --accent-subtle: rgba(250,204,21,0.12);
+    --success: #22c55e;
+    --success-subtle: rgba(34,197,94,0.1);
+    --destructive: #ef4444;
+    --destructive-subtle: rgba(239,68,68,0.1);
+    --warning: #f97316;
+    --warning-subtle: rgba(249,115,22,0.1);
+
+    /* Shadcn compat (HSL) */
+    --card: 240 6% 6.7%;
+    --card-foreground: 0 0% 98%;
+    --popover: 240 6% 6.7%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 48 96% 53%;
+    --primary-foreground: 240 10% 3.9%;
     --secondary: 240 4% 16%;
-    --secondary-foreground: 240 5% 90%;
+    --secondary-foreground: 0 0% 98%;
     --muted: 240 4% 16%;
     --muted-foreground: 240 5% 65%;
-    --accent: 48 97% 53%;
-    --accent-foreground: 240 5% 3.3%;
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 240 4% 16%;
     --input: 240 4% 16%;
-    --ring: 48 97% 53%;
-    --radius: 0.875rem;
-    --sidebar-background: 240 5% 5%;
-    --sidebar-foreground: 240 5% 65%;
-    --sidebar-border: 240 5% 10%;
-    --sidebar-accent: 240 5% 8%;
-    --sidebar-accent-foreground: 240 5% 90%;
+    --ring: 48 96% 53%;
 
-    /* CodeAudit design tokens — Dark */
-    --surface: 240 5% 7.8%;
-    --elevated: 240 4% 11.4%;
-    --hover: 0 0% 100% / 0.04;
-    --text-secondary: 240 5% 65%;
-    --text-muted: 240 4% 46%;
-    --accent-hex: #facc15;
-    --accent-subtle: 48 97% 53% / 0.08;
-    --success: 142 71% 45%;
-    --warning: 38 92% 50%;
-
-    /* Severity colors (sacred) */
     --severity-critical: #ef4444;
     --severity-high: #f97316;
     --severity-medium: #eab308;
@@ -95,100 +94,36 @@
 }
 
 /* ─── Keyframe Animations ──────────────────────────────────────────── */
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes slideIn {
-  from {
-    opacity: 0;
-    transform: translateX(-12px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-@keyframes progressPulse {
-  0%,
-  100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.7;
-  }
-}
-
-@keyframes shimmer {
-  0% {
-    background-position: -200% 0;
-  }
-  100% {
-    background-position: 200% 0;
-  }
-}
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes slideIn { from { opacity: 0; transform: translateX(-12px); } to { opacity: 1; transform: translateX(0); } }
+@keyframes progressPulse { 0%,100% { box-shadow: 0 0 0 0 rgba(250,204,21,0.4); } 50% { box-shadow: 0 0 12px 4px rgba(250,204,21,0.15); } }
+@keyframes shimmer { from { background-position: -200% 0; } to { background-position: 200% 0; } }
+@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
 
 /* ─── Utility Classes ──────────────────────────────────────────────── */
-
-.fade-in {
-  animation: fadeIn 350ms ease-out both;
-}
-
-.slide-in {
-  animation: slideIn 350ms ease-out both;
-}
-
-.stagger-1 {
-  animation-delay: 50ms;
-}
-.stagger-2 {
-  animation-delay: 100ms;
-}
-.stagger-3 {
-  animation-delay: 150ms;
-}
-.stagger-4 {
-  animation-delay: 200ms;
-}
-.stagger-5 {
-  animation-delay: 250ms;
-}
+.fade-in { animation: fadeIn 0.35s ease-out forwards; }
+.slide-in { animation: slideIn 0.35s ease-out forwards; }
+.stagger-1 { animation-delay: 0.05s; opacity: 0; }
+.stagger-2 { animation-delay: 0.1s; opacity: 0; }
+.stagger-3 { animation-delay: 0.15s; opacity: 0; }
+.stagger-4 { animation-delay: 0.2s; opacity: 0; }
+.stagger-5 { animation-delay: 0.25s; opacity: 0; }
 
 @layer base {
   * {
-    border-color: hsl(var(--border));
+    border-color: var(--border);
   }
 
   body {
-    background-color: hsl(var(--background));
-    color: hsl(var(--foreground));
-    font-feature-settings: "rlig" 1, "calt" 1;
+    background-color: var(--background);
+    color: var(--foreground);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
 
-  /* Sharp, minimal scrollbar — Linear style */
-  ::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
-  }
-  ::-webkit-scrollbar-track {
-    background: transparent;
-  }
-  ::-webkit-scrollbar-thumb {
-    background: hsl(var(--border));
-    border-radius: 3px;
-  }
-  ::-webkit-scrollbar-thumb:hover {
-    background: hsl(var(--muted-foreground));
-  }
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
 }
