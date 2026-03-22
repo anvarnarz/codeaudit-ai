@@ -64,20 +64,27 @@ export async function GET(
 
         // Close on terminal state
         if (["completed", "cancelled", "failed"].includes(audit.status)) {
-          clearInterval(interval);
+          if (interval) clearInterval(interval);
           controller.close();
         }
       };
 
+      // Poll every 500ms
+      let interval: ReturnType<typeof setInterval> | null = null;
+
       // Emit immediately on connect (replay completed state for reconnecting clients — PROG-04)
       emitState();
 
-      // Poll every 500ms
-      const interval = setInterval(emitState, 500);
+      // Only start polling if stream is still open (not already closed by emitState for terminal audits)
+      if (!["completed", "cancelled", "failed"].includes(
+        db.select().from(audits).where(eq(audits.id, id)).get()?.status ?? ""
+      )) {
+        interval = setInterval(emitState, 500);
+      }
 
       // Safety net: close abandoned streams after 5 minutes
       setTimeout(() => {
-        clearInterval(interval);
+        if (interval) clearInterval(interval);
         try { controller.close(); } catch { /* already closed */ }
       }, 5 * 60 * 1000);
     },
