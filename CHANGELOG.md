@@ -6,6 +6,18 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## 2026-03-22 — Improved HTML Report Design
+
+### Changed
+
+- **Phase-11 HTML report prompts** now include a full design system extracted from reference templates
+- Management report uses sidebar layout, health score ring (SVG), traffic light tables, risk cards, stat cards, and action items
+- Technical report uses expandable finding cards grouped by severity, score grids with progress bars, alert boxes, and remediation lists
+- Both reports support dark/light theme toggle, responsive layout, and print styles
+- Increased maxOutputTokens from 8192 to 16384 for richer report generation
+
+---
+
 ## 2026-03-22 — Onboarding Welcome Screen
 
 ### Added
