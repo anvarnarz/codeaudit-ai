@@ -35,7 +35,7 @@
 
 #### Phase 8: Data Views
 
-- [ ] **Phase 8: Data Views** - Rebuild Results dashboard, History, Comparison, and API Keys settings pages
+- [x] **Phase 8: Data Views** - Rebuild Results dashboard, History, Comparison, and API Keys settings pages (completed 2026-03-22)
 
 ## Phase Details
 
@@ -101,9 +101,9 @@ Plans:
 **Plans**: 3 plans
 
 Plans:
-- [ ] 08-01: Build Results dashboard (health score ring, severity bars, cost summary, action buttons, findings list with filter pills and finding cards)
-- [ ] 08-02: Build History page (folder grouping, checkbox selection, bulk-delete, compare button) and delete confirmation modal
-- [ ] 08-03: Build Comparison page (delta banner, side-by-side cards, three finding sections) and API Keys settings page
+- [x] 08-01: Build Results dashboard (health score ring, severity bars, cost summary, action buttons, findings list with filter pills and finding cards)
+- [x] 08-02: Build History page (folder grouping, checkbox selection, bulk-delete, compare button) and delete confirmation modal
+- [x] 08-03: Build Comparison page (delta banner, side-by-side cards, three finding sections) and API Keys settings page
 
 ## Progress
 
@@ -118,7 +118,7 @@ Plans:
 | 5. Design System & Shared Components | v1.1 | 0/2 | Not started | - |
 | 6. Shell & Onboarding | v1.1 | 0/2 | Not started | - |
 | 7. Audit Flows | v1.1 | 2/2 | Complete   | 2026-03-22 |
-| 8. Data Views | v1.1 | 0/3 | Not started | - |
+| 8. Data Views | v1.1 | 3/3 | Complete   | 2026-03-22 |
 
 ---
 *Full v1.0 details archived in `.planning/milestones/v1.0-ROADMAP.md`*

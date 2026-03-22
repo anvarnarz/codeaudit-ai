@@ -2,14 +2,14 @@
 gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: UI Redesign
-status: Ready to plan
-stopped_at: Completed 07-audit-flows-01-PLAN.md
-last_updated: "2026-03-22T20:23:55.857Z"
+status: Phase complete — ready for verification
+stopped_at: Completed 08-data-views-02-PLAN.md
+last_updated: "2026-03-22T20:42:40.447Z"
 progress:
   total_phases: 4
-  completed_phases: 3
-  total_plans: 6
-  completed_plans: 6
+  completed_phases: 4
+  total_plans: 9
+  completed_plans: 9
 ---
 
 # Project State
@@ -19,12 +19,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-22 after v1.1 milestone start)
 
 **Core value:** Anyone can run a thorough codebase audit on any local folder without CLI setup — just open the app, pick a folder, and run.
-**Current focus:** Phase 07 — audit-flows
+**Current focus:** Phase 08 — data-views
 
 ## Current Position
 
-Phase: 8
-Plan: Not started
+Phase: 08 (data-views) — EXECUTING
+Plan: 3 of 3
 
 ## Performance Metrics
 
@@ -47,6 +47,8 @@ Plan: Not started
 | Phase 06-shell-onboarding P02 | 135 | 2 tasks | 4 files |
 | Phase 07-audit-flows P02 | 3 | 2 tasks | 2 files |
 | Phase 07-audit-flows P01 | 7 | 2 tasks | 3 files |
+| Phase 08-data-views P02 | 3 | 2 tasks | 2 files |
+| Phase 08-data-views P01 | 165 | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -71,6 +73,9 @@ Recent decisions affecting current work:
 - [Phase 07-audit-flows]: SSE useEffect depends on [audit.id, status] — terminal status values prevent re-opening connections after audit ends
 - [Phase 07-audit-flows]: NEXT_REDIRECT from startAudit detected in catch block — only real errors shown to user
 - [Phase 07-audit-flows]: Native select with optgroup used for provider/key grouping (no extra dependencies, matches prototype)
+- [Phase 08-data-views]: History page: SerializedAudit/FolderGroup types exported from page.tsx, router.refresh() for post-delete reload, optional chaining for TypeScript strict compliance
+- [Phase 08-data-views]: Severity key narrowing: SEVERITY_KEYS tuple defined before SEVERITY_COLORS Record for type-safe lookup
+- [Phase 08-data-views]: Phase cost estimate: proportional allocation (phase.tokensUsed * totalCostMicro / totalTokens) — approximation since LLM billing is per-call
 
 ### Pending Todos
 
@@ -83,6 +88,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-22T20:20:39.899Z
-Stopped at: Completed 07-audit-flows-01-PLAN.md
+Last session: 2026-03-22T20:42:24.555Z
+Stopped at: Completed 08-data-views-02-PLAN.md
 Resume file: None
