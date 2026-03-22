@@ -14,7 +14,8 @@
     ],
     "paths": {
       "@/*": ["./*"],
-      "@codeaudit/db": ["../../packages/db/src/index.ts"]
+      "@codeaudit/db": ["../../packages/db/src/index.ts"],
+      "@codeaudit/audit-engine": ["../../packages/audit-engine/src/index.ts"]
     },
     "noEmit": true,
     "composite": false,
