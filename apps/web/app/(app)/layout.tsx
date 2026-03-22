@@ -1,6 +1,7 @@
 import { getDb, appSettings } from "@codeaudit-ai/db";
 import { eq } from "drizzle-orm";
 import { redirect } from "next/navigation";
+import { Sidebar } from "@/components/sidebar";
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   const db = getDb();
@@ -8,5 +9,12 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   if (!setting || setting.value !== "true") {
     redirect("/setup");
   }
-  return <>{children}</>;
+  return (
+    <div className="flex min-h-screen">
+      <Sidebar />
+      <main className="flex-1 min-w-0">
+        {children}
+      </main>
+    </div>
+  );
 }
