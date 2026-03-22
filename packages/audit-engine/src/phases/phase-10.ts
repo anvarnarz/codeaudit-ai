@@ -6,7 +6,8 @@ import type { AuditFindings, FindingsSeverity } from "@codeaudit-ai/db";
 import { runPhaseLlm } from "../finding-extractor";
 import { markPhaseCompleted } from "../progress-emitter";
 import { getModel } from "./shared";
-import type { AuditRunContext, PhaseRunner } from "../orchestrator";
+import type { AuditRunContext } from "../orchestrator";
+import type { PhaseRunner } from "../phase-registry";
 
 function scoreToGrade(score: number): "A" | "B" | "C" | "D" | "F" {
   if (score >= 90) return "A";

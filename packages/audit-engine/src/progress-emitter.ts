@@ -42,12 +42,12 @@ export async function markPhaseCompleted(
   if (audit) {
     // Estimate cost from tokens using provider pricing (microdollars per 1k tokens)
     // Assume ~75% input, ~25% output token split
-    const PRICING: Record<string, { input: number; output: number }> = {
+    const PRICING: Record<string, { input: number; output: number } | undefined> = {
       anthropic: { input: 3000, output: 15000 },
       openai:    { input: 2500, output: 10000 },
       gemini:    { input: 1250, output: 5000 },
     };
-    const pricing = PRICING[audit.provider] ?? PRICING.anthropic;
+    const pricing = PRICING[audit.llmProvider] ?? { input: 3000, output: 15000 };
     const inputTokens = Math.round(tokensUsed * 0.75);
     const outputTokens = tokensUsed - inputTokens;
     const costMicro = Math.round(

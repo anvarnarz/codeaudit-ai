@@ -5,7 +5,8 @@ import { generateObject } from "ai";
 import { z } from "zod";
 import { execCommand } from "../commands";
 import { markPhaseCompleted } from "../progress-emitter";
-import type { AuditRunContext, PhaseRunner } from "../orchestrator";
+import type { AuditRunContext } from "../orchestrator";
+import type { PhaseRunner } from "../phase-registry";
 
 export const phase00Runner: PhaseRunner = async (ctx, phaseNumber) => {
   const { auditId, repoPath, auditOutputDir, llmProvider, decryptedApiKey, selectedModel } = ctx;

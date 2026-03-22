@@ -6,7 +6,8 @@ import { runPhaseLlm } from "../finding-extractor";
 import { markPhaseCompleted } from "../progress-emitter";
 import { getGuideChunk } from "../guide-chunks";
 import { getRepoContext, getModel } from "./shared";
-import type { AuditRunContext, PhaseRunner } from "../orchestrator";
+import type { AuditRunContext } from "../orchestrator";
+import type { PhaseRunner } from "../phase-registry";
 
 export const phase08Runner: PhaseRunner = async (ctx, phaseNumber) => {
   const { auditId, repoPath, auditOutputDir } = ctx;
