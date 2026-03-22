@@ -43,3 +43,40 @@ export function getPhasesForAuditType(
 export function getPhaseName(phaseNumber: number): string {
   return PHASE_REGISTRY.find((p) => p.number === phaseNumber)?.name ?? `Phase ${phaseNumber}`;
 }
+
+// ============================================================
+// Phase runner registrations (plan 02)
+// Import side-effect: registers all phase implementations with the orchestrator.
+// ============================================================
+import { registerPhaseRunner } from "../orchestrator.js";
+import { phase00Runner } from "./phase-00.js";
+import { phase01Runner } from "./phase-01.js";
+import { phase02Runner } from "./phase-02.js";
+import { phase03Runner } from "./phase-03.js";
+import { phase04Runner } from "./phase-04.js";
+import { phase05Runner } from "./phase-05.js";
+import { phase06Runner } from "./phase-06.js";
+import { phase07Runner } from "./phase-07.js";
+import { phase08Runner } from "./phase-08.js";
+import { phase09Runner } from "./phase-09.js";
+import { phase10Runner } from "./phase-10.js";
+import { phase11Runner } from "./phase-11.js";
+
+registerPhaseRunner(0, phase00Runner);
+registerPhaseRunner(1, phase01Runner);
+registerPhaseRunner(2, phase02Runner);
+registerPhaseRunner(3, phase03Runner);
+registerPhaseRunner(4, phase04Runner);
+registerPhaseRunner(5, phase05Runner);
+registerPhaseRunner(6, phase06Runner);
+registerPhaseRunner(7, phase07Runner);
+registerPhaseRunner(8, phase08Runner);
+registerPhaseRunner(9, phase09Runner);
+registerPhaseRunner(10, phase10Runner);
+registerPhaseRunner(11, phase11Runner);
+
+export {
+  phase00Runner, phase01Runner, phase02Runner, phase03Runner,
+  phase04Runner, phase05Runner, phase06Runner, phase07Runner,
+  phase08Runner, phase09Runner, phase10Runner, phase11Runner,
+};
