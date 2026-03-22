@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-stopped_at: Phase 2 context gathered (Audit Engine)
-last_updated: "2026-03-22T08:05:40.604Z"
+stopped_at: Completed 02-audit-setup-01-PLAN.md
+last_updated: "2026-03-22T08:42:24.775Z"
 progress:
   total_phases: 4
   completed_phases: 1
-  total_plans: 3
-  completed_plans: 3
+  total_plans: 6
+  completed_plans: 4
 ---
 
 # Project State
@@ -19,12 +19,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-22 after local-first pivot)
 
 **Core value:** Anyone can run a thorough codebase audit on any local folder without CLI setup — just open the app, pick a folder, and run.
-**Current focus:** Phase 01 — foundation
+**Current focus:** Phase 02 — audit-engine
 
 ## Current Position
 
-Phase: 02
-Plan: Not started
+Phase: 02 (audit-engine) — EXECUTING
+Plan: 2 of 3
 
 ## Performance Metrics
 
@@ -49,6 +49,7 @@ Plan: Not started
 | Phase 01-foundation P01 | 8 | 3 tasks | 19 files |
 | Phase 01-foundation P02 | 5 | 2 tasks | 13 files |
 | Phase 01-foundation P03 | 7 | 3 tasks | 15 files |
+| Phase 02-audit-setup P01 | 8 | 3 tasks | 19 files |
 
 ## Accumulated Context
 
@@ -71,6 +72,9 @@ Recent decisions affecting current work:
 - [Phase 01-foundation]: Server component wrapper + client form for New Audit page: page.tsx async server component loads keys, new-audit-form.tsx is client component — consistent with api-keys page pattern
 - [Phase 01-foundation]: collectFolderStats wrapped in server action (folder-stats.ts): Node.js fs API can't run in browser; thin server action wrapper enables client form to call it
 - [Phase 01-foundation]: startAudit enforces CRITICAL ORDER: createAuditOutputDir BEFORE lockFolder — once chmod -R a-w runs, .git/config becomes unwritable
+- [Phase 02-audit-setup]: Use LanguageModelV1 from @ai-sdk/provider@1.1.3 — providers return V1 at runtime, ai@6 internal handling works for both
+- [Phase 02-audit-setup]: unlockFolderLocal inlined in orchestrator (not imported from apps/web) to avoid cross-package dependency
+- [Phase 02-audit-setup]: Phase runner registry pattern: registerPhaseRunner() allows plan 02 to add phase implementations without modifying orchestrator
 
 ### Pending Todos
 
@@ -83,6 +87,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-22T08:05:40.597Z
-Stopped at: Phase 2 context gathered (Audit Engine)
-Resume file: .planning/phases/02-audit-setup/02-CONTEXT.md
+Last session: 2026-03-22T08:42:24.772Z
+Stopped at: Completed 02-audit-setup-01-PLAN.md
+Resume file: None

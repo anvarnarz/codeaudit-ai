@@ -48,12 +48,12 @@ Plans:
   3. User sees real-time token usage and estimated cost updating after each phase completes
   4. User can leave the browser tab and return to find progress still accurately shown (state persists server-side on localhost)
   5. User can cancel a running audit at any time — the folder is unlocked and the partial cost incurred is shown
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 02-01: Audit orchestrator — Phase 0 bootstrap (stack detection, repo sizing, contributor detection), LLM adapter for all three providers, phase state machine with checkpointing, output to audit directory
-- [ ] 02-02: Phases 1-10 implementation — all audit phases as structured LLM calls, audit type phase-skipping, depth sampling for quick scan, prompt injection safeguards
-- [ ] 02-03: Phase 11 HTML report generation, live progress UI (SSE), cancel with unlock, folder cleanup on completion/failure, budget warning on token overrun
+- [x] 02-01-PLAN.md — LLM adapter (all 3 providers + AUTO model selection), audit engine core (commands, prompt-builder, finding-extractor, phase registry, orchestrator), POST /api/audit/[id] detached engine launcher
+- [ ] 02-02-PLAN.md — All 12 phase runners (phase-00 bootstrap through phase-11 HTML reports), phase-type mapping, depth sampling, registered with orchestrator
+- [ ] 02-03-PLAN.md — SSE progress stream, cancel endpoint, cancel/resume Server Actions, live progress page replacing /queued stub, ProgressView client component
 
 ### Phase 3: Results & Cost
 **Goal**: Users can view a rich in-app findings dashboard, download full audit artifacts, and see a complete cost summary after every audit
@@ -93,6 +93,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. App Shell & Configuration | 1/3 | In Progress|  |
-| 2. Audit Engine | 0/3 | Not started | - |
+| 2. Audit Engine | 1/3 | In Progress|  |
 | 3. Results & Cost | 0/2 | Not started | - |
 | 4. History & Comparison | 0/2 | Not started | - |
