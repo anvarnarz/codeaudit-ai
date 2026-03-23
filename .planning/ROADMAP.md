@@ -93,10 +93,10 @@ Plans:
   1. Running an audit on a TypeScript/Next.js repo produces findings with the same categories, severity distribution, and overall health score as a v1.1 audit of the same repo — no regression
   2. Running an audit on a Python repo surfaces Python-specific findings: pip/poetry dependency vulnerabilities, pytest coverage gaps, Python secret patterns, and docstring coverage
   3. Running an audit on a Go repo surfaces Go-specific findings: go module vulnerabilities, go test coverage, Go-style complexity, and GoDoc coverage
-**Plans**: TBD
+**Plans**: 1 plan
 
 Plans:
-- [ ] 12-01: Run validation audits on TypeScript, Python, and Go repos; document findings and fix regressions
+- [ ] 12-01-PLAN.md — Structural validation of polyglot refactoring (TS build, phase runner delegation, Python/Go detection)
 
 ## Progress
 
