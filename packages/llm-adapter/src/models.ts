@@ -32,9 +32,9 @@ const AUTO_MODELS: Record<LlmProvider, Record<PhaseComplexity, string>> = {
     complex: "gpt-4o",
   },
   gemini: {
-    simple: "gemini-2.0-flash",
-    medium: "gemini-2.0-flash",
-    complex: "gemini-2.0-pro",
+    simple: "gemini-2.5-flash",
+    medium: "gemini-2.5-flash",
+    complex: "gemini-2.5-pro",
   },
 };
 
