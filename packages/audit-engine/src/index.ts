@@ -16,3 +16,6 @@ export {
   markPhaseSkipped,
   markPhaseFailed,
 } from "./progress-emitter";
+export { createExecCommandTool } from "./tools/exec-command-tool";
+export { runPhaseWithTools } from "./tool-phase-runner";
+export { buildToolUsePhasePrompt } from "./prompt-builder";
