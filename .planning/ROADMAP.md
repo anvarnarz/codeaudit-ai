@@ -33,7 +33,7 @@
 **Milestone Goal:** Replace hardcoded JS/TS shell commands with LLM-driven command generation so the audit engine produces accurate, meaningful findings for any language — Python, Go, Rust, Java, and beyond.
 
 - [ ] **Phase 9: Phase 0 Enhancement** - Enrich Phase 0 output into a structured RepoContext covering language, package manager, test framework, CI, and monorepo tool detection
-- [ ] **Phase 10: Tool-Use Infrastructure** - Build the execCommand tool and refactor the shared phase runner contract to accept guide section + RepoContext instead of hardcoded commands
+- [x] **Phase 10: Tool-Use Infrastructure** - Build the execCommand tool and refactor the shared phase runner contract to accept guide section + RepoContext instead of hardcoded commands (completed 2026-03-23)
 - [ ] **Phase 11: Phase Runner Adaptation** - Migrate all 9 phase runners (phases 1-9) to the new tool-use contract so each runner is language-agnostic
 - [ ] **Phase 12: Validation** - Confirm no regression on TypeScript repos and verify meaningful findings on Python and Go repos
 
@@ -67,7 +67,7 @@ Plans:
 **Plans**: 1 plan
 
 Plans:
-- [ ] 10-01-PLAN.md — Build sandboxed execCommand tool, tool-use phase runner helper, and updated prompt builder
+- [x] 10-01-PLAN.md — Build sandboxed execCommand tool, tool-use phase runner helper, and updated prompt builder
 
 ### Phase 11: Phase Runner Adaptation
 **Goal**: All nine phase runners (phases 1-9) are language-agnostic — each sends its guide section and RepoContext to the LLM and lets the LLM generate and execute appropriate commands for the detected stack
@@ -111,7 +111,7 @@ Plans:
 | 7. Audit Flows | v1.1 | 2/2 | Complete | 2026-03-22 |
 | 8. Data Views | v1.1 | 3/3 | Complete | 2026-03-23 |
 | 9. Phase 0 Enhancement | v1.2 | 2/2 | Complete | 2026-03-23 |
-| 10. Tool-Use Infrastructure | v1.2 | 0/1 | Not started | - |
+| 10. Tool-Use Infrastructure | v1.2 | 1/1 | Complete   | 2026-03-23 |
 | 11. Phase Runner Adaptation | v1.2 | 0/TBD | Not started | - |
 | 12. Validation | v1.2 | 0/TBD | Not started | - |
 

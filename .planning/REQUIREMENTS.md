@@ -18,9 +18,9 @@ Replace hardcoded JS/TS shell commands in all phase runners with LLM-driven comm
 
 ### Phase Runner Refactor (PRF)
 
-- [ ] **PRF-01**: Each phase runner (1-9) sends the relevant audit guide section as the LLM prompt instead of hardcoded commands
-- [ ] **PRF-02**: Each phase runner includes the Phase 0 RepoContext in the LLM prompt so the LLM knows the stack
-- [ ] **PRF-03**: Phase runners use Vercel AI SDK tool-use to let the LLM execute shell commands (execCommand tool) rather than pre-running them
+- [x] **PRF-01**: Each phase runner (1-9) sends the relevant audit guide section as the LLM prompt instead of hardcoded commands
+- [x] **PRF-02**: Each phase runner includes the Phase 0 RepoContext in the LLM prompt so the LLM knows the stack
+- [x] **PRF-03**: Phase runners use Vercel AI SDK tool-use to let the LLM execute shell commands (execCommand tool) rather than pre-running them
 - [ ] **PRF-04**: Phase 1 (Orientation) works for any language — file discovery, structure analysis, test file counting adapted by LLM
 - [ ] **PRF-05**: Phase 2 (Dependency Health) works for any language — LLM runs the right audit tool (npm audit, pip-audit, cargo audit, go vuln, etc.)
 - [ ] **PRF-06**: Phase 3 (Test Coverage) works for any language — LLM finds tests using language-appropriate patterns
@@ -30,8 +30,8 @@ Replace hardcoded JS/TS shell commands in all phase runners with LLM-driven comm
 - [ ] **PRF-10**: Phase 7 (Deep Reads) discovers payment/auth/error handling code in any language
 - [ ] **PRF-11**: Phase 8 (CI/CD) checks for all major CI systems, not just GitHub Actions
 - [ ] **PRF-12**: Phase 9 (Documentation) counts doc coverage using language-native doc styles (docstrings, GoDoc, RustDoc, JavaDoc, JSDoc)
-- [ ] **PRF-13**: All refactored phases still output the same AuditFindings JSON schema — downstream UI/reports unchanged
-- [ ] **PRF-14**: The execCommand tool is sandboxed: read-only, no write/delete/network commands, timeout enforced
+- [x] **PRF-13**: All refactored phases still output the same AuditFindings JSON schema — downstream UI/reports unchanged
+- [x] **PRF-14**: The execCommand tool is sandboxed: read-only, no write/delete/network commands, timeout enforced
 
 ### Validation (VAL)
 
@@ -66,11 +66,11 @@ Replace hardcoded JS/TS shell commands in all phase runners with LLM-driven comm
 | P0-04 | Phase 9 | Complete |
 | P0-05 | Phase 9 | Complete |
 | P0-06 | Phase 9 | Complete |
-| PRF-01 | Phase 10 | Pending |
-| PRF-02 | Phase 10 | Pending |
-| PRF-03 | Phase 10 | Pending |
-| PRF-13 | Phase 10 | Pending |
-| PRF-14 | Phase 10 | Pending |
+| PRF-01 | Phase 10 | Complete |
+| PRF-02 | Phase 10 | Complete |
+| PRF-03 | Phase 10 | Complete |
+| PRF-13 | Phase 10 | Complete |
+| PRF-14 | Phase 10 | Complete |
 | PRF-04 | Phase 11 | Pending |
 | PRF-05 | Phase 11 | Pending |
 | PRF-06 | Phase 11 | Pending |

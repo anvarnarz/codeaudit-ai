@@ -2,14 +2,14 @@
 gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: Polyglot Audit Engine
-status: Ready to plan
-stopped_at: Completed 09-02-PLAN.md
-last_updated: "2026-03-23T02:29:18.282Z"
+status: Phase complete — ready for verification
+stopped_at: Completed 10-01-PLAN.md
+last_updated: "2026-03-23T03:04:09.264Z"
 progress:
   total_phases: 4
-  completed_phases: 1
-  total_plans: 2
-  completed_plans: 2
+  completed_phases: 2
+  total_plans: 3
+  completed_plans: 3
 ---
 
 # Project State
@@ -19,12 +19,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-23 after v1.2 milestone start)
 
 **Core value:** Anyone can run a thorough codebase audit on any local folder without CLI setup — just open the app, pick a folder, and run.
-**Current focus:** Phase 09 — phase-0-enhancement
+**Current focus:** Phase 10 — tool-use-infrastructure
 
 ## Current Position
 
-Phase: 10
-Plan: Not started
+Phase: 10 (tool-use-infrastructure) — EXECUTING
+Plan: 1 of 1
 
 ## Performance Metrics
 
@@ -43,6 +43,7 @@ Plan: Not started
 *Updated after each plan completion*
 | Phase 09-phase-0-enhancement P01 | 3 | 2 tasks | 5 files |
 | Phase 09-phase-0-enhancement P02 | 8 | 1 tasks | 1 files |
+| Phase 10-tool-use-infrastructure P01 | 2 | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -60,6 +61,9 @@ Recent decisions affecting current work:
 - [Phase 09-01]: All Zod RepoContext fields are required (no .optional()) matching OpenAI structured output constraint
 - [Phase 09-02]: Labeled command output pattern: [category:key] prefix per command enables deterministic LLM extraction into locByLanguage without ambiguity
 - [Phase 09-02]: usage.totalTokens now passed to markPhaseCompleted for correct Phase 0 cost tracking (was 0 before)
+- [Phase 10-01]: Vercel AI SDK v6 tool() uses inputSchema (not parameters) — discovered from type definitions, fixed at task time
+- [Phase 10-01]: Sandboxed exec-command tool uses allowlist + blocklist + bash -c inspection — LLM gets '(blocked: reason)' string on rejection, not exception
+- [Phase 10-01]: stepCountIs(15) cap on tool-use rounds balances thorough auditing with bounded cost
 
 ### Pending Todos
 
@@ -71,6 +75,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-23T02:25:53.977Z
-Stopped at: Completed 09-02-PLAN.md
+Last session: 2026-03-23T03:04:09.262Z
+Stopped at: Completed 10-01-PLAN.md
 Resume file: None
