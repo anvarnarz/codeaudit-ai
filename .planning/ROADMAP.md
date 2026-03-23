@@ -113,7 +113,7 @@ Plans:
 | 9. Phase 0 Enhancement | v1.2 | 2/2 | Complete | 2026-03-23 |
 | 10. Tool-Use Infrastructure | v1.2 | 1/1 | Complete    | 2026-03-23 |
 | 11. Phase Runner Adaptation | v1.2 | 2/2 | Complete    | 2026-03-23 |
-| 12. Validation | v1.2 | 1/1 | Complete | 2026-03-23 |
+| 12. Validation | v1.2 | 1/1 | Complete   | 2026-03-23 |
 
 ---
 *Full v1.0 details archived in `.planning/milestones/v1.0-ROADMAP.md`*
