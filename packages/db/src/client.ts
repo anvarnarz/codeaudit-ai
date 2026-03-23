@@ -74,6 +74,10 @@ export function getDb() {
       );
     `);
 
+    // v1.2 migrations — ALTER TABLE with try/catch for existing databases
+    // (CREATE TABLE IF NOT EXISTS handles new installs; ALTER TABLE handles upgrades)
+    try { sqlite.exec(`ALTER TABLE audits ADD COLUMN repo_context TEXT;`); } catch { /* column already exists */ }
+
     _db = drizzle(sqlite, { schema });
   }
   return _db;

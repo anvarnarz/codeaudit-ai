@@ -87,6 +87,9 @@ export const audits = sqliteTable("audits", {
   isGitRepo: integer("is_git_repo", { mode: "boolean" }).notNull().default(true),
   // Structured findings — see AuditFindings type above
   findings: text("findings", { mode: "json" }).$type<AuditFindings>(),
+  // v1.2: Structured Phase 0 repo context (polyglot detection)
+  // Untyped at DB layer — RepoContext type lives in audit-engine package
+  repoContext: text("repo_context", { mode: "json" }),
   startedAt: integer("started_at", { mode: "timestamp" }),
   completedAt: integer("completed_at", { mode: "timestamp" }),
   createdAt: integer("created_at", { mode: "timestamp" }).notNull().$defaultFn(() => new Date()),
