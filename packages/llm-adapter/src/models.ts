@@ -28,7 +28,7 @@ const AUTO_MODELS: Record<LlmProvider, Record<PhaseComplexity, string>> = {
   },
   openai: {
     simple: "gpt-4o-mini",
-    medium: "gpt-4o",
+    medium: "gpt-4o-mini",
     complex: "gpt-4o",
   },
   gemini: {

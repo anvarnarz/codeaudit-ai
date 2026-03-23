@@ -55,7 +55,7 @@ export async function runPhaseWithTools(
     prompt,
     tools: { execCommand: execCommandTool },
     output: Output.object({ schema: PhaseOutputSchema }),
-    stopWhen: stepCountIs(15),
+    stopWhen: stepCountIs(8),
     maxOutputTokens: 16384,
   });
 
