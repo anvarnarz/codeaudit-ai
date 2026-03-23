@@ -181,7 +181,7 @@ Instructions for each field:
     model: model as any,
     schema: RepoContextSchema,
     prompt,
-    maxOutputTokens: 2048,
+    maxOutputTokens: 8192,
   });
 
   // Persist structured RepoContext to audits.repoContext column (P0-06)
