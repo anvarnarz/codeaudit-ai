@@ -9,12 +9,12 @@ Replace hardcoded JS/TS shell commands in all phase runners with LLM-driven comm
 
 ### Phase 0 Enhancement (P0)
 
-- [ ] **P0-01**: Phase 0 outputs a structured RepoContext that includes primary language(s), package manager (npm/pip/cargo/go mod/maven/etc.), and detected frameworks
-- [ ] **P0-02**: Phase 0 detects test framework (jest/pytest/go test/cargo test/junit/etc.) and test file patterns
-- [ ] **P0-03**: Phase 0 detects CI system (GitHub Actions, GitLab CI, Jenkins, CircleCI, etc.) by checking for config files
+- [x] **P0-01**: Phase 0 outputs a structured RepoContext that includes primary language(s), package manager (npm/pip/cargo/go mod/maven/etc.), and detected frameworks
+- [x] **P0-02**: Phase 0 detects test framework (jest/pytest/go test/cargo test/junit/etc.) and test file patterns
+- [x] **P0-03**: Phase 0 detects CI system (GitHub Actions, GitLab CI, Jenkins, CircleCI, etc.) by checking for config files
 - [ ] **P0-04**: Phase 0 LOC counting covers all common languages (py, go, rs, java, kt, rb, php, cs, cpp, c, swift) not just ts/js
-- [ ] **P0-05**: Phase 0 detects monorepo tools beyond JS (Cargo workspaces, Go modules, Gradle multi-project, Maven multi-module)
-- [ ] **P0-06**: RepoContext is stored in the audit record and available to all subsequent phases
+- [x] **P0-05**: Phase 0 detects monorepo tools beyond JS (Cargo workspaces, Go modules, Gradle multi-project, Maven multi-module)
+- [x] **P0-06**: RepoContext is stored in the audit record and available to all subsequent phases
 
 ### Phase Runner Refactor (PRF)
 
@@ -60,12 +60,12 @@ Replace hardcoded JS/TS shell commands in all phase runners with LLM-driven comm
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| P0-01 | Phase 9 | Pending |
-| P0-02 | Phase 9 | Pending |
-| P0-03 | Phase 9 | Pending |
+| P0-01 | Phase 9 | Complete |
+| P0-02 | Phase 9 | Complete |
+| P0-03 | Phase 9 | Complete |
 | P0-04 | Phase 9 | Pending |
-| P0-05 | Phase 9 | Pending |
-| P0-06 | Phase 9 | Pending |
+| P0-05 | Phase 9 | Complete |
+| P0-06 | Phase 9 | Complete |
 | PRF-01 | Phase 10 | Pending |
 | PRF-02 | Phase 10 | Pending |
 | PRF-03 | Phase 10 | Pending |
