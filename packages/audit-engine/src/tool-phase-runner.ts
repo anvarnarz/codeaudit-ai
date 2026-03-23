@@ -1,6 +1,6 @@
 import fs from "node:fs/promises";
 import path from "node:path";
-import { generateText, Output, stepCountIs } from "ai";
+import { generateText, stepCountIs } from "ai";
 import { PhaseOutputSchema, type PhaseOutput } from "./finding-extractor";
 import { buildToolUsePhasePrompt, FINDING_FORMAT_TEMPLATE } from "./prompt-builder";
 import { createExecCommandTool } from "./tools/exec-command-tool";
@@ -56,21 +56,36 @@ export async function runPhaseWithTools(
   let totalTokens = 0;
 
   try {
+    // Don't use Output.object — Gemini rejects combining tools + structured output.
+    // Instead, ask for JSON in the prompt and parse from result.text.
+    const jsonInstruction = `\n\nAfter gathering data with the execCommand tool, return your findings as a JSON object with this exact shape:
+{ "findings": [{ "id": "uuid", "phase": ${phaseNumber}, "category": "string", "severity": "critical|high|medium|low|info", "title": "string", "description": "string", "filePaths": ["string"], "lineNumbers": [number], "recommendation": "string" }], "phaseScore": 0-100, "summary": "string" }
+Return ONLY the JSON object — no markdown, no code fences, no explanation before or after.`;
+
     const result = await generateText({
       model,
-      prompt,
+      prompt: prompt + jsonInstruction,
       tools: { execCommand: execCommandTool },
-      output: Output.object({ schema: PhaseOutputSchema }),
       stopWhen: stepCountIs(8),
       maxOutputTokens: 4096,
     });
 
-    phaseOutput = result.output ?? emptyResult;
+    // Parse JSON from the LLM's final text response
+    const text = result.text.trim();
+    // Extract JSON — handle cases where LLM wraps in ```json ... ```
+    const jsonStr = text.replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/i, "").trim();
+    const parsed = PhaseOutputSchema.safeParse(JSON.parse(jsonStr));
+    if (parsed.success) {
+      phaseOutput = parsed.data;
+    } else {
+      console.warn(`[audit-engine] Phase ${phaseNumber}: JSON parsed but failed schema validation`);
+      phaseOutput = { ...emptyResult, summary: "Phase output failed schema validation: " + parsed.error.message.slice(0, 200) };
+    }
+
     const inputTokens = (result.usage as any).inputTokens ?? (result.usage as any).promptTokens ?? 0;
     const outputTokens = (result.usage as any).outputTokens ?? (result.usage as any).completionTokens ?? 0;
     totalTokens = inputTokens + outputTokens;
   } catch (err: unknown) {
-    // AI_NoOutputGeneratedError, AI_RetryError, etc. — don't crash the phase
     const errMsg = err instanceof Error ? err.message : String(err);
     console.warn(`[audit-engine] Phase ${phaseNumber} (tool-use): LLM error — ${errMsg.slice(0, 200)}`);
     phaseOutput = { ...emptyResult, summary: `Phase failed: ${errMsg.slice(0, 300)}` };
