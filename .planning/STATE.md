@@ -1,30 +1,32 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.1
-milestone_name: UI Redesign
-status: v1.1 milestone complete
-stopped_at: Completed 08-data-views-03-PLAN.md
-last_updated: "2026-03-22T21:05:27.362Z"
+milestone: v1.2
+milestone_name: Polyglot Audit Engine
+status: defining_requirements
+stopped_at: Milestone v1.2 started
+last_updated: "2026-03-23T00:00:00.000Z"
 progress:
-  total_phases: 4
-  completed_phases: 4
-  total_plans: 9
-  completed_plans: 9
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
 ---
 
 # Project State
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-03-22 after v1.1 milestone start)
+See: .planning/PROJECT.md (updated 2026-03-23 after v1.2 milestone start)
 
 **Core value:** Anyone can run a thorough codebase audit on any local folder without CLI setup — just open the app, pick a folder, and run.
-**Current focus:** Phase 08 — data-views
+**Current focus:** v1.2 Polyglot Audit Engine — LLM-driven command generation for all languages
 
 ## Current Position
 
-Phase: 08
-Plan: Not started
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-03-23 — Milestone v1.2 started
 
 ## Performance Metrics
 
