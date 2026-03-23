@@ -139,7 +139,14 @@ export function createExecCommandTool(repoPath: string, timeoutMs = DEFAULT_TIME
       }
 
       // 5. Execute the command within the repository directory
-      return execCommand(command, args, repoPath, effectiveTimeout);
+      const output = await execCommand(command, args, repoPath, effectiveTimeout);
+
+      // 6. Truncate output to prevent context window explosion during multi-step tool-use
+      const MAX_OUTPUT_CHARS = 8000; // ~2K tokens — keeps total context manageable across 8 steps
+      if (output.length > MAX_OUTPUT_CHARS) {
+        return output.slice(0, MAX_OUTPUT_CHARS) + `\n\n... (truncated — ${output.length} chars total, showing first ${MAX_OUTPUT_CHARS})`;
+      }
+      return output;
     },
   });
 }

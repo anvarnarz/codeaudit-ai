@@ -56,7 +56,7 @@ export async function runPhaseWithTools(
     tools: { execCommand: execCommandTool },
     output: Output.object({ schema: PhaseOutputSchema }),
     stopWhen: stepCountIs(8),
-    maxOutputTokens: 16384,
+    maxOutputTokens: 4096,
   });
 
   // 5. Extract structured output
