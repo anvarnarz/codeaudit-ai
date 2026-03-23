@@ -53,7 +53,7 @@
 
 Plans:
 - [x] 09-01-PLAN.md — Define RepoContext schema, add DB column, update shared helpers for typed access
-- [ ] 09-02-PLAN.md — Rewrite Phase 0 detection commands and LLM prompt for polyglot support
+- [x] 09-02-PLAN.md — Rewrite Phase 0 detection commands and LLM prompt for polyglot support
 
 ### Phase 10: Tool-Use Infrastructure
 **Goal**: A sandboxed execCommand tool exists and all phase runners share a new contract: receive audit guide section + RepoContext, call execCommand as needed, return AuditFindings JSON

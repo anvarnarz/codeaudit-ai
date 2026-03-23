@@ -2,14 +2,14 @@
 gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: Polyglot Audit Engine
-status: Ready to execute
-stopped_at: Completed 09-01-PLAN.md
-last_updated: "2026-03-23T02:22:06.866Z"
+status: Phase complete — ready for verification
+stopped_at: Completed 09-02-PLAN.md
+last_updated: "2026-03-23T02:25:53.979Z"
 progress:
   total_phases: 4
-  completed_phases: 0
+  completed_phases: 1
   total_plans: 2
-  completed_plans: 1
+  completed_plans: 2
 ---
 
 # Project State
@@ -42,6 +42,7 @@ Plan: 2 of 2
 
 *Updated after each plan completion*
 | Phase 09-phase-0-enhancement P01 | 3 | 2 tasks | 5 files |
+| Phase 09-phase-0-enhancement P02 | 8 | 1 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -57,6 +58,8 @@ Recent decisions affecting current work:
 - [Phase 09-01]: RepoContext type lives in audit-engine (not db) to avoid circular dependency; DB column is untyped JSON cast at read time
 - [Phase 09-01]: Dual getRepoContext/getRepoContextObject API preserves backward compat for all existing phase runners (1-9)
 - [Phase 09-01]: All Zod RepoContext fields are required (no .optional()) matching OpenAI structured output constraint
+- [Phase 09-02]: Labeled command output pattern: [category:key] prefix per command enables deterministic LLM extraction into locByLanguage without ambiguity
+- [Phase 09-02]: usage.totalTokens now passed to markPhaseCompleted for correct Phase 0 cost tracking (was 0 before)
 
 ### Pending Todos
 
@@ -68,6 +71,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-23T02:22:06.863Z
-Stopped at: Completed 09-01-PLAN.md
+Last session: 2026-03-23T02:25:53.977Z
+Stopped at: Completed 09-02-PLAN.md
 Resume file: None
