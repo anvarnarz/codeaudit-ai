@@ -311,7 +311,7 @@ export function ResultsDashboard({ audit, phases }: ResultsDashboardProps) {
 
             return (
               <div
-                key={finding.id ?? i}
+                key={`${finding.id ?? "f"}-${i}`}
                 onClick={() => setExpandedFinding(isExpanded ? null : i)}
                 className="bg-surface border border-border rounded-xl p-3.5 cursor-pointer transition-all duration-150 hover:border-opacity-60"
                 style={{
