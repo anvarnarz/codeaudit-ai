@@ -64,10 +64,10 @@ Plans:
   2. Phase runners accept a guide section string and RepoContext instead of running hardcoded shell commands before the LLM call
   3. The LLM prompt for every phase includes both the relevant audit guide section and the Phase 0 RepoContext
   4. All refactored phase runners still return the same AuditFindings JSON schema — existing results pages, charts, and reports render without modification
-**Plans**: TBD
+**Plans**: 1 plan
 
 Plans:
-- [ ] 10-01: Build execCommand tool with sandbox enforcement and integrate into phase runner base
+- [ ] 10-01-PLAN.md — Build sandboxed execCommand tool, tool-use phase runner helper, and updated prompt builder
 
 ### Phase 11: Phase Runner Adaptation
 **Goal**: All nine phase runners (phases 1-9) are language-agnostic — each sends its guide section and RepoContext to the LLM and lets the LLM generate and execute appropriate commands for the detected stack
@@ -110,8 +110,8 @@ Plans:
 | 6. Shell & Onboarding | v1.1 | 2/2 | Complete | 2026-03-22 |
 | 7. Audit Flows | v1.1 | 2/2 | Complete | 2026-03-22 |
 | 8. Data Views | v1.1 | 3/3 | Complete | 2026-03-23 |
-| 9. Phase 0 Enhancement | v1.2 | 0/2 | Not started | - |
-| 10. Tool-Use Infrastructure | v1.2 | 0/TBD | Not started | - |
+| 9. Phase 0 Enhancement | v1.2 | 2/2 | Complete | 2026-03-23 |
+| 10. Tool-Use Infrastructure | v1.2 | 0/1 | Not started | - |
 | 11. Phase Runner Adaptation | v1.2 | 0/TBD | Not started | - |
 | 12. Validation | v1.2 | 0/TBD | Not started | - |
 
