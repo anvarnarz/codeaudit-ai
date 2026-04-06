@@ -140,17 +140,14 @@ The folder is always unlocked after the audit, even if it crashes or is cancelle
 ## Project Structure
 
 ```
-codeaudit/
-├── apps/web/                    # Next.js 16 app (UI + API routes)
+codeaudit-ai/
+├── apps/web/              Next.js 16 frontend + API routes
 ├── packages/
-│   ├── cli/                     # npx entry point
-│   ├── db/                      # SQLite schema + Drizzle ORM
-│   ├── audit-engine/            # 13-phase audit orchestrator
-│   ├── llm-adapter/             # Anthropic/OpenAI/Gemini abstraction
-│   └── repo-sandbox/            # Git cloning utilities
-├── manual-codebase-review-process/  # Source-of-truth audit guides
-├── docker/                      # Docker Compose (dev convenience)
-└── .planning/                   # GSD project planning artifacts
+│   ├── audit-engine/      13-phase audit orchestrator + phase runners
+│   ├── cli/               npx entry point
+│   ├── db/                Drizzle schema + SQLite client
+│   └── llm-adapter/       Multi-LLM abstraction (3 providers + AUTO)
+└── manual-codebase-review-process/  Source-of-truth audit guide
 ```
 
 ## Development

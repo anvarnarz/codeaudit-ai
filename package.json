@@ -4,10 +4,7 @@
   "version": "0.1.0",
   "description": "Turn manual CLI-based codebase audits into a self-service web tool",
   "scripts": {
-    "dev": "concurrently \"pnpm dev:db\" \"pnpm dev:web\" \"pnpm dev:worker\"",
-    "dev:db": "docker compose up -d",
-    "dev:web": "pnpm --filter web dev",
-    "dev:worker": "pnpm --filter worker dev",
+    "dev": "pnpm --filter web dev",
     "build": "pnpm --filter web build",
     "lint": "pnpm --filter web lint",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md,css}\" --ignore-path .gitignore",
