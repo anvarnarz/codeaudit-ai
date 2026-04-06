@@ -1,7 +1,7 @@
 {
   "name": "codeaudit-web",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.5.0",
   "description": "Turn manual CLI-based codebase audits into a self-service web tool",
   "scripts": {
     "dev": "pnpm --filter web dev",

@@ -6,6 +6,34 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [0.5.0] — 2026-04-XX — Production Foundation
+
+### Added
+- CLI packaging with tsup — `npx codeaudit-ai` now works on clean machines
+- GitHub Actions CI pipeline (lint, typecheck, test, build) on Node 20/22
+- Symlink escape detection in command execution sandbox
+- Accurate cost tracking using real token counts from AI SDK (replaces 75/25 estimate)
+- Pricing config file (`pricing.json`) for per-release price updates
+- Test suite for exec-command-tool (allowlist, patterns, path containment, symlinks)
+- Test suite for tool-phase-runner (JSON repair, schema validation, finding rescue)
+- Test suite for prompt-builder (injection boundary verification)
+- Test suite for finding-extractor (Zod schema validation)
+- Test suite for cost calculation (per-provider accuracy)
+- VERSION file for release tracking
+
+### Removed
+- Dead `worker/` package (BullMQ stub — not needed for v1)
+- Dead `packages/repo-sandbox/` (placeholder — not needed for v1)
+- Docker Compose for PostgreSQL/Redis (app uses SQLite only)
+- Stale .env.example references to DATABASE_URL, REDIS_URL, AUTH_SECRET, GitHub OAuth
+
+### Fixed
+- CLI bin path pointing to nonexistent `./src/index.ts` (now compiled to `./dist/index.js`)
+- Cost tracking off by up to 50% due to hardcoded 75/25 input/output token split
+- Symlink inside audited repo could read files outside repository boundary
+
+---
+
 ## 2026-03-22 — Complete Design Overhaul (Prototype-Faithful)
 
 ### Changed
