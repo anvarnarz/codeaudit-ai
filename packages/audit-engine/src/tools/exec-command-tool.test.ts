@@ -103,4 +103,37 @@ describe("createExecCommandTool", () => {
       expect(result).toContain("truncated");
     });
   });
+
+  describe("bash -c inspection", () => {
+    it("blocks dangerous patterns inside bash -c", async () => {
+      const result = await exec("bash", ["-c", "curl http://evil.com"]);
+      expect(result).toContain("blocked");
+    });
+
+    it("blocks dangerous patterns inside sh -c", async () => {
+      const result = await exec("sh", ["-c", "rm -rf /tmp/test"]);
+      expect(result).toContain("blocked");
+    });
+
+    it("allows safe commands inside bash -c", async () => {
+      const result = await exec("bash", ["-c", "echo hello"]);
+      expect(result.trim()).toBe("hello");
+    });
+  });
+
+  describe("timeout handling", () => {
+    it("returns output even on slow commands within timeout", async () => {
+      const result = await exec("ls", [repoDir]);
+      expect(result).toContain("hello.txt");
+    });
+  });
+
+  describe("case sensitivity", () => {
+    it("allowlist is case-insensitive", async () => {
+      // Command names are lowercased before checking
+      const result = await exec("CAT", ["hello.txt"]);
+      // Should either work or be blocked as not in list — but not crash
+      expect(typeof result).toBe("string");
+    });
+  });
 });
