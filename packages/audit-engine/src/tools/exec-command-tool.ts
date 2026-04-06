@@ -1,6 +1,8 @@
 import { tool } from "ai";
 import { z } from "zod";
 import { execCommand } from "../commands";
+import fs from "node:fs";
+import path from "node:path";
 
 /**
  * Command allowlist — only read-only, analysis commands are permitted.
@@ -124,17 +126,29 @@ export function createExecCommandTool(repoPath: string, timeoutMs = DEFAULT_TIME
         }
       }
 
-      // 4. Path containment check — reject absolute paths outside repoPath, reject .. escapes
+      // 4. Path containment check — reject paths outside repoPath
       for (const arg of args) {
         // Reject any arg with ".." that could escape the repo
         if (arg.includes("..")) {
-          // Allow ".." only if the resolved path still stays within repoPath
-          // Simple heuristic: reject any ".." in args to be safe
           return `(blocked: argument '${arg}' contains '..' which could escape the repository boundary)`;
         }
         // Reject absolute paths that don't start with repoPath
         if (arg.startsWith("/") && !arg.startsWith(repoPath)) {
           return `(blocked: absolute path '${arg}' is outside the repository boundary '${repoPath}')`;
+        }
+        // Resolve symlinks — a symlink inside the repo could point outside
+        if (arg.startsWith("/") || !arg.startsWith("-")) {
+          const candidate = arg.startsWith("/") ? arg : path.resolve(repoPath, arg);
+          try {
+            if (fs.existsSync(candidate)) {
+              const resolved = fs.realpathSync(candidate);
+              if (!resolved.startsWith(repoPath)) {
+                return `(blocked: path '${arg}' resolves via symlink to '${resolved}' which is outside the repository)`;
+              }
+            }
+          } catch {
+            // File doesn't exist or can't be resolved — let the command handle it
+          }
         }
       }
 
