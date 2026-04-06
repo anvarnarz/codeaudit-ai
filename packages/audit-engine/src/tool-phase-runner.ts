@@ -164,3 +164,67 @@ Return ONLY the JSON object — no markdown, no code fences, no explanation befo
   // 10. Persist phase results to DB
   await markPhaseCompleted(ctx.auditId, phaseNumber, outputMd, findings, inputTokensTotal, outputTokensTotal);
 }
+
+/**
+ * Parse and validate phase output JSON from LLM response.
+ * Handles: valid JSON, truncated JSON (repair), partial schema match (rescue findings).
+ * Exported for testing.
+ */
+export function parsePhaseOutput(
+  text: string,
+  phaseNumber: number,
+): { findings: PhaseOutput["findings"]; phaseScore: number; summary: string } {
+  const emptyResult = { findings: [] as PhaseOutput["findings"], phaseScore: 0, summary: "Phase produced no output." };
+
+  // Strip markdown code fences
+  let jsonStr = text.trim().replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/i, "").trim();
+  if (!jsonStr) return { ...emptyResult, summary: "Empty LLM response" };
+
+  // Try parsing, with repair for truncated JSON
+  let jsonObj: unknown;
+  try {
+    jsonObj = JSON.parse(jsonStr);
+  } catch {
+    let repaired = jsonStr;
+    const quoteCount = (repaired.match(/(?<!\\)"/g) || []).length;
+    if (quoteCount % 2 !== 0) repaired += '"';
+    const opens = (repaired.match(/[{[]/g) || []).length;
+    const closes = (repaired.match(/[}\]]/g) || []).length;
+    for (let i = 0; i < opens - closes; i++) {
+      repaired += repaired.lastIndexOf("[") > repaired.lastIndexOf("{") ? "]" : "}";
+    }
+    repaired = repaired.replace(/,\s*([}\]])/g, "$1");
+    try {
+      jsonObj = JSON.parse(repaired);
+    } catch {
+      return { ...emptyResult, summary: "Failed to parse LLM JSON output" };
+    }
+  }
+
+  const parsed = PhaseOutputSchema.safeParse(jsonObj);
+  if (parsed.success) {
+    return {
+      findings: parsed.data.findings.map((f) => ({ ...f, phase: phaseNumber })),
+      phaseScore: parsed.data.phaseScore,
+      summary: parsed.data.summary,
+    };
+  }
+
+  // Lenient: extract individual valid findings
+  const obj = jsonObj as Record<string, unknown>;
+  const rawFindings = Array.isArray(obj.findings) ? obj.findings : [];
+  const validFindings = rawFindings
+    .map((f: unknown) => AuditFindingSchema.safeParse(f))
+    .filter((r) => r.success)
+    .map((r) => (r as { data: PhaseOutput["findings"][number] }).data);
+
+  if (validFindings.length > 0) {
+    return {
+      findings: validFindings.map((f) => ({ ...f, phase: phaseNumber })),
+      phaseScore: typeof obj.phaseScore === "number" ? obj.phaseScore : 0,
+      summary: typeof obj.summary === "string" ? obj.summary : `Phase ${phaseNumber} completed with ${validFindings.length} findings.`,
+    };
+  }
+
+  return { ...emptyResult, summary: "Phase output failed schema validation" };
+}
