@@ -6,6 +6,29 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [0.6.0] — 2026-04-07 — OpenAI-Compatible Provider Support
+
+### Added
+- **OpenAI-compatible provider** — connect any OpenAI-compatible endpoint (Ollama, LM Studio, vLLM, llama.cpp, etc.) with custom base URL
+- Model discovery for custom endpoints via `/v1/models` API
+- API key management UI supports base URL field for openai-compatible provider
+- Cost estimation defaults for openai-compatible provider (zero-cost for local models)
+- Pricing entry for openai-compatible in `pricing.json`
+
+### Changed
+- Provider type extended to `"anthropic" | "openai" | "gemini" | "openai-compatible"` across all packages
+- AUTO mode disabled for openai-compatible provider (requires explicit model selection)
+- API key validation skipped for openai-compatible (custom auth schemes vary)
+
+### Fixed
+- `phase-10.ts`: `result` variable used outside `try` block scope — hoisted token counters
+- `phase-11.ts`: `markPhaseCompleted` called with 5 args instead of required 6
+- `tool-phase-runner.ts`: `inputTokensTotal`/`outputTokensTotal` referenced before declaration
+- `progress-emitter.ts`: pricing.json type cast failed due to metadata fields (`_comment`, `_updated`)
+- `schema.ts`: Drizzle `.default(null)` not valid for text columns
+
+---
+
 ## [0.5.0] — 2026-04-XX — Production Foundation
 
 ### Added

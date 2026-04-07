@@ -19,7 +19,7 @@
 
 <p align="center">
   <a href="https://github.com/user/codeaudit-ai/actions"><img src="https://img.shields.io/github/actions/workflow/status/user/codeaudit-ai/ci.yml?branch=main&style=flat-square&logo=github&label=CI" alt="CI Status" /></a>
-  <img src="https://img.shields.io/badge/version-0.5.0-blue?style=flat-square" alt="Version" />
+  <img src="https://img.shields.io/badge/version-0.6.0-blue?style=flat-square" alt="Version" />
   <img src="https://img.shields.io/badge/license-MIT-green?style=flat-square" alt="License" />
   <img src="https://img.shields.io/badge/node-%3E%3D20-brightgreen?style=flat-square&logo=node.js&logoColor=white" alt="Node.js" />
   <img src="https://img.shields.io/badge/TypeScript-5.7-blue?style=flat-square&logo=typescript&logoColor=white" alt="TypeScript" />
@@ -47,7 +47,7 @@ CodeAudit AI is a **local-first** web application that wraps a comprehensive 12-
 
 - **12-phase structured audit** — from bootstrap detection to final HTML reports
 - **Any programming language** — polyglot engine adapts commands per detected stack
-- **3 LLM providers** — Anthropic, OpenAI, Gemini with AUTO cost optimization
+- **4 LLM providers** — Anthropic, OpenAI, Gemini, plus any OpenAI-compatible endpoint (Ollama, LM Studio, vLLM)
 - **Live progress** — SSE streaming with per-phase detail, cancel anytime
 - **Results dashboard** — health score, severity charts, filterable findings
 - **Downloadable reports** — HTML, Markdown, JSON, PDF, zip bundle
@@ -63,7 +63,8 @@ CodeAudit AI is a **local-first** web application that wraps a comprehensive 12-
 <p align="center">
   <img src="https://img.shields.io/badge/Anthropic-D97757?style=for-the-badge&logo=anthropic&logoColor=white" alt="Anthropic" />&nbsp;&nbsp;
   <img src="https://img.shields.io/badge/OpenAI-412991?style=for-the-badge&logo=openai&logoColor=white" alt="OpenAI" />&nbsp;&nbsp;
-  <img src="https://img.shields.io/badge/Google_Gemini-8E75B2?style=for-the-badge&logo=googlegemini&logoColor=white" alt="Google Gemini" />
+  <img src="https://img.shields.io/badge/Google_Gemini-8E75B2?style=for-the-badge&logo=googlegemini&logoColor=white" alt="Google Gemini" />&nbsp;&nbsp;
+  <img src="https://img.shields.io/badge/OpenAI--Compatible-333333?style=for-the-badge&logo=openai&logoColor=white" alt="OpenAI-Compatible" />
 </p>
 
 | Provider | Models | Get API Key |
@@ -71,8 +72,9 @@ CodeAudit AI is a **local-first** web application that wraps a comprehensive 12-
 | **Anthropic** | Claude Opus 4.6 / Sonnet 4.6 / Haiku 4.5 | [console.anthropic.com](https://console.anthropic.com/) |
 | **OpenAI** | GPT-4o / GPT-4o-mini | [platform.openai.com](https://platform.openai.com/api-keys) |
 | **Google Gemini** | Gemini 2.5 Pro / Flash | [aistudio.google.com](https://aistudio.google.com/apikey) |
+| **OpenAI-Compatible** | Any model via custom endpoint | Ollama, LM Studio, vLLM, llama.cpp, etc. |
 
-> **AUTO mode** minimizes cost by using cheaper models for simple phases and stronger models for security & architecture analysis.
+> **AUTO mode** minimizes cost by using cheaper models for simple phases and stronger models for security & architecture analysis. (Not available for OpenAI-compatible — requires explicit model selection.)
 
 ---
 
@@ -82,7 +84,7 @@ CodeAudit AI is a **local-first** web application that wraps a comprehensive 12-
 
 - **Node.js** 20+
 - **pnpm** 9+
-- An API key from Anthropic, OpenAI, or Google (see [Supported Providers](#supported-providers))
+- An API key from Anthropic, OpenAI, or Google — or any OpenAI-compatible endpoint (see [Supported Providers](#supported-providers))
 
 ### Install & Run
 
@@ -113,7 +115,7 @@ On first visit, the wizard walks you through two steps:
 | Step | What Happens |
 |------|-------------|
 | **Welcome** | Overview of features and capabilities |
-| **Add API Key** | Paste your Anthropic, OpenAI, or Gemini key. The app validates it with a test API call before saving. |
+| **Add API Key** | Paste your Anthropic, OpenAI, Gemini, or OpenAI-compatible endpoint key. Cloud keys are validated with a test API call before saving. |
 
 Your key is encrypted at rest with **AES-256-GCM** and never shown again — only the label and last 4 characters are displayed.
 
@@ -245,7 +247,8 @@ Go to **Settings > API Keys** in the sidebar to:
    │ api_keys │    │ lock folder │   │Anthropic│
    │ audits   │    │ exec cmds   │   │ OpenAI  │
    │ phases   │    │ parse JSON  │   │ Gemini  │
-   │ settings │    │unlock folder│   │  AUTO   │
+   │ settings │    │unlock folder│   │OAI-comp│
+   │          │    │             │   │  AUTO   │
    └──────────┘    └─────────────┘   └─────────┘
 ```
 
@@ -339,8 +342,8 @@ codeaudit-ai/
 │   │   └── prompt-builder.ts   LLM prompt construction with injection defense
 │   ├── cli/                    npx entry point (tsup compiled)
 │   ├── db/                     Drizzle schema + SQLite client
-│   └── llm-adapter/            Multi-LLM abstraction (3 providers + AUTO)
-│       └── providers/          Anthropic, OpenAI, Gemini adapters
+│   └── llm-adapter/            Multi-LLM abstraction (4 providers + AUTO)
+│       └── providers/          Anthropic, OpenAI, Gemini, OpenAI-compatible adapters
 ├── manual-codebase-review-process/
 │   └── codebase_review_guide.md   Source-of-truth audit methodology
 └── .planning/                  Roadmap, milestones, phase plans
@@ -422,8 +425,9 @@ Your API keys are encrypted at rest using **AES-256-GCM** with a unique IV per k
 | Version | Status | Focus |
 |---------|--------|-------|
 | **0.5.0** | ✅ Released | CLI packaging, CI, tests, cost tracking, dead code cleanup |
-| **0.6.0** | Planned | npm publish, Homebrew, E2E tests, error UX, screenshots |
-| **0.7.0** | Planned | Multi-repo cross-product analysis |
+| **0.6.0** | ✅ Released | OpenAI-compatible provider support (Ollama, LM Studio, vLLM) |
+| **0.7.0** | Planned | npm publish, Homebrew, E2E tests, error UX, screenshots |
+| **0.8.0** | Planned | Multi-repo cross-product analysis |
 | **1.0.0** | Planned | Public release — quality metrics, perf, docs, license |
 
 See [TODOS.md](TODOS.md) for detailed task list.

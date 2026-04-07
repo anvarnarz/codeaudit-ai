@@ -1,15 +1,15 @@
 # TODOs — CodeAudit AI
 
-## v0.6.0 — Distribution & Polish
+## v0.7.0 — Distribution & Polish
 
 - [ ] npm publish — `npm install -g codeaudit-ai` works globally
 - [ ] Homebrew formula for macOS users
 - [ ] Auto-update notification when new version available
 - [ ] E2E test: run full audit on a sample repo in CI
 - [ ] Better error messages when LLM API key is invalid/expired/rate-limited
-- [ ] README with screenshots, install instructions, usage guide
+- [ ] README with screenshots
 
-## v0.7.0 — Multi-Repo Analysis
+## v0.8.0 — Multi-Repo Analysis
 
 - [ ] Multi-folder selection for cross-repo audit
 - [ ] Integration with `multi_repo_review_guide.md`
@@ -21,7 +21,7 @@
 - [ ] Performance testing: large repos (100K+ LOC)
 - [ ] Architecture & contributing documentation
 - [ ] License decision
-- [ ] All of v0.6 + v0.7 complete
+- [ ] All of v0.7 + v0.8 complete
 
 ## Known Issues
 
@@ -30,6 +30,9 @@
 
 ## Completed
 
+- [x] OpenAI-compatible provider support (v0.6.0)
+- [x] Model discovery for custom endpoints (v0.6.0)
+- [x] Base URL field in API key management UI (v0.6.0)
 - [x] CLI packaging with tsup (v0.5.0)
 - [x] GitHub Actions CI pipeline (v0.5.0)
 - [x] Symlink escape fix (v0.5.0)
