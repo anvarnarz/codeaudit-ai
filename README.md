@@ -97,7 +97,7 @@ cd codeaudit-ai
 pnpm install
 
 # Start the app
-pnpm dev:web
+pnpm dev
 ```
 
 Open **http://localhost:3000** in your browser.
@@ -373,7 +373,7 @@ codeaudit-ai/
 pnpm install
 
 # Start dev server
-pnpm dev:web
+pnpm dev
 
 # Run tests
 pnpm test
@@ -395,7 +395,7 @@ pnpm --filter codeaudit-ai build
 
 | Command | What It Does |
 |---------|-------------|
-| `pnpm dev:web` | Start Next.js dev server on localhost:3000 |
+| `pnpm dev` | Start Next.js dev server on localhost:3000 |
 | `pnpm test` | Run Vitest test suite |
 | `pnpm test:watch` | Run tests in watch mode |
 | `pnpm typecheck` | TypeScript type checking (no emit) |
