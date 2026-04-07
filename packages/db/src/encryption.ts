@@ -28,15 +28,36 @@ const AUTH_TAG_LENGTH_BYTES = 16; // 128-bit auth tag — GCM default
 
 /**
  * Read and validate the master encryption key from environment.
+ * Auto-bootstraps from ~/.codeaudit-ai/.env if ENCRYPTION_KEY is not set.
  * The key must be a 64-character hex string (256 bits).
  */
 function getMasterKey(): Buffer {
-  const hexKey = process.env["ENCRYPTION_KEY"];
+  let hexKey = process.env["ENCRYPTION_KEY"];
+
+  if (!hexKey) {
+    // Auto-bootstrap: read or create key in ~/.codeaudit-ai/.env
+    const os = require("node:os") as typeof import("node:os");
+    const fs = require("node:fs") as typeof import("node:fs");
+    const path = require("node:path") as typeof import("node:path");
+    const envDir = path.join(os.homedir(), ".codeaudit-ai");
+    const envFile = path.join(envDir, ".env");
+    fs.mkdirSync(envDir, { recursive: true });
+    let envContents = fs.existsSync(envFile) ? fs.readFileSync(envFile, "utf8") : "";
+    if (!envContents.includes("ENCRYPTION_KEY=")) {
+      const key = randomBytes(32).toString("hex");
+      envContents += `ENCRYPTION_KEY=${key}\n`;
+      fs.writeFileSync(envFile, envContents, { mode: 0o600 });
+    }
+    const match = envContents.match(/ENCRYPTION_KEY=([^\n]+)/);
+    if (match?.[1]) {
+      hexKey = match[1].trim();
+      process.env["ENCRYPTION_KEY"] = hexKey;
+    }
+  }
 
   if (!hexKey) {
     throw new Error(
-      "ENCRYPTION_KEY environment variable is not set. " +
-        "Generate one with: node -e \"console.log(require('crypto').randomBytes(32).toString('hex'))\"",
+      "ENCRYPTION_KEY environment variable is not set and auto-bootstrap failed.",
     );
   }
 

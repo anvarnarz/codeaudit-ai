@@ -116,11 +116,15 @@ describe("maskApiKey", () => {
 });
 
 describe("encryption key validation", () => {
-  it("throws if ENCRYPTION_KEY is not set", () => {
+  it("auto-bootstraps ENCRYPTION_KEY from ~/.codeaudit-ai/.env if not set", () => {
     const original = process.env["ENCRYPTION_KEY"];
     delete process.env["ENCRYPTION_KEY"];
 
-    expect(() => encryptApiKey("test")).toThrow(/ENCRYPTION_KEY/);
+    // Should not throw — auto-creates key file
+    expect(() => encryptApiKey("test")).not.toThrow();
+    // Key should now be set in process.env
+    expect(process.env["ENCRYPTION_KEY"]).toBeDefined();
+    expect(process.env["ENCRYPTION_KEY"]!.length).toBe(64);
 
     process.env["ENCRYPTION_KEY"] = original;
   });
