@@ -44,17 +44,13 @@ Anyone can run a thorough, structured codebase health audit on any local codebas
 - ✓ Structured RepoContext with language, package manager, test framework, CI system detection — v1.2
 - ✓ Sandboxed execCommand tool for safe LLM-driven codebase analysis — v1.2
 
-### Active
+### Active (v0.6.0+)
 
-- [ ] Multi-repo cross-product analysis (run individual audits + cross-repo review)
-- [ ] npm global install / Homebrew distribution
-- [ ] Model accuracy/quality metrics display
-
-**Target features:**
-- Enhanced Phase 0: structured RepoContext with primary language, package manager, test framework, CI system
-- Phase runners refactored to send guide section + repo context to LLM instead of hardcoded commands
-- LLM generates language-appropriate commands (pip-audit for Python, cargo audit for Rust, etc.)
-- Same structured JSON output schema — UI/results/reports unchanged
+- [ ] npm global install / Homebrew distribution (v0.6.0)
+- [ ] End-to-end audit test in CI (v0.6.0)
+- [ ] Error UX improvements (v0.6.0)
+- [ ] Multi-repo cross-product analysis (v0.7.0)
+- [ ] Model accuracy/quality metrics display (v1.0.0)
 
 ### Out of Scope
 
@@ -68,9 +64,11 @@ Anyone can run a thorough, structured codebase health audit on any local codebas
 
 ## Context
 
-- **v1.0 shipped (2026-03-22):** 7,860 LOC TypeScript, 93 commits, 171 files. Next.js 16, SQLite, Drizzle ORM, Vercel AI SDK 6, Shadcn/ui, Tailwind CSS 4, Recharts, Puppeteer.
-- **v1.1 shipped (2026-03-23):** Complete UI redesign — 4,632 LOC across 69 files in apps/web. 18 feature commits, 9 plans, 4 phases. New design token system, 8 shared components, all 9 pages rebuilt from scratch.
+- **v0.5.0 (current, 2026-04-06):** Production foundation — CLI packaging, CI, tests, cost tracking fix, dead code cleanup.
+- **Pre-release build (2026-03-22 to 2026-03-23):** 3 rapid build phases delivered all core functionality — MVP, UI redesign, polyglot engine. ~35 plans, ~60 tasks.
+- **Stack:** Next.js 16, SQLite, Drizzle ORM, Vercel AI SDK 6, Shadcn/ui, Tailwind CSS 4, Recharts, Puppeteer, tsup, GitHub Actions.
 - The manual audit process (6 guide files in `manual-codebase-review-process/`) is the source of truth for audit logic.
+- *Note: Planning archives in `.planning/milestones/` use old internal labels "v1.0", "v1.1", "v1.2" — those were build phase names, not release versions.*
 
 ## Constraints
 
@@ -115,4 +113,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-03-23 after v1.1 milestone*
+*Last updated: 2026-04-07 — version numbering aligned, build phase labels clarified*

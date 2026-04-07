@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <rect width="120" height="120" rx="24" fill="#0a0a0b"/>
+  <rect x="2" y="2" width="116" height="116" rx="22" stroke="#facc15" stroke-width="2" stroke-opacity="0.3"/>
+  <!-- Shield outline -->
+  <path d="M60 22L30 36v24c0 20 12.5 38.5 30 44 17.5-5.5 30-24 30-44V36L60 22z" stroke="#facc15" stroke-width="2.5" fill="none" stroke-linejoin="round"/>
+  <!-- Code brackets -->
+  <path d="M46 52l-8 8 8 8" stroke="#facc15" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M74 52l8 8-8 8" stroke="#facc15" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Slash -->
+  <line x1="64" y1="48" x2="56" y2="72" stroke="#facc15" stroke-width="2" stroke-linecap="round" stroke-opacity="0.6"/>
+  <!-- Checkmark -->
+  <path d="M52 60l4 4 8-8" stroke="#facc15" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.0"/>
+  <!-- AI dot -->
+  <circle cx="60" cy="84" r="3" fill="#facc15" opacity="0.8"/>
+</svg>

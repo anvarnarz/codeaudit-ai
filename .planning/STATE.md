@@ -1,87 +1,47 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.2
-milestone_name: Polyglot Audit Engine
-status: v1.2 milestone complete
-stopped_at: Completed 12-01-PLAN.md
-last_updated: "2026-03-23T05:10:19.690Z"
+version: v0.5.0
+status: Released
+last_updated: "2026-04-07"
 progress:
-  total_phases: 4
-  completed_phases: 4
-  total_plans: 6
-  completed_plans: 6
+  build_phases_completed: 3
+  versioned_releases: 1
+  total_plans_executed: 35
+  total_tasks_executed: 60
 ---
 
 # Project State
 
-## Project Reference
+## Current Version
 
-See: .planning/PROJECT.md (updated 2026-03-23 after v1.2 milestone start)
+**v0.5.0** — Production Foundation (released 2026-04-06)
 
-**Core value:** Anyone can run a thorough codebase audit on any local folder without CLI setup — just open the app, pick a folder, and run.
-**Current focus:** v1.2 milestone complete. All phases done.
+## What's Done
 
-## Current Position
+All core functionality is built and working:
 
-Phase: 12
-Plan: Not started
+- 13-phase audit engine with polyglot support (any language)
+- 3 LLM providers (Anthropic, OpenAI, Gemini) + AUTO mode
+- Complete UI with dark/light themes
+- Results dashboard, reports, PDF/zip export
+- History, comparison, API key management
+- CLI packaging (`npx codeaudit-ai`)
+- CI pipeline (GitHub Actions)
+- Test coverage on critical paths
 
-## Performance Metrics
+## What's Next
 
-**Velocity:**
+See `.planning/ROADMAP.md` for v0.6.0+ plans. Key priorities:
 
-- Total plans completed: 0 (v1.2)
-- Average duration: -
-- Total execution time: 0 hours
+1. **npm publish** — make `npm install -g codeaudit-ai` work
+2. **E2E test** — full audit in CI on a sample repo
+3. **Multi-repo analysis** — cross-repo audits (v0.7.0)
 
-**By Phase:**
+## Key Decisions
 
-| Phase | Plans | Total | Avg/Plan |
-|-------|-------|-------|----------|
-| - | - | - | - |
-
-*Updated after each plan completion*
-| Phase 09-phase-0-enhancement P01 | 3 | 2 tasks | 5 files |
-| Phase 09-phase-0-enhancement P02 | 8 | 1 tasks | 1 files |
-| Phase 10-tool-use-infrastructure P01 | 2 | 2 tasks | 4 files |
-| Phase 11-phase-runner-adaptation P01 | 5 | 2 tasks | 5 files |
-| Phase 11-phase-runner-adaptation P02 | 3 | 2 tasks | 4 files |
-| Phase 12-validation P01 | 2 | 3 tasks | 3 files |
-
-## Accumulated Context
-
-### Decisions
-
-Decisions are logged in PROJECT.md Key Decisions table.
-Recent decisions affecting current work:
-
-- [v1.2 start]: Replace hardcoded JS/TS shell commands with LLM tool-use — LLM generates and executes commands per detected stack
-- [v1.2 start]: Same AuditFindings JSON schema preserved — UI, results pages, and reports are entirely unchanged
-- [v1.2 start]: execCommand tool must be sandboxed (read-only, no network, timeout enforced) — safety model intact
-- [v1.2 start]: Per-phase guide chunks remain the approach — RepoContext is added to the prompt, guide section is not expanded
-- [Phase 09-01]: RepoContext type lives in audit-engine (not db) to avoid circular dependency; DB column is untyped JSON cast at read time
-- [Phase 09-01]: Dual getRepoContext/getRepoContextObject API preserves backward compat for all existing phase runners (1-9)
-- [Phase 09-01]: All Zod RepoContext fields are required (no .optional()) matching OpenAI structured output constraint
-- [Phase 09-02]: Labeled command output pattern: [category:key] prefix per command enables deterministic LLM extraction into locByLanguage without ambiguity
-- [Phase 09-02]: usage.totalTokens now passed to markPhaseCompleted for correct Phase 0 cost tracking (was 0 before)
-- [Phase 10-01]: Vercel AI SDK v6 tool() uses inputSchema (not parameters) — discovered from type definitions, fixed at task time
-- [Phase 10-01]: Sandboxed exec-command tool uses allowlist + blocklist + bash -c inspection — LLM gets '(blocked: reason)' string on rejection, not exception
-- [Phase 10-01]: stepCountIs(15) cap on tool-use rounds balances thorough auditing with bounded cost
-- [Phase 11-01]: Each phase runner reduced to import + single delegation call — all orchestration lives in runPhaseWithTools
-- [Phase 11-01]: Export names preserved (phase01Runner through phase05Runner) so phase-registry/index.ts requires no changes
-- [Phase 12-validation]: Structural validation (grep + tsc --noEmit) is sufficient for v1.2 sign-off — all checks passed, no code fixes needed
-- [Phase 12-validation]: Live audit testing against Python/Go repos deferred to operational validation — not a CI gate for this milestone
-
-### Pending Todos
-
-None yet.
-
-### Blockers/Concerns
-
-- Phase 9 must complete and persist RepoContext before any phase runner work begins — all of phases 10-11 depend on the schema being stable.
+All decisions documented in `.planning/PROJECT.md` Key Decisions table.
 
 ## Session Continuity
 
-Last session: 2026-03-23T03:18:18.286Z
-Stopped at: Completed 12-01-PLAN.md
-Resume file: None
+Last session: 2026-04-07
+Stopped at: Documentation cleanup — aligning version numbering

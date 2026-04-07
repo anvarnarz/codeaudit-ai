@@ -2,7 +2,7 @@
 
 *A living document updated after each milestone. Lessons feed forward into future planning.*
 
-## Milestone: v1.0 — CodeAudit MVP
+## Milestone: Build Phase 1 — MVP (internal label "v1.0")
 
 **Shipped:** 2026-03-22
 **Phases:** 4 | **Plans:** 10 | **Tasks:** 22
