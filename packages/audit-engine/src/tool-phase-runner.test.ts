@@ -23,8 +23,8 @@ describe("parsePhaseOutput", () => {
   it("parses valid JSON", () => {
     const result = parsePhaseOutput(validOutput, 6);
     expect(result.findings).toHaveLength(1);
-    expect(result.findings[0].title).toBe("Hardcoded API key");
-    expect(result.findings[0].phase).toBe(6); // overridden to phaseNumber
+    expect(result.findings[0]!.title).toBe("Hardcoded API key");
+    expect(result.findings[0]!.phase).toBe(6); // overridden to phaseNumber
     expect(result.phaseScore).toBe(65);
     expect(result.summary).toBe("Found 1 security issue");
   });
@@ -90,8 +90,8 @@ describe("parsePhaseOutput", () => {
     });
     const result = parsePhaseOutput(output, 6);
     expect(result.findings).toHaveLength(1);
-    expect(result.findings[0].filePaths).toEqual([]);
-    expect(result.findings[0].lineNumbers).toEqual([]);
+    expect(result.findings[0]!.filePaths).toEqual([]);
+    expect(result.findings[0]!.lineNumbers).toEqual([]);
   });
 
   it("overrides phase number on all findings", () => {
@@ -101,6 +101,6 @@ describe("parsePhaseOutput", () => {
       phaseScore: 50,
     });
     const result = parsePhaseOutput(output, 3);
-    expect(result.findings[0].phase).toBe(3); // overridden, not 999
+    expect(result.findings[0]!.phase).toBe(3); // overridden, not 999
   });
 });

@@ -19,7 +19,7 @@ if (!process.env["ENCRYPTION_KEY"]) {
   }
   // Load the key into this process so it propagates via spawn env
   const match = envContents.match(/ENCRYPTION_KEY=([^\n]+)/);
-  if (match) process.env["ENCRYPTION_KEY"] = match[1].trim();
+  if (match?.[1]) process.env["ENCRYPTION_KEY"] = match[1].trim();
 }
 
 const PORT = process.env["PORT"] ?? "3000";

@@ -1,23 +1,19 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { cn } from "@/lib/utils";
 
 interface ThemeToggleProps {
   className?: string;
 }
 
-export function ThemeToggle({ className }: ThemeToggleProps) {
-  const [theme, setTheme] = useState<"dark" | "light">("dark");
+function getInitialTheme(): "dark" | "light" {
+  if (typeof window === "undefined") return "dark";
+  return localStorage.getItem("theme") === "light" ? "light" : "dark";
+}
 
-  useEffect(() => {
-    const stored = localStorage.getItem("theme");
-    if (stored === "light") {
-      setTheme("light");
-    } else {
-      setTheme("dark");
-    }
-  }, []);
+export function ThemeToggle({ className }: ThemeToggleProps) {
+  const [theme, setTheme] = useState<"dark" | "light">(getInitialTheme);
 
   function toggleTo(t: "dark" | "light") {
     setTheme(t);

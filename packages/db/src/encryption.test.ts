@@ -101,7 +101,7 @@ describe("maskApiKey", () => {
     const key = "sk-openai-abcdefgh1234";
     const masked = maskApiKey(key);
     expect(masked).toMatch(/^••••/);
-    expect(masked).toEndWith("1234");
+    expect(masked).toMatch(/1234$/);
   });
 
   it("short keys return bullets only", () => {
@@ -109,9 +109,9 @@ describe("maskApiKey", () => {
     expect(maskApiKey("")).toBe("••••");
   });
 
-  it("exactly 4 char key returns last 4", () => {
+  it("exactly 4 char key returns bullets only", () => {
     const masked = maskApiKey("abcd");
-    expect(masked).toEndWith("abcd");
+    expect(masked).toBe("••••");
   });
 });
 

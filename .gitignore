@@ -38,8 +38,17 @@ coverage
 # Docker volumes
 docker/data
 
-# TypeScript build info
+# TypeScript build info and tsc --build emit artifacts in packages
 *.tsbuildinfo
+packages/**/*.d.ts
+packages/**/*.d.ts.map
+packages/**/*.js.map
+packages/cli/index.js
+packages/cli/tsup.config.js
+vitest.config.d.ts
+vitest.config.d.ts.map
+vitest.config.js
+vitest.config.js.map
 
 # Drizzle migrations (generated)
 # Uncomment if you want to exclude migrations from version control:

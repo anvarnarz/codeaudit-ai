@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { HealthScore } from "@/components/ui/health-score";
 import { Modal } from "@/components/ui/modal";
 import { deleteAudit, deleteAudits } from "@/actions/audit-delete";
-import type { SerializedAudit, FolderGroup } from "./page";
+import type { FolderGroup } from "./page";
 
 // ─── Display label maps ───────────────────────────────────────────────────
 

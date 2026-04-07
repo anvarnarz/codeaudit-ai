@@ -2,7 +2,7 @@
  * Tests for folder-safety.ts service library.
  * Tests are written before implementation (TDD).
  */
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 
 // Mock node built-ins before importing the module
 vi.mock("node:child_process", () => ({
@@ -53,7 +53,7 @@ describe("folder-safety", () => {
   });
 
   describe("lockFolder", () => {
-    it("calls git push block BEFORE chmod for git repos (CRITICAL ORDER)", async () => {
+    it("calls git push block BEFORE lock chmod for git repos (CRITICAL ORDER)", async () => {
       const { execFile } = await import("node:child_process");
       const { default: fs } = await import("node:fs/promises");
 
@@ -61,18 +61,25 @@ describe("folder-safety", () => {
       vi.mocked(fs.access).mockResolvedValue(undefined);
 
       const callOrder: string[] = [];
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       vi.mocked(execFile).mockImplementation((cmd: any, args: any) => {
         if (cmd === "git") callOrder.push("git-push-block");
-        if (cmd === "chmod") callOrder.push("chmod");
+        // Track chmod calls with their mode to distinguish safety-unlock from lock
+        if (cmd === "chmod" && Array.isArray(args)) {
+          if (args.includes("a-w")) callOrder.push("chmod-lock");
+          else callOrder.push("chmod-unlock");
+        }
         return Promise.resolve({ stdout: "", stderr: "" }) as unknown as ReturnType<typeof execFile>;
       });
 
       const { lockFolder } = await import("./folder-safety");
       await lockFolder("/some/git-repo");
 
-      expect(callOrder[0]).toBe("git-push-block");
-      expect(callOrder[1]).toBe("chmod");
+      // Safety unlock (chmod u+w) happens first, then git push block, then chmod a-w
+      const gitIdx = callOrder.indexOf("git-push-block");
+      const lockIdx = callOrder.indexOf("chmod-lock");
+      expect(gitIdx).toBeGreaterThanOrEqual(0);
+      expect(lockIdx).toBeGreaterThanOrEqual(0);
+      expect(gitIdx).toBeLessThan(lockIdx);
     });
 
     it("skips git push block for non-git repos", async () => {
@@ -83,7 +90,6 @@ describe("folder-safety", () => {
       vi.mocked(fs.access).mockRejectedValue(new Error("ENOENT"));
 
       const gitCalls: string[] = [];
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       vi.mocked(execFile).mockImplementation((cmd: any) => {
         if (cmd === "git") gitCalls.push("git");
         return Promise.resolve({ stdout: "", stderr: "" }) as unknown as ReturnType<typeof execFile>;
@@ -102,7 +108,6 @@ describe("folder-safety", () => {
       vi.mocked(fs.access).mockResolvedValue(undefined);
 
       let capturedGitArgs: string[] = [];
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       vi.mocked(execFile).mockImplementation((cmd: any, args: any) => {
         if (cmd === "git") capturedGitArgs = args;
         return Promise.resolve({ stdout: "", stderr: "" }) as unknown as ReturnType<typeof execFile>;
@@ -122,7 +127,6 @@ describe("folder-safety", () => {
       const { execFile } = await import("node:child_process");
 
       let capturedArgs: string[] = [];
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       vi.mocked(execFile).mockImplementation((cmd: any, args: any) => {
         if (cmd === "chmod") capturedArgs = args;
         return Promise.resolve({ stdout: "", stderr: "" }) as unknown as ReturnType<typeof execFile>;
@@ -152,8 +156,7 @@ describe("folder-safety", () => {
       const { default: fs } = await import("node:fs/promises");
 
       let capturedOptions: object = {};
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      vi.mocked(fs.mkdir).mockImplementation((path: any, options: any) => {
+      vi.mocked(fs.mkdir).mockImplementation((_path: any, options: any) => {
         capturedOptions = options as object;
         return Promise.resolve(undefined);
       });

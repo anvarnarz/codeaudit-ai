@@ -226,7 +226,6 @@ export function AuditProgress({ audit }: { audit: AuditData }) {
   };
 
   // Derived state
-  const isTerminal = ["completed", "cancelled", "failed"].includes(status);
   const isCompleted = status === "completed";
   const isCancelled = status === "cancelled";
   const isFailed = status === "failed";
