@@ -89,8 +89,10 @@ function formatDate(iso: string | null): string {
 }
 
 function getScoreAssessment(score: number): { text: string; color: string } {
-  if (score > 70) return { text: "Healthy codebase", color: "var(--success)" };
-  if (score > 40) return { text: "Needs improvement", color: "var(--warning)" };
+  if (score >= 90) return { text: "Excellent health", color: "var(--success)" };
+  if (score >= 75) return { text: "Good, minor issues", color: "var(--success)" };
+  if (score >= 60) return { text: "Needs improvement", color: "var(--warning)" };
+  if (score >= 40) return { text: "Significant concerns", color: "var(--warning)" };
   return { text: "Critical attention needed", color: "var(--destructive)" };
 }
 
@@ -109,6 +111,138 @@ function ChevronUp({ color = "currentColor" }: { color?: string }) {
     <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
       <path d="M3 9l4-4 4 4" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
+  );
+}
+
+// ─── Scoring Methodology explainer ──────────────────────────────────────────
+
+const SEVERITY_WEIGHTS: { key: typeof SEVERITY_KEYS[number]; weight: number; label: string }[] = [
+  { key: "critical", weight: 20, label: "Critical" },
+  { key: "high", weight: 10, label: "High" },
+  { key: "medium", weight: 5, label: "Medium" },
+  { key: "low", weight: 1, label: "Low" },
+  { key: "info", weight: 0, label: "Info" },
+];
+
+const GRADE_THRESHOLDS = [
+  { grade: "A", range: "90 – 100", meaning: "Excellent health" },
+  { grade: "B", range: "75 – 89", meaning: "Good, minor issues" },
+  { grade: "C", range: "60 – 74", meaning: "Needs improvement" },
+  { grade: "D", range: "40 – 59", meaning: "Significant concerns" },
+  { grade: "F", range: "0 – 39", meaning: "Critical state" },
+];
+
+function ScoringMethodology({
+  findingsCount,
+  score,
+}: {
+  findingsCount: Record<typeof SEVERITY_KEYS[number], number>;
+  score: number;
+}) {
+  const [expanded, setExpanded] = useState(false);
+
+  // Build deduction breakdown
+  const deductions = SEVERITY_WEIGHTS.filter((s) => s.weight > 0).map((s) => ({
+    ...s,
+    count: findingsCount[s.key] ?? 0,
+    total: (findingsCount[s.key] ?? 0) * s.weight,
+  }));
+  const totalDeductions = deductions.reduce((sum, d) => sum + d.total, 0);
+
+  return (
+    <div className="mb-7">
+      <button
+        onClick={() => setExpanded(!expanded)}
+        className="flex items-center gap-1.5 text-[12px] text-text-muted hover:text-accent transition-colors cursor-pointer mb-2"
+      >
+        {expanded ? "Hide" : "How is this score calculated?"}
+        {expanded ? <ChevronUp color="var(--text-muted)" /> : <ChevronDown color="var(--text-muted)" />}
+      </button>
+
+      {expanded && (
+        <div
+          className="rounded-xl border border-border p-5 text-[12px] leading-relaxed"
+          style={{ background: "var(--bg-surface)" }}
+        >
+          <div className="mb-4">
+            <div className="text-[13px] font-semibold mb-2">Scoring Formula</div>
+            <div className="font-mono bg-elevated rounded-lg px-3 py-2 inline-block">
+              score = max(0, 100 &minus; &Sigma;(count &times; weight))
+            </div>
+          </div>
+
+          {/* Severity weights table */}
+          <div className="mb-4">
+            <div className="text-[13px] font-semibold mb-2">Severity Weights</div>
+            <table className="w-full text-left">
+              <thead>
+                <tr className="text-text-muted border-b border-border">
+                  <th className="pb-1.5 font-medium">Severity</th>
+                  <th className="pb-1.5 font-medium text-right">Weight</th>
+                  <th className="pb-1.5 font-medium text-right">Count</th>
+                  <th className="pb-1.5 font-medium text-right">Deduction</th>
+                </tr>
+              </thead>
+              <tbody>
+                {deductions.map((d) => (
+                  <tr key={d.key} className="border-b border-border/50">
+                    <td className="py-1.5">
+                      <span className="flex items-center gap-2">
+                        <span
+                          className="inline-block w-2 h-2 rounded-full"
+                          style={{ background: SEVERITY_COLORS[d.key].color }}
+                        />
+                        {d.label}
+                      </span>
+                    </td>
+                    <td className="py-1.5 text-right font-mono">&minus;{d.weight}</td>
+                    <td className="py-1.5 text-right font-mono">{d.count}</td>
+                    <td className="py-1.5 text-right font-mono">&minus;{d.total}</td>
+                  </tr>
+                ))}
+                <tr className="text-text font-semibold">
+                  <td className="pt-2" colSpan={3}>Total deductions</td>
+                  <td className="pt-2 text-right font-mono">&minus;{totalDeductions}</td>
+                </tr>
+                <tr className="text-text font-semibold">
+                  <td className="pt-1" colSpan={3}>Final score</td>
+                  <td className="pt-1 text-right font-mono">{score} / 100</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          {/* Grade thresholds */}
+          <div className="mb-4">
+            <div className="text-[13px] font-semibold mb-2">Grade Thresholds</div>
+            <div className="flex gap-2 flex-wrap">
+              {GRADE_THRESHOLDS.map((g) => (
+                <span
+                  key={g.grade}
+                  className="px-2.5 py-1 rounded-lg border border-border text-[11px] font-mono"
+                >
+                  <strong>{g.grade}</strong> {g.range}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          {/* Attribution */}
+          <div className="text-text-muted text-[11px]">
+            Methodology inspired by{" "}
+            <a
+              href="https://docs.contrastsecurity.com/en/application-scoring-guide.html"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-accent hover:underline"
+            >
+              Contrast Security Application Scoring
+            </a>
+            . Info-level findings are descriptive and carry no penalty.
+          </div>
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -155,7 +289,7 @@ export function ResultsDashboard({ audit, phases }: ResultsDashboardProps) {
       </div>
 
       {/* ── Score + Severity grid ── */}
-      <div className="grid grid-cols-2 gap-4 mb-7">
+      <div className="grid grid-cols-2 gap-4 mb-4">
         {/* Health Score card */}
         <Card>
           <div className="flex items-center gap-6">
@@ -181,6 +315,9 @@ export function ResultsDashboard({ audit, phases }: ResultsDashboardProps) {
           <SeverityBar data={findingsCount} />
         </Card>
       </div>
+
+      {/* ── Scoring Methodology ── */}
+      <ScoringMethodology findingsCount={findingsCount} score={score} />
 
       {/* ── Cost summary banner ── */}
       <div

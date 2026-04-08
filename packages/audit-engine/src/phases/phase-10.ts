@@ -9,11 +9,46 @@ import { getModel } from "./shared";
 import type { AuditRunContext } from "../orchestrator";
 import type { PhaseRunner } from "../phase-registry";
 
+/**
+ * Severity-weighted deduction scoring, inspired by Contrast Security's
+ * Application Scoring methodology.
+ *
+ * Formula:  score = max(0, 100 − Σ(count × weight))
+ *
+ * | Severity | Weight |
+ * |----------|--------|
+ * | critical |   −20  |
+ * | high     |   −10  |
+ * | medium   |    −5  |
+ * | low      |    −1  |
+ * | info     |     0  |
+ *
+ * Grade thresholds (adjusted for holistic audit context):
+ *   A 90-100 · B 75-89 · C 60-74 · D 40-59 · F 0-39
+ *
+ * Reference: https://docs.contrastsecurity.com/en/application-scoring-guide.html
+ */
+const SEVERITY_WEIGHTS: Record<string, number> = {
+  critical: 20,
+  high: 10,
+  medium: 5,
+  low: 1,
+  info: 0,
+};
+
+function calculateScore(findings: { severity: string }[]): number {
+  let deductions = 0;
+  for (const f of findings) {
+    deductions += SEVERITY_WEIGHTS[f.severity] ?? 0;
+  }
+  return Math.max(0, 100 - deductions);
+}
+
 function scoreToGrade(score: number): "A" | "B" | "C" | "D" | "F" {
   if (score >= 90) return "A";
-  if (score >= 80) return "B";
-  if (score >= 70) return "C";
-  if (score >= 60) return "D";
+  if (score >= 75) return "B";
+  if (score >= 60) return "C";
+  if (score >= 40) return "D";
   return "F";
 }
 
@@ -28,7 +63,10 @@ export const phase10Runner: PhaseRunner = async (ctx, phaseNumber) => {
 
   const allFindings = allPhases.flatMap((p) => p.findings ?? []);
 
-  // Build synthesis prompt (no shell commands — commandOutput is the findings JSON)
+  // Deterministic score from severity-weighted deductions
+  const score = calculateScore(allFindings);
+
+  // Build synthesis prompt — LLM writes the executive summary only (no scoring)
   const prompt = `You are producing the final report for a codebase audit.
 Below is the complete set of findings from all audit phases.
 
@@ -40,11 +78,9 @@ ${JSON.stringify(allFindings, null, 2)}
 Produce:
 1. findings: top 10 most critical findings (already in the list above — select and return the most important ones)
 2. summary: 2-3 paragraph executive summary of overall codebase health
-3. phaseScore: overall health score 0-10 (10 = excellent, 0 = critical failures)`;
+3. phaseScore: ignore this field, set it to 0 (scoring is handled externally)`;
 
-  // Try LLM synthesis, but don't let it block report generation
   let summary = `Audit completed with ${allFindings.length} findings across ${allPhases.filter(p => p.status === "completed").length} phases.`;
-  let score = 50; // default
   let llmTokens = 0;
   let promptTokens = 0;
   let completionTokens = 0;
@@ -55,16 +91,11 @@ Produce:
     const result = await runPhaseLlm(model as Parameters<typeof runPhaseLlm>[0], prompt, phaseNumber);
     if (result.findings.length > 0) topFindings = result.findings;
     if (result.summary) summary = result.summary;
-    score = result.score || score;
     llmTokens = result.usage.totalTokens;
     promptTokens = result.usage.promptTokens;
     completionTokens = result.usage.completionTokens;
   } catch (err) {
     console.warn(`[audit-engine] Phase 10: LLM synthesis failed — using aggregated findings directly. Error: ${String(err).slice(0, 150)}`);
-    // Calculate score from severity distribution
-    const critical = allFindings.filter(f => f.severity === "critical").length;
-    const high = allFindings.filter(f => f.severity === "high").length;
-    score = Math.max(0, Math.min(100, 100 - (critical * 15) - (high * 8)));
   }
 
   // Build final report markdown

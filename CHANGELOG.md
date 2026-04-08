@@ -6,6 +6,21 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [0.6.1] — 2026-04-08 — Deterministic Scoring Methodology
+
+### Changed
+- **Scoring formula**: Replaced opaque LLM-based scoring with deterministic severity-weighted deduction formula inspired by [Contrast Security](https://docs.contrastsecurity.com/en/application-scoring-guide.html) (Critical −20, High −10, Medium −5, Low −1, Info 0)
+- **Grade thresholds**: Adjusted to A ≥90, B ≥75, C ≥60, D ≥40, F <40 (previously A ≥90, B ≥80, C ≥70, D ≥60)
+- LLM demoted to executive summary generation only — no longer influences the health score
+
+### Added
+- **Scoring methodology explainer** on results dashboard — collapsible panel showing formula, per-severity deduction breakdown for the audit, grade thresholds, and Contrast Security attribution
+
+### Fixed
+- **Score scale bug**: LLM returned 0–10 score used directly as 0–100, producing absurdly low scores (e.g., 5/100 for a codebase that should score ~49)
+
+---
+
 ## [0.6.0] — 2026-04-07 — OpenAI-Compatible Provider Support
 
 ### Added

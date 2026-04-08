@@ -12,9 +12,9 @@ interface HealthScoreProps {
 export function HealthScore({ score, size = "lg", className }: HealthScoreProps) {
   const grade =
     score >= 90 ? "A" :
-    score >= 80 ? "B" :
-    score >= 70 ? "C" :
-    score >= 50 ? "D" : "F";
+    score >= 75 ? "B" :
+    score >= 60 ? "C" :
+    score >= 40 ? "D" : "F";
 
   const color =
     score > 70 ? "var(--success)" :

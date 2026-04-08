@@ -308,24 +308,24 @@ function sevColorVar(sev: string): string {
 }
 
 function getScoreColor(score: number): string {
-  if (score >= 70) return "var(--good)";
+  if (score >= 75) return "var(--good)";
   if (score >= 40) return "var(--warning)";
   return "var(--critical)";
 }
 
 function getScoreLabel(score: number): string {
   if (score >= 90) return "Excellent";
-  if (score >= 70) return "Good";
-  if (score >= 50) return "Needs Improvement";
-  if (score >= 30) return "Needs Significant Work";
+  if (score >= 75) return "Good";
+  if (score >= 60) return "Needs Improvement";
+  if (score >= 40) return "Significant Concerns";
   return "Critical Condition";
 }
 
 function getScoreDescription(score: number): string {
   if (score >= 90) return "This codebase is in excellent shape. Maintain current practices and continue monitoring.";
-  if (score >= 70) return "Generally healthy with some areas for improvement. Address findings in order of severity.";
-  if (score >= 50) return "Several areas need attention. Prioritize critical and high-severity findings.";
-  if (score >= 30) return "Significant issues detected across multiple areas. A dedicated remediation effort is recommended.";
+  if (score >= 75) return "Generally healthy with minor issues. Address findings in order of severity.";
+  if (score >= 60) return "Several areas need attention. Prioritize critical and high-severity findings.";
+  if (score >= 40) return "Significant issues detected across multiple areas. A dedicated remediation effort is recommended.";
   return "Critical issues require immediate attention. Security and stability risks are present.";
 }
 
