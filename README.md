@@ -13,13 +13,14 @@
   <a href="#features">Features</a> •
   <a href="#supported-providers">Providers</a> •
   <a href="#how-it-works">How It Works</a> •
+  <a href="#scoring-methodology">Scoring</a> •
   <a href="#usage-guide">Usage Guide</a> •
   <a href="#development">Development</a>
 </p>
 
 <p align="center">
   <a href="https://github.com/anvarnarz/codeaudit-ai/actions"><img src="https://img.shields.io/github/actions/workflow/status/anvarnarz/codeaudit-ai/ci.yml?branch=main&style=flat-square&logo=github&label=CI" alt="CI Status" /></a>
-  <img src="https://img.shields.io/badge/version-0.6.0-blue?style=flat-square" alt="Version" />
+  <img src="https://img.shields.io/badge/version-0.6.1-blue?style=flat-square" alt="Version" />
   <img src="https://img.shields.io/badge/license-MIT-green?style=flat-square" alt="License" />
   <img src="https://img.shields.io/badge/node-%3E%3D20-brightgreen?style=flat-square&logo=node.js&logoColor=white" alt="Node.js" />
   <img src="https://img.shields.io/badge/TypeScript-5.7-blue?style=flat-square&logo=typescript&logoColor=white" alt="TypeScript" />
@@ -153,7 +154,7 @@ When the audit completes, the results dashboard shows:
 
 | Section | Details |
 |---------|---------|
-| **Health Score** | Letter grade (A-F) with SVG ring gauge, color-coded by threshold |
+| **Health Score** | Letter grade (A-F) with SVG ring gauge, expandable [scoring methodology](#scoring-methodology) breakdown |
 | **Severity Chart** | Bar chart breakdown: Critical / High / Medium / Low / Info |
 | **Findings List** | Filterable by severity pills, each card shows title, file path, line number, evidence, and expandable remediation |
 | **Cost Summary** | Total tokens + cost, expandable per-phase breakdown, budget warning if >20% over estimate |
@@ -262,6 +263,36 @@ Go to **Settings > API Keys** in the sidebar to:
 | **Sandbox** | `execCommand` tool rejects write, delete, and network commands |
 | **Prompt injection** | Repo content wrapped in `<data_block trust="untrusted">` tags |
 | **Guaranteed cleanup** | Folder unlocked in `finally` block — even on crash or cancel |
+
+### Scoring Methodology
+
+The health score uses a **severity-weighted deduction model** inspired by the [Contrast Security Application Scoring Guide](https://docs.contrastsecurity.com/en/application-scoring-guide.html). Every audit starts at 100 points, and each finding deducts based on its severity:
+
+```
+score = max(0, 100 − Σ(count × weight))
+```
+
+| Severity | Weight per finding | Example |
+|----------|-------------------|---------|
+| Critical | −20 | Security vulnerabilities, data loss risks |
+| High | −10 | Missing tests, no CI, bus factor = 1 |
+| Medium | −5 | Placeholder tests, mock-only coverage |
+| Low | −1 | Missing git tags, minor style issues |
+| Info | 0 | Descriptive observations, no penalty |
+
+The final score maps to a letter grade:
+
+| Grade | Score | Meaning |
+|-------|-------|---------|
+| **A** | 90 – 100 | Excellent health |
+| **B** | 75 – 89 | Good, minor issues |
+| **C** | 60 – 74 | Needs improvement |
+| **D** | 40 – 59 | Significant concerns |
+| **F** | 0 – 39 | Critical state |
+
+The score is **deterministic** — the same findings always produce the same score. The LLM writes the executive summary but does not influence the numeric score, ensuring reproducibility across runs and providers.
+
+> The results dashboard includes an expandable "How is this score calculated?" panel showing the exact deduction breakdown for each audit.
 
 ---
 
