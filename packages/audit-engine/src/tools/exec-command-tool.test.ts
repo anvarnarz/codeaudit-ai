@@ -9,7 +9,9 @@ describe("createExecCommandTool", () => {
   let tool: ReturnType<typeof createExecCommandTool>;
 
   beforeEach(() => {
-    repoDir = fs.mkdtempSync(path.join(os.tmpdir(), "codeaudit-test-"));
+    // realpathSync resolves /var/folders → /private/var/folders on macOS so
+    // path containment checks (which compare against fs.realpathSync) match.
+    repoDir = fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), "codeaudit-test-")));
     fs.writeFileSync(path.join(repoDir, "hello.txt"), "world");
     tool = createExecCommandTool(repoDir);
   });
@@ -75,7 +77,8 @@ describe("createExecCommandTool", () => {
   describe("symlink escape", () => {
     it("blocks reading through symlink pointing outside repo", async () => {
       const symlinkPath = path.join(repoDir, "escape-link");
-      fs.symlinkSync("/etc/hostname", symlinkPath);
+      // /etc/hosts exists on both macOS and Linux; /etc/hostname does not on macOS.
+      fs.symlinkSync("/etc/hosts", symlinkPath);
 
       const result = await exec("cat", [symlinkPath]);
       expect(result).toContain("blocked");
@@ -134,6 +137,106 @@ describe("createExecCommandTool", () => {
       const result = await exec("CAT", ["hello.txt"]);
       // Should either work or be blocked as not in list — but not crash
       expect(typeof result).toBe("string");
+    });
+  });
+
+  describe("vendored-dir excludes", () => {
+    it("blocks find without any vendored-dir exclusion", async () => {
+      const result = await exec("find", [".", "-name", "*.ts"]);
+      expect(result).toContain("blocked");
+      expect(result).toContain("vendored");
+      expect(result).toContain("node_modules");
+    });
+
+    it("allows find when -not -path excludes node_modules", async () => {
+      const result = await exec("find", [
+        ".",
+        "-type", "f",
+        "-name", "hello.txt",
+        "-not", "-path", "*/node_modules/*",
+      ]);
+      expect(result).not.toContain("blocked");
+      expect(result).toContain("hello.txt");
+    });
+
+    it("allows find when ! -path excludes node_modules", async () => {
+      const result = await exec("find", [
+        ".",
+        "-name", "hello.txt",
+        "!", "-path", "*/node_modules/*",
+      ]);
+      expect(result).not.toContain("blocked");
+    });
+
+    it("allows find when -prune is used with a vendored-dir name", async () => {
+      const result = await exec("find", [
+        ".",
+        "-path", "*/node_modules", "-prune",
+        "-o", "-name", "hello.txt", "-print",
+      ]);
+      expect(result).not.toContain("blocked");
+    });
+
+    it("blocks recursive grep without --exclude-dir", async () => {
+      const result = await exec("grep", ["-r", "TODO", "."]);
+      expect(result).toContain("blocked");
+      expect(result).toContain("exclude-dir");
+    });
+
+    it("allows recursive grep with --exclude-dir", async () => {
+      const result = await exec("grep", [
+        "-r", "world", ".",
+        "--exclude-dir=node_modules",
+        "--exclude-dir=.git",
+      ]);
+      expect(result).not.toContain("blocked");
+      expect(result).toContain("hello.txt");
+    });
+
+    it("allows non-recursive grep on a single file without excludes", async () => {
+      const result = await exec("grep", ["world", "hello.txt"]);
+      expect(result).not.toContain("blocked");
+      expect(result).toContain("world");
+    });
+
+    it("blocks recursive grep with combined short flag like -rn", async () => {
+      const result = await exec("grep", ["-rn", "TODO", "."]);
+      expect(result).toContain("blocked");
+      expect(result).toContain("exclude-dir");
+    });
+
+    it("blocks find inside bash -c without excludes", async () => {
+      const result = await exec("bash", [
+        "-c",
+        `find . -name "*.ts"`,
+      ]);
+      expect(result).toContain("blocked");
+      expect(result).toContain("bash -c");
+    });
+
+    it("allows find inside bash -c with vendored-dir excludes", async () => {
+      const result = await exec("bash", [
+        "-c",
+        `find . -name "hello.txt" -not -path "*/node_modules/*"`,
+      ]);
+      expect(result).not.toContain("blocked");
+    });
+
+    it("blocks recursive grep inside bash -c without excludes", async () => {
+      const result = await exec("bash", [
+        "-c",
+        `grep -rn "TODO" .`,
+      ]);
+      expect(result).toContain("blocked");
+      expect(result).toContain("exclude-dir");
+    });
+
+    it("allows recursive grep inside bash -c with excludes", async () => {
+      const result = await exec("bash", [
+        "-c",
+        `grep -rn "world" . --exclude-dir=node_modules --exclude-dir=.git`,
+      ]);
+      expect(result).not.toContain("blocked");
     });
   });
 });

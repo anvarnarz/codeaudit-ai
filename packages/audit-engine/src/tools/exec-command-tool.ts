@@ -16,6 +16,27 @@ const ALLOWED_COMMANDS = new Set([
 ]);
 
 /**
+ * Vendored / generated directories the audit must never traverse. Auditing
+ * third-party dependency code, build output, or VCS internals burns tokens
+ * without producing first-party findings.
+ */
+const VENDORED_DIR_NAMES = [
+  "node_modules", ".git", "dist", "build", ".next", ".turbo", ".vercel",
+  "out", "target", "vendor", "__pycache__", "venv", ".venv",
+  ".mypy_cache", ".pytest_cache", "coverage",
+] as const;
+
+const REQUIRED_FIND_EXCLUDES =
+  '-not -path "*/node_modules/*" -not -path "*/.git/*" -not -path "*/dist/*" ' +
+  '-not -path "*/build/*" -not -path "*/.next/*" -not -path "*/vendor/*" ' +
+  '-not -path "*/coverage/*"';
+
+const REQUIRED_GREP_EXCLUDES =
+  "--exclude-dir=node_modules --exclude-dir=.git --exclude-dir=dist " +
+  "--exclude-dir=build --exclude-dir=.next --exclude-dir=vendor " +
+  "--exclude-dir=coverage";
+
+/**
  * Dangerous patterns that indicate write, delete, or network operations.
  * Applied to the joined command+args string (case-insensitive).
  */
@@ -75,6 +96,101 @@ function hasDangerousPattern(input: string): string | null {
 }
 
 /**
+ * True if the string carries an explicit exclusion of at least one vendored
+ * directory via the standard `find` exclusion idioms (`-not -path`, `! -path`,
+ * or `-prune`).
+ */
+function hasFindExcludes(s: string): boolean {
+  if (!/(-not\s+-path|!\s+-path|-prune)/.test(s)) return false;
+  return VENDORED_DIR_NAMES.some((d) => s.includes(d));
+}
+
+/**
+ * True if the args invoke `grep` recursively (`-r`, `-R`, `--recursive`, or a
+ * combined short flag like `-rn`). Non-recursive grep over a single file does
+ * not need exclusions.
+ */
+function isRecursiveGrep(args: string[]): boolean {
+  return args.some(
+    (a) =>
+      a === "-r" ||
+      a === "-R" ||
+      a === "--recursive" ||
+      /^-[a-zA-Z]*[rR][a-zA-Z]*$/.test(a),
+  );
+}
+
+/**
+ * True if grep args (or shell-string) carry at least one `--exclude-dir`.
+ */
+function hasGrepExcludes(s: string): boolean {
+  return /--exclude-dir/.test(s);
+}
+
+/**
+ * Block any traversal command that would walk vendored / generated directories
+ * unrestricted. The audit covers first-party source only — recursing into
+ * `node_modules`, `.git`, `dist`, `build`, `.next`, `vendor`, etc. wastes tokens
+ * and pollutes findings with third-party code.
+ *
+ * Returns a block reason string when the command is missing required excludes,
+ * or `null` to allow execution.
+ */
+function checkVendoredExcludes(command: string, args: string[]): string | null {
+  const argStr = args.join(" ");
+
+  if (command === "find") {
+    if (!hasFindExcludes(argStr)) {
+      return (
+        `'find' must exclude vendored/generated directories. ` +
+        `Append: ${REQUIRED_FIND_EXCLUDES}. ` +
+        `The audit covers first-party source only — never traverse third-party code.`
+      );
+    }
+    return null;
+  }
+
+  if (command === "grep" || command === "egrep") {
+    if (isRecursiveGrep(args) && !hasGrepExcludes(argStr)) {
+      return (
+        `recursive 'grep' must use --exclude-dir to skip vendored/generated directories. ` +
+        `Add flags: ${REQUIRED_GREP_EXCLUDES}. ` +
+        `The audit covers first-party source only — never traverse third-party code.`
+      );
+    }
+    return null;
+  }
+
+  if ((command === "bash" || command === "sh") && args.includes("-c")) {
+    const cIdx = args.indexOf("-c");
+    const shellCmd = args[cIdx + 1] ?? "";
+
+    if (/\bfind\b/.test(shellCmd) && !hasFindExcludes(shellCmd)) {
+      return (
+        `'find' inside ${command} -c must exclude vendored/generated directories. ` +
+        `Append: ${REQUIRED_FIND_EXCLUDES}. ` +
+        `The audit covers first-party source only — never traverse third-party code.`
+      );
+    }
+
+    // Recursive grep inside bash -c — match short combined flags like `grep -rn`
+    // or `grep -Rl`, plus `--recursive`. Require --exclude-dir.
+    const recursiveGrepInShell = /\bgrep\s+(?:[^\s|;]*\s+)*-[a-zA-Z]*[rR][a-zA-Z]*\b|\bgrep\s+[^\n]*--recursive\b/.test(
+      shellCmd,
+    );
+    if (recursiveGrepInShell && !hasGrepExcludes(shellCmd)) {
+      return (
+        `recursive 'grep' inside ${command} -c must use --exclude-dir. ` +
+        `Add: ${REQUIRED_GREP_EXCLUDES}. ` +
+        `The audit covers first-party source only — never traverse third-party code.`
+      );
+    }
+  }
+
+  return null;
+}
+
+/**
  * Factory function that creates a sandboxed execCommand tool for use with Vercel AI SDK.
  *
  * The tool:
@@ -126,7 +242,14 @@ export function createExecCommandTool(repoPath: string, timeoutMs = DEFAULT_TIME
         }
       }
 
-      // 4. Path containment check — reject paths outside repoPath
+      // 4. Vendored-dir exclusion check — block traversals that would scan
+      //    node_modules / .git / dist / build / .next / vendor / coverage etc.
+      const excludeReason = checkVendoredExcludes(command, args);
+      if (excludeReason) {
+        return `(blocked: ${excludeReason})`;
+      }
+
+      // 5. Path containment check — reject paths outside repoPath
       for (const arg of args) {
         // Reject any arg with ".." that could escape the repo
         if (arg.includes("..")) {
@@ -152,10 +275,10 @@ export function createExecCommandTool(repoPath: string, timeoutMs = DEFAULT_TIME
         }
       }
 
-      // 5. Execute the command within the repository directory
+      // 6. Execute the command within the repository directory
       const output = await execCommand(command, args, repoPath, effectiveTimeout);
 
-      // 6. Truncate only truly massive output (e.g. cat on a 10MB file)
+      // 7. Truncate only truly massive output (e.g. cat on a 10MB file)
       const MAX_OUTPUT_CHARS = 100_000; // ~25K tokens — generous limit, let the LLM work
       if (output.length > MAX_OUTPUT_CHARS) {
         return output.slice(0, MAX_OUTPUT_CHARS) + `\n\n... (truncated — ${output.length} chars total, showing first ${MAX_OUTPUT_CHARS})`;

@@ -54,6 +54,29 @@ describe("buildToolUsePhasePrompt", () => {
     const prompt = buildToolUsePhasePrompt("guide", "context", "/home/user/myrepo", FINDING_FORMAT_TEMPLATE);
     expect(prompt).toContain("/home/user/myrepo");
   });
+
+  it("instructs the LLM to exclude vendored/generated directories", () => {
+    const prompt = buildToolUsePhasePrompt("guide", "context", "/repo", FINDING_FORMAT_TEMPLATE);
+    expect(prompt).toContain("first-party source");
+    expect(prompt).toContain("node_modules");
+    expect(prompt).toContain(".git");
+    expect(prompt).toContain("dist");
+    expect(prompt).toContain("build");
+    expect(prompt).toContain(".next");
+    expect(prompt).toContain("vendor");
+    expect(prompt).toContain("coverage");
+  });
+
+  it("documents the required find and grep exclude flags", () => {
+    const prompt = buildToolUsePhasePrompt("guide", "context", "/repo", FINDING_FORMAT_TEMPLATE);
+    expect(prompt).toContain('-not -path "*/node_modules/*"');
+    expect(prompt).toContain("--exclude-dir=node_modules");
+  });
+
+  it("warns the LLM that traversal commands without excludes will be blocked", () => {
+    const prompt = buildToolUsePhasePrompt("guide", "context", "/repo", FINDING_FORMAT_TEMPLATE);
+    expect(prompt.toLowerCase()).toMatch(/block/);
+  });
 });
 
 describe("FINDING_FORMAT_TEMPLATE", () => {

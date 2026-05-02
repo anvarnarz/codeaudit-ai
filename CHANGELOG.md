@@ -6,6 +6,17 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [0.6.4] — 2026-05-02 — Vendored-Dir Exclusion in Tool-Use Phases
+
+### Fixed
+- **LLM phases scanned third-party code**: `find` and recursive `grep` calls issued by the LLM during Phases 1–11 had no exclude policy. The agent could (and did) traverse `node_modules`, `.git`, `dist`, `build`, `.next`, `vendor`, `coverage`, `__pycache__`, etc., burning tokens on dependency code and polluting findings with issues that don't belong to the user's first-party source. Deterministic phases (0 and 4 size scan) already excluded these dirs; LLM-driven phases now match.
+
+### Added
+- `exec-command-tool.ts`: hard guardrail that blocks `find` and recursive `grep` invocations (including those wrapped in `bash -c`/`sh -c`) when they lack vendored-dir exclusions. The block message tells the LLM exactly which flags to add (`-not -path "*/node_modules/*" …` for find; `--exclude-dir=node_modules …` for grep), so the next tool-call round retries cleanly.
+- `prompt-builder.ts` (`buildToolUsePhasePrompt`): explicit "Audit first-party source only" rule with the required exclude flags listed inline, plus a note that non-compliant commands will be blocked. Stops the LLM from wasting a tool-call round just to discover the guardrail.
+
+---
+
 ## [0.6.3] — 2026-04-30 — Deterministic Audit Results
 
 ### Fixed
